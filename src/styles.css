@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --primary: #0A5C75;
+  --on-primary: #FFFFFF;
+  --surface: #FFFFFF;
+  --text-primary: #102A33;
+  --outline: #D1DDE1;
+}
