@@ -1,1 +1,87 @@
 /* You can add global styles to this file, and also import other style files */
+/* Global Color Variables */
+:root {
+  /* Main Palette */
+  --primary: #0A5C75;
+  --on-primary: #FFFFFF;
+  --secondary: #A8DF8E;
+  --on-secondary: #0A3D2E;
+
+  /* Surfaces & Backgrounds */
+  --background: #F3F7F8;
+  --on-background: #102A33;
+  --surface: #FFFFFF;
+  --on-surface: #102A33;
+
+  /* Button States */
+  --primary-hover: #084C61;
+  --secondary-hover: #8FCC72;
+  --disabled-button: #B0BEC5;
+  --disabled-text: #78909C;
+
+  /* UI Elements */
+  --outline: #D1DDE1;
+  --divider: #D1DDE1;
+
+  /* Typography */
+  --text-primary: #102A33;
+  --text-secondary: #37474F;
+  --text-tertiary: #607D8B;
+
+  /* Status */
+  --error: #D32F2F;
+  --on-error: #FFFFFF;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* أو أي خط تفضليه */
+}
+/* 1. استدعاء خط Inter الأساسي */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-family: 'Inter', sans-serif;
+
+
+  --fs-display: 48px;   /* العناوين الكبيرة جداً */
+  --fs-h2: 30px;        /* عناوين الكروت */
+  --fs-body: 16px;      /* الكلام العادي (القراءة) */
+  --fs-small: 13px;     /* البيانات الصغيرة والأيقونات */
+}
+
+/*  التحويل(الموبايل): لما الشاشة تصغر، المقاسات بتقل لوحدها */
+@media (max-width: 768px) {
+  :root {
+    --fs-display: 30px;
+    --fs-h2: 20px;
+    --fs-body: 15px;
+    --fs-small: 13px;
+  }
+}
+
+/*  الخط على كل المشروع */
+* {
+  font-family: var(--font-family) !important;
+  -webkit-font-smoothing: antialiased; /* لجعل الخط أنعم */
+  box-sizing: border-box;
+}
+
+
+.font-display { font-size: var(--fs-display); font-weight: 700; letter-spacing: -0.02em; }
+.font-title   { font-size: var(--fs-h2); font-weight: 600; }
+.font-body    { font-size: var(--fs-body); font-weight: 400; line-height: 1.7; }
+.font-caption { font-size: var(--fs-small); font-weight: 500; }
+
+
+.fw-regular  { font-weight: 400 !important; }
+.fw-medium   { font-weight: 500 !important; }
+.fw-semibold { font-weight: 600 !important; }
+.fw-bold     { font-weight: 700 !important; }
+
+/*  ضمان أن الزراير والمدخلات تتبع نفس الخط */
+button, input, select, textarea {
+  font-family: var(--font-family);
+}
