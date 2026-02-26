@@ -1,8 +1,134 @@
 /* You can add global styles to this file, and also import other style files */
+/* Global Color Variables */
 :root {
-  --primary: #0A5C75;
-  --on-primary: #FFFFFF;
-  --surface: #FFFFFF;
-  --text-primary: #102A33;
-  --outline: #D1DDE1;
+    /* Main Palette */
+    --primary: #0A5C75;
+    --on-primary: #FFFFFF;
+    --secondary: #A8DF8E;
+    --on-secondary: #0A3D2E;
+
+    /* Surfaces & Backgrounds */
+    --background: #F3F7F8;
+    --on-background: #102A33;
+    --surface: #FFFFFF;
+    --on-surface: #102A33;
+
+    /* Button States */
+    --primary-hover: #084C61;
+    --secondary-hover: #8FCC72;
+    --disabled-button: #B0BEC5;
+    --disabled-text: #78909C;
+
+    /* UI Elements */
+    --outline: #D1DDE1;
+    --divider: #D1DDE1;
+
+    /* Typography */
+    --text-primary: #102A33;
+    --text-secondary: #37474F;
+    --text-tertiary: #607D8B;
+
+    /* Status */
+    --error: #D32F2F;
+    --on-error: #FFFFFF;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --font-family: 'Inter', sans-serif;
+
+
+    --fs-display: 48px;
+    --fs-h2: 30px;
+    --fs-body: 16px;
+    --fs-small: 13px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --fs-display: 30px;
+        --fs-h2: 20px;
+        --fs-body: 15px;
+        --fs-small: 13px;
+    }
+}
+
+* {
+    font-family: var(--font-family) !important;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+}
+
+
+.font-display {
+    font-size: var(--fs-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.font-title {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+}
+
+.font-body {
+    font-size: var(--fs-body);
+    font-weight: 400;
+    line-height: 1.7;
+}
+
+.font-caption {
+    font-size: var(--fs-small);
+    font-weight: 500;
+}
+
+
+.fw-regular {
+    font-weight: 400 !important;
+}
+
+.fw-medium {
+    font-weight: 500 !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: var(--font-family);
+}
+
+
+
+
+/* SweetAlert Custom Theme */
+
+.swal2-popup {
+  border-radius: 20px !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.swal2-confirm {
+  background-color: var(--primary) !important;
+  border-radius: 12px !important;
+}
+
+.swal2-cancel {
+  background-color: var(--disabled-button) !important;
 }
