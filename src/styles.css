@@ -1,117 +1,162 @@
 /* You can add global styles to this file, and also import other style files */
-/* Global Color Variables */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utilities for your design system */
+@layer utilities {
+  .text-display {
+    @apply text-[48px] md:text-[30px] font-bold tracking-tight leading-tight;
+  }
+
+  .text-h2 {
+    @apply text-[30px] md:text-[20px] font-semibold leading-snug;
+  }
+
+  .text-body {
+    @apply text-[16px] md:text-[15px] font-normal leading-relaxed;
+  }
+
+  .text-small {
+    @apply text-[13px] font-medium;
+  }
+}
+
+/* Responsive typography (باستخدام Tailwind مباشرة) */
+@media (max-width: 768px) {
+  .text-display {
+    @apply text-[30px];
+  }
+
+  .text-h2 {
+    @apply text-[20px];
+  }
+
+  .text-body {
+    @apply text-[15px];
+  }
+}
+
 :root {
-    /* Main Palette */
-    --primary: #0A5C75;
-    --on-primary: #FFFFFF;
-    --secondary: #A8DF8E;
-    --on-secondary: #0A3D2E;
+  /* Main Palette */
+  --primary: #0A5C75;
+  --on-primary: #FFFFFF;
+  --secondary: #A8DF8E;
+  --on-secondary: #0A3D2E;
 
-    /* Surfaces & Backgrounds */
-    --background: #F3F7F8;
-    --on-background: #102A33;
-    --surface: #FFFFFF;
-    --on-surface: #102A33;
+  /* Surfaces & Backgrounds */
+  --background: #F3F7F8;
+  --on-background: #102A33;
+  --surface: #FFFFFF;
+  --on-surface: #102A33;
 
-    /* Button States */
-    --primary-hover: #084C61;
-    --secondary-hover: #8FCC72;
-    --disabled-button: #B0BEC5;
-    --disabled-text: #78909C;
+  /* Button States */
+  --primary-hover: #084C61;
+  --secondary-hover: #8FCC72;
+  --disabled-button: #B0BEC5;
+  --disabled-text: #78909C;
 
-    /* UI Elements */
-    --outline: #D1DDE1;
-    --divider: #D1DDE1;
+  /* UI Elements */
+  --outline: #D1DDE1;
+  --divider: #D1DDE1;
 
-    /* Typography */
-    --text-primary: #102A33;
-    --text-secondary: #37474F;
-    --text-tertiary: #607D8B;
+  /* Typography */
+  --text-primary: #102A33;
+  --text-secondary: #37474F;
+  --text-tertiary: #607D8B;
 
-    /* Status */
-    --error: #D32F2F;
-    --on-error: #FFFFFF;
+  /* Status */
+  --error: #D32F2F;
+  --on-error: #FFFFFF;
+
+}
+
+.dark {
+  --background: #121A1F;
+  --text-primary: #E0E7EB;
 }
 
 body {
-    background-color: var(--background);
-    color: var(--text-primary);
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --font-family: 'Inter', sans-serif;
+  --font-family: 'Inter', sans-serif;
 
 
-    --fs-display: 48px;
-    --fs-h2: 30px;
-    --fs-body: 16px;
-    --fs-small: 13px;
+  --fs-display: 48px;
+  --fs-h2: 30px;
+  --fs-body: 16px;
+  --fs-small: 13px;
 }
 
 @media (max-width: 768px) {
-    :root {
-        --fs-display: 30px;
-        --fs-h2: 20px;
-        --fs-body: 15px;
-        --fs-small: 13px;
-    }
+  :root {
+    --fs-display: 30px;
+    --fs-h2: 20px;
+    --fs-body: 15px;
+    --fs-small: 13px;
+  }
 }
 
 * {
-    font-family: var(--font-family) !important;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
+  font-family: var(--font-family) !important;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
 }
 
 
 .font-display {
-    font-size: var(--fs-display);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+  font-size: var(--fs-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .font-title {
-    font-size: var(--fs-h2);
-    font-weight: 600;
+  font-size: var(--fs-h2);
+  font-weight: 600;
 }
 
 .font-body {
-    font-size: var(--fs-body);
-    font-weight: 400;
-    line-height: 1.7;
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.7;
 }
 
 .font-caption {
-    font-size: var(--fs-small);
-    font-weight: 500;
+  font-size: var(--fs-small);
+  font-weight: 500;
 }
 
 
 .fw-regular {
-    font-weight: 400 !important;
+  font-weight: 400 !important;
 }
 
 .fw-medium {
-    font-weight: 500 !important;
+  font-weight: 500 !important;
 }
 
 .fw-semibold {
-    font-weight: 600 !important;
+  font-weight: 600 !important;
 }
 
 .fw-bold {
-    font-weight: 700 !important;
+  font-weight: 700 !important;
 }
 
 button,
 input,
 select,
 textarea {
-    font-family: var(--font-family);
+  font-family: var(--font-family);
 }
 
 
