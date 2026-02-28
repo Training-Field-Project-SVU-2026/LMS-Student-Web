@@ -1,0 +1,17 @@
+<button
+  [type]="config.type || 'button'"
+  [ngClass]="classes"
+  [disabled]="config.disabled || config.isLoading"
+  (click)="navigate()">
+
+  @if (!config.isLoading) {
+    <ng-content></ng-content>
+  }
+
+  @if (config.isLoading) {
+    <span class="loading-wrapper">
+      Loading...
+    </span>
+  }
+
+</button>
