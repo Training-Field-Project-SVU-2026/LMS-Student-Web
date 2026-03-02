@@ -2,3 +2,26 @@
         class="px-4 py-2 rounded bg-primary text-white">
   Toggle Theme
 </button>
+
+<button (click)="testAlert()">Alert</button>
+<h2>Button Test</h2>
+
+<app-button>
+Default Button
+</app-button>
+
+<app-button [config]="{ variant:'primary', size:'lg' }">
+Join Now
+</app-button>
+
+<app-button [config]="{ variant:'secondary' }">
+Secondary Button
+</app-button>
+
+<app-button [config]="{ variant:'danger' }">
+Delete
+</app-button>
+
+<app-button [config]="{ isLoading:true }">
+Loading
+</app-button>
