@@ -1,16 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth-routing-module';
+import { Register } from './register/register';
 import { RouterModule } from '@angular/router';
-
-
+import { Login } from './login/login';
+import { ForgetPass } from './forget-pass/forget-pass';
+import { ResetPass } from './reset-pass/reset-pass';
+import { VerifyEmail } from './verify-email/verify-email';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+   
+  ],
   imports: [
     CommonModule,
     AuthRoutingModule,
-    RouterModule
+    RouterModule,
+    Login,
+    Register,
+    ForgetPass,
+    ResetPass,
+    VerifyEmail
   ]
 })
 export class AuthModule { }

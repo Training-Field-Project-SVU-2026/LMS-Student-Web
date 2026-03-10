@@ -1,1 +1,101 @@
-<p>register works!</p>
+<div class="form-container">
+
+  <h2 class="font-title mb-2">Create Account</h2>
+  <p class="subtitle text-body">
+    Start your coding journey today 🚀
+  </p>
+
+  <!-- Tabs -->
+
+  <div class="auth-tabs">
+    <button routerLink="/auth/login">Login</button>
+    <button class="active">Register</button>
+  </div>
+
+  <!-- Form -->
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <!-- First name -->
+
+    <div class="input-group">
+      <i class="fa-solid fa-user"></i>
+      <input
+        type="text"
+        placeholder="First Name"
+        formControlName="first_name"
+      >
+    </div>
+
+    <!-- Last name -->
+
+    <div class="input-group">
+      <i class="fa-solid fa-user"></i>
+      <input
+        type="text"
+        placeholder="Last Name"
+        formControlName="last_name"
+      >
+    </div>
+
+    <!-- Email -->
+
+    <div class="input-group">
+      <i class="fa-solid fa-envelope"></i>
+      <input
+        type="email"
+        placeholder="Email"
+        formControlName="email"
+      >
+    </div>
+
+    <!-- Password -->
+
+    <div class="input-group">
+      <i class="fa-solid fa-lock"></i>
+
+      <input
+        [type]="showPassword ? 'text' : 'password'"
+        placeholder="Password"
+        formControlName="password"
+      >
+
+      <i
+        class="fa-solid"
+        [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+        (click)="togglePassword()"
+      ></i>
+    </div>
+
+    <!-- Confirm password -->
+
+    <div class="input-group">
+      <i class="fa-solid fa-lock"></i>
+
+      <input
+        [type]="showConfirm ? 'text' : 'password'"
+        placeholder="Confirm Password"
+        formControlName="confirmPassword"
+      >
+
+      <i
+        class="fa-solid"
+        [ngClass]="showConfirm ? 'fa-eye-slash' : 'fa-eye'"
+        (click)="toggleConfirm()"
+      ></i>
+    </div>
+
+    <!-- Submit -->
+
+    <button type="submit" class="submit-btn">
+      Create Account
+    </button>
+
+  </form>
+
+  <div class="signin-link text-small">
+    Already have an account?
+    <a routerLink="/auth/login">Sign in</a>
+  </div>
+
+</div>

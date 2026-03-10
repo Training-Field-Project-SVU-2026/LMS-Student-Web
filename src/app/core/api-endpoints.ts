@@ -1,9 +1,15 @@
 export const API_ENDPOINTS = {
 
-    login: '/auth/login',
-    register: '/auth/register',
-    forgotPassword: '/auth/forgot-pass',
-    resetPassword: '/auth/reset-pass',
-    verifyEmail: '/auth/verify-email',
+
+    login: '/api/login/',
+    register: '/api/register/student/',
+    logout: '/api/logout/',
+
+    verifyEmail: '/api/verify-email/',
+
+    forgotPassword: '/api/forgot-password/',
+    resetPassword: '/api/reset-password/',
+    changePassword: '/api/change-password/'
 
 };
+
