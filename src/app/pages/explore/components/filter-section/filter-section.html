@@ -1,0 +1,58 @@
+<div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-4 flex flex-col lg:flex-row items-center gap-6 shadow-sm">
+  <!-- search  -->
+  <div class="relative flex-grow w-full lg:max-w-md">
+    <span class="absolute inset-y-0 left-3 flex items-center text-[var(--text-tertiary)]">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!--icon search-->
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </span>
+    <input
+      type="text"
+      placeholder="What do you want to learn today?"
+      class="w-full pl-10 pr-4 py-2.5 bg-[var(--background)] border border-[var(--outline)] rounded-xl text-body focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all"
+    >
+  </div>
+
+  <div class="flex items-center gap-4 w-full lg:w-auto">
+    <div class="flex flex-col gap-1 w-full md:w-40">
+      <label class="text-small text-[var(--text-tertiary)] uppercase tracking-wider ml-1">Category</label>
+      <div class="relative">
+        <select class="w-full appearance-none bg-[var(--surface)] border border-[var(--outline)] rounded-xl px-4 py-2 text-body text-[var(--text-primary)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)]">
+          <option>All Categories</option>
+          <option>Frontend</option>
+          <option>Backend</option>
+        </select>
+        <span class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[var(--text-tertiary)] text-[10px]">▼</span>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-1 w-full md:w-40">
+      <label class="text-small text-[var(--text-tertiary)] uppercase tracking-wider ml-1">Difficulty</label>
+      <div class="relative">
+        <select class="w-full appearance-none bg-[var(--surface)] border border-[var(--outline)] rounded-xl px-4 py-2 text-body text-[var(--text-primary)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)]">
+          <option>All Levels</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+        </select>
+        <span class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-[var(--text-tertiary)] text-[10px]">▼</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1 w-full lg:w-auto">
+    <label class="text-small text-[var(--text-tertiary)] uppercase tracking-wider ml-1">Content Type</label>
+    <div class="flex bg-[var(--background)] p-1 rounded-xl border border-[var(--outline)]">
+      <button class="px-5 py-1.5 bg-[var(--primary)] text-[var(--on-primary)] rounded-lg text-small font-semibold shadow-sm transition-all hover:bg-[var(--primary-hover)]">
+        All
+      </button>
+      <button class="px-5 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-small font-semibold transition-colors">
+        Learning Tracks
+      </button>
+      <button class="px-5 py-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-small font-semibold transition-colors">
+        Mini Courses
+      </button>
+    </div>
+  </div>
+
+</div>

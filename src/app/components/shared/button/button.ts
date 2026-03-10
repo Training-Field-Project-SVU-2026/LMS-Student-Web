@@ -11,6 +11,7 @@ interface ButtonConfig {
 }
 @Component({
   selector: 'app-button',
+  standalone: true,
   imports: [NgClass],
   templateUrl: './button.html',
   styleUrl: './button.css',

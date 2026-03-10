@@ -1,17 +1,27 @@
-<div class="card">
+<div class="card flex flex-col h-full min-h-[280px] bg-[var(--surface)] border border-[var(--outline)] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all">
 
-  <div class="image-section">
-    <span class="badge">{{ badge }}</span>
-    <img [src]="image" alt="course">
+  <div class="image-section h-44 shrink-0 relative">
+    @if(courseData.badge){
+      <span class="badge absolute top-3 left-3 bg-[var(--primary)] text-white text-[10px] font-bold px-2 py-1 rounded">
+        {{ courseData.badge }}
+      </span>
+    }
+    <img [src]="courseData.image" alt="course" class="w-full h-full object-cover">
   </div>
 
-  <div class="content">
-    <h3>{{ title }}</h3>
+  <div class="content p-4 flex flex-col flex-grow">
 
-    <div class="rating">
-      ⭐ {{ rating }}
-      <span>({{ students }} students)</span>
+    <h3 class="font-bold text-[var(--text-primary)] text-[15px] leading-snug">
+      {{ courseData.title }}
+    </h3>
+
+    <div class="rating flex items-center gap-2 text-[12px] text-[var(--text-tertiary)] mt-2">
+      <span class="text-orange-400 font-bold">⭐ {{ courseData.rating }}</span>
+      <span>({{ courseData.studentsCount }} students)</span>
     </div>
+
+    <div class="flex-grow"></div>
+
   </div>
 
 </div>

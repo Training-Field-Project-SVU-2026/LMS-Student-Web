@@ -3,13 +3,14 @@ import { RouterOutlet } from '@angular/router';
 import { ThemeService } from './core/theme';
 import Swal from 'sweetalert2';
 import { Button } from "./components/shared/button/button";
+import { NavbarComponent } from "./components/shared/navbar/navbar";
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, Button, NavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  imports: [Button]
 })
 export class App {
   constructor(private themeService: ThemeService) {}
