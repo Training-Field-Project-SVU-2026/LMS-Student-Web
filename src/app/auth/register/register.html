@@ -1,0 +1,89 @@
+<div>
+
+  <h2 class="text-2xl font-bold text-[var(--text-primary)] mb-1">Create Account</h2>
+  <p class="text-sm text-[var(--text-tertiary)] mb-6">Start your coding journey today 🚀</p>
+
+  <!-- Tabs -->
+  <div class="flex bg-[var(--outline)] rounded-xl p-1 mb-6">
+    <button routerLink="/auth/login" class="flex-1 py-2.5 rounded-[10px] text-sm font-medium text-[var(--text-secondary)]
+             hover:opacity-70 transition-opacity duration-200 cursor-pointer bg-transparent border-none">
+      Login
+    </button>
+    <button class="flex-1 py-2.5 rounded-[10px] text-sm font-semibold bg-white
+             shadow-sm text-[var(--text-primary)] border-none cursor-pointer">
+      Register
+    </button>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <!-- First Name -->
+    <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
+                rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
+                focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+      <lucide-icon name="user" class="form-icon"></lucide-icon>
+      <input type="text" placeholder="First Name" formControlName="first_name" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+               placeholder:text-[var(--text-tertiary)] bg-transparent">
+    </div>
+
+    <!-- Last Name -->
+    <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
+                rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
+                focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+      <span class="iconify text-[var(--text-tertiary)] text-lg" data-icon="lucide:user"></span> <input type="text"
+        placeholder="Last Name" formControlName="last_name" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+               placeholder:text-[var(--text-tertiary)] bg-transparent">
+    </div>
+
+    <!-- Email -->
+    <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
+                rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
+                focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+      <lucide-icon name="Mail" class="form-icon"></lucide-icon>
+      <input type="email" placeholder="Email" formControlName="email" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+               placeholder:text-[var(--text-tertiary)] bg-transparent">
+    </div>
+
+    <!-- Password -->
+    <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
+                rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
+                focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+      <lucide-icon name="Lock" class="form-icon"></lucide-icon>
+      <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+               placeholder:text-[var(--text-tertiary)] bg-transparent">
+      <lucide-icon [name]="showPassword ? 'eye-off' : 'eye'"
+        class="w-4 h-4 text-[var(--text-tertiary)] cursor-pointer hover:text-[var(--primary)] transition-colors"
+        (click)="togglePassword()">
+      </lucide-icon>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
+                rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
+                focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+      <lucide-icon name="lock" class="form-icon"></lucide-icon>
+      <input [type]="showConfirm ? 'text' : 'password'" placeholder="Confirm Password" formControlName="confirmPassword"
+        class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+               placeholder:text-[var(--text-tertiary)] bg-transparent">
+      <lucide-icon [name]="showConfirm ? 'eye-off' : 'eye'"
+        class="w-4 h-4 text-[var(--text-tertiary)] cursor-pointer hover:text-[var(--primary)] transition-colors"
+        (click)="toggleConfirm()">
+      </lucide-icon>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="w-full py-3.5 mt-2 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
+             border-none cursor-pointer transition-all duration-200
+             hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 hover:shadow-lg">
+      Create Account
+    </button>
+
+  </form>
+
+  <p class="text-center text-sm text-[var(--text-secondary)] mt-6">
+    Already have an account?
+    <a routerLink="/auth/login" class="text-[var(--primary)] font-semibold hover:underline">Sign in</a>
+  </p>
+
+</div>
