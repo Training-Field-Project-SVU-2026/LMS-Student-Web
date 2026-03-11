@@ -5,14 +5,11 @@
 
   <!-- Tabs -->
   <div class="flex bg-[var(--outline)] rounded-xl p-1 mb-6">
-    <button
-      routerLink="/auth/login"
-      class="flex-1 py-2.5 rounded-[10px] text-sm font-medium text-[var(--text-secondary)]
+    <button routerLink="/auth/login" class="flex-1 py-2.5 rounded-[10px] text-sm font-medium text-[var(--text-secondary)]
              hover:opacity-70 transition-opacity duration-200 cursor-pointer bg-transparent border-none">
       Login
     </button>
-    <button
-      class="flex-1 py-2.5 rounded-[10px] text-sm font-semibold bg-white
+    <button class="flex-1 py-2.5 rounded-[10px] text-sm font-semibold bg-white
              shadow-sm text-[var(--text-primary)] border-none cursor-pointer">
       Register
     </button>
@@ -25,12 +22,8 @@
     <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
                 rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
                 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
-      <i class="fa-solid fa-user text-[var(--text-tertiary)] text-sm"></i>
-      <input
-        type="text"
-        placeholder="First Name"
-        formControlName="first_name"
-        class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+      <lucide-icon name="user" class="form-icon"></lucide-icon>
+      <input type="text" placeholder="First Name" formControlName="first_name" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
                placeholder:text-[var(--text-tertiary)] bg-transparent">
     </div>
 
@@ -38,12 +31,8 @@
     <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
                 rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
                 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
-      <i class="fa-solid fa-user text-[var(--text-tertiary)] text-sm"></i>
-      <input
-        type="text"
-        placeholder="Last Name"
-        formControlName="last_name"
-        class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+      <span class="iconify text-[var(--text-tertiary)] text-lg" data-icon="lucide:user"></span> <input type="text"
+        placeholder="Last Name" formControlName="last_name" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
                placeholder:text-[var(--text-tertiary)] bg-transparent">
     </div>
 
@@ -51,12 +40,8 @@
     <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
                 rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
                 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
-      <i class="fa-solid fa-envelope text-[var(--text-tertiary)] text-sm"></i>
-      <input
-        type="email"
-        placeholder="Email"
-        formControlName="email"
-        class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+      <lucide-icon name="Mail" class="form-icon"></lucide-icon>
+      <input type="email" placeholder="Email" formControlName="email" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
                placeholder:text-[var(--text-tertiary)] bg-transparent">
     </div>
 
@@ -64,42 +49,31 @@
     <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
                 rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
                 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
-      <i class="fa-solid fa-lock text-[var(--text-tertiary)] text-sm"></i>
-      <input
-        [type]="showPassword ? 'text' : 'password'"
-        placeholder="Password"
-        formControlName="password"
-        class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+      <lucide-icon name="Lock" class="form-icon"></lucide-icon>
+      <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName="password" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
                placeholder:text-[var(--text-tertiary)] bg-transparent">
-      <i
-        class="fa-solid text-[var(--text-tertiary)] text-sm cursor-pointer hover:text-[var(--primary)] transition-colors"
-        [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+      <lucide-icon [name]="showPassword ? 'eye-off' : 'eye'"
+        class="w-4 h-4 text-[var(--text-tertiary)] cursor-pointer hover:text-[var(--primary)] transition-colors"
         (click)="togglePassword()">
-      </i>
+      </lucide-icon>
     </div>
 
     <!-- Confirm Password -->
     <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
                 rounded-xl px-4 py-3.5 mb-4 transition-all duration-200
                 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
-      <i class="fa-solid fa-lock text-[var(--text-tertiary)] text-sm"></i>
-      <input
-        [type]="showConfirm ? 'text' : 'password'"
-        placeholder="Confirm Password"
-        formControlName="confirmPassword"
+      <lucide-icon name="lock" class="form-icon"></lucide-icon>
+      <input [type]="showConfirm ? 'text' : 'password'" placeholder="Confirm Password" formControlName="confirmPassword"
         class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
                placeholder:text-[var(--text-tertiary)] bg-transparent">
-      <i
-        class="fa-solid text-[var(--text-tertiary)] text-sm cursor-pointer hover:text-[var(--primary)] transition-colors"
-        [ngClass]="showConfirm ? 'fa-eye-slash' : 'fa-eye'"
+      <lucide-icon [name]="showConfirm ? 'eye-off' : 'eye'"
+        class="w-4 h-4 text-[var(--text-tertiary)] cursor-pointer hover:text-[var(--primary)] transition-colors"
         (click)="toggleConfirm()">
-      </i>
+      </lucide-icon>
     </div>
 
     <!-- Submit -->
-    <button
-      type="submit"
-      class="w-full py-3.5 mt-2 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
+    <button type="submit" class="w-full py-3.5 mt-2 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
              border-none cursor-pointer transition-all duration-200
              hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 hover:shadow-lg">
       Create Account

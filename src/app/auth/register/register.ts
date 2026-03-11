@@ -6,11 +6,11 @@ import Swal from 'sweetalert2';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 import { Auth } from '../services/auth';
 import { RouterModule } from '@angular/router';
-
+import { LucideAngularModule} from 'lucide-angular';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule,LucideAngularModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
