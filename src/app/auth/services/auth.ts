@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 import { AuthModule } from '../auth-module';
+import { LoginResponse } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class Auth {
   }
 
   login(data:any){
-    return this.http.post(
+    return this.http.post<LoginResponse>(
       `${this.baseUrl}${API_ENDPOINTS.login}`,
       data
     );

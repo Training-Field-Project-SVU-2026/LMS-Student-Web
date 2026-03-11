@@ -50,7 +50,7 @@ export class Login {
 
     this.auth.login({ email, password }).subscribe({
 
-      next: (res: any) => {
+      next: (res: LoginResponse) => {
         this.isLoading = false;
 
         localStorage.setItem('access_token',  res.access);

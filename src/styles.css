@@ -265,7 +265,6 @@ textarea {
 .dark .swal2-cancel {
   background: #2A3A40 !important;
   color: #E0E7EB !important;
-}
   background-color: var(--disabled-button) !important;
 }
 

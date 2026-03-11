@@ -4,12 +4,11 @@ import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/ro
 import { filter } from 'rxjs';
 import { ThemeService } from '../../../core/theme';
 import { AlertService } from '../../../shared/services/alert';
-import { Button } from '../button/button';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, Button, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html'
 })
 export class NavbarComponent {
