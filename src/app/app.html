@@ -1,22 +1,5 @@
-<button (click)="testAlert()">Alert</button>
-<h2>Button Test</h2>
+<app-navbar></app-navbar>
 
-<app-button>
-Default Button
-</app-button>
-
-<app-button [config]="{ variant:'primary', size:'lg' }">
-Join Now
-</app-button>
-
-<app-button [config]="{ variant:'secondary' }">
-Secondary Button
-</app-button>
-
-<app-button [config]="{ variant:'danger' }">
-Delete
-</app-button>
-
-<app-button [config]="{ isLoading:true }">
-Loading
-</app-button>
+<main>
+  <router-outlet></router-outlet>
+</main>
