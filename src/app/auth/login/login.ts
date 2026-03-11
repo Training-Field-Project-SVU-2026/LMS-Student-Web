@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Auth } from '../services/auth';
+import { LoginResponse } from '../models/auth.models';   
 
 @Component({
   selector: 'app-login',
@@ -16,14 +17,15 @@ export class Login {
 
   loginForm!: FormGroup;
   showPassword = false;
+  isLoading    = false;
 
   constructor(
-    private fb: FormBuilder,
-    private auth: Auth,
+    private fb:     FormBuilder,
+    private auth:   Auth,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email:    ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
@@ -43,37 +45,40 @@ export class Login {
       return;
     }
 
+    this.isLoading = true;
     const { email, password } = this.loginForm.value;
 
     this.auth.login({ email, password }).subscribe({
 
       next: (res: any) => {
+        this.isLoading = false;
+
+        localStorage.setItem('access_token',  res.access);
+        localStorage.setItem('refresh_token', res.refresh);
+
+        localStorage.setItem('current_user', JSON.stringify(res));
 
         Swal.fire({
           icon: 'success',
-          title: 'Welcome back!',
-          text: res.message || 'Logged in successfully',
+          title: `Welcome Programming World!`,
+          text: 'Logged in successfully',
           timer: 1500,
           showConfirmButton: false
+        }).then(() => {
+          this.router.navigate(['/redirect']);  
         });
-
-
-        this.router.navigate(['/']);
-
       },
 
       error: (err) => {
+        this.isLoading = false;
 
         Swal.fire({
           icon: 'error',
           title: 'Login failed',
           text: err.error?.message || 'Invalid email or password'
         });
-
       }
 
     });
-
   }
-
 }

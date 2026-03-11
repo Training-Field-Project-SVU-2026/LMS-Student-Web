@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Auth } from '../services/auth';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-forget-pass',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './forget-pass.html',
   styleUrl: './forget-pass.css',
 })
@@ -42,20 +43,19 @@ export class ForgetPass {
 
     this.auth.forgotPassword(email).subscribe({
 
-      next: (res:any) => {
+      next: (res: any) => {
         this.isLoading = false;
-
         sessionStorage.setItem('reset_email', email);
 
         Swal.fire({
           icon: 'success',
-          title: 'Email sent!',
-          text: res.message || 'Check your inbox for the reset link',
+          title: 'Please check your email !',
+          text: res.message || 'We have sent you a OTP',
           timer: 2000,
           showConfirmButton: false
+        }).then(() => {
+          this.router.navigate(['/auth/reset-pass']);
         });
-
-        this.router.navigate(['/auth/verify-otp']);
       },
 
       error: (err) => {
@@ -64,7 +64,7 @@ export class ForgetPass {
         Swal.fire({
           icon: 'error',
           title: 'Failed',
-          text: err.error?.message || 'Something went wrong'
+          text: err.error?.message || 'Something went wrong. Please try again.'
         });
       }
 

@@ -12,27 +12,20 @@
                 rounded-xl px-4 py-3.5 mb-5 transition-all duration-200
                 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
       <i class="fa-solid fa-envelope text-[var(--text-tertiary)] text-sm"></i>
-      <input
-        type="email"
-        placeholder="Email Address"
-        formControlName="email"
-        class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+      <input type="email" placeholder="Email Address" formControlName="email" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
                placeholder:text-[var(--text-tertiary)] bg-transparent">
     </div>
 
     <!-- Submit -->
-    <button
-      type="submit"
-      [disabled]="isLoading"
-      class="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
+    <button type="submit" [disabled]="isLoading" class="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
              border-none cursor-pointer transition-all duration-200
              hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 hover:shadow-lg
              disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0">
-      <span *ngIf="!isLoading">Resend Email Link →</span>
+      <span *ngIf="!isLoading">Send OTP →</span>
       <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
         <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
         Sending...
       </span>

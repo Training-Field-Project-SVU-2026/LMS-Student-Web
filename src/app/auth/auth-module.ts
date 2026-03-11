@@ -7,6 +7,7 @@ import { Login } from './login/login';
 import { ForgetPass } from './forget-pass/forget-pass';
 import { ResetPass } from './reset-pass/reset-pass';
 import { VerifyEmail } from './verify-email/verify-email';
+import { Redirect } from './shared/redirect/redirect';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { VerifyEmail } from './verify-email/verify-email';
     Register,
     ForgetPass,
     ResetPass,
-    VerifyEmail
+    VerifyEmail,
+    Redirect
   ]
 })
 export class AuthModule { }

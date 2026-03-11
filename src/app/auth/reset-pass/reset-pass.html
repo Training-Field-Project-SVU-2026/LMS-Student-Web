@@ -1,17 +1,127 @@
-<h2>Reset Password</h2>
+<div>
 
-<form>
+    <!-- Header -->
+    <div class="mb-6">
+        <div class="w-12 h-12 rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-4">
+            <i class="fa-solid fa-lock-open text-[var(--primary)] text-lg"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-[var(--text-primary)] mb-1">Reset Your Password</h2>
+        <p class="text-sm text-[var(--text-tertiary)]">
+            Enter the OTP sent to your email and choose a new password.
+        </p>
+    </div>
 
-<div class="form-group">
-<input type="text" placeholder="OTP">
+    <form [formGroup]="resetForm" (ngSubmit)="onSubmit()">
+
+        <!-- ── OTP ─────────────────────────────────────────── -->
+        <label class="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-3">
+            One-Time Password
+        </label>
+
+        <div class="flex gap-3 justify-start mb-6" (paste)="onPaste($event)">
+            <input *ngFor="let _ of otpControls; let i = index" [formControlName]="'digit' + i" type="text"
+                inputmode="numeric" maxlength="1" class="otp-input w-11 h-11 text-center text-lg font-bold
+               border-2 border-[var(--outline)] rounded-xl
+               text-[var(--text-primary)] bg-white
+               outline-none transition-all duration-200
+               focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/15
+               caret-transparent" (input)="onDigitInput($event, i)" (keydown)="onKeyDown($event, i)" />
+        </div>
+
+        <!-- ── New Password ───────────────────────────────── -->
+        <label class="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
+            New Password
+        </label>
+
+        <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
+                rounded-xl px-4 py-3.5 mb-3 transition-all duration-200
+                focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+            <i class="fa-solid fa-lock text-[var(--text-tertiary)] text-sm"></i>
+            <input [type]="showPassword ? 'text' : 'password'" placeholder="New Password" formControlName="new_password"
+                class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+               placeholder:text-[var(--text-tertiary)] bg-transparent">
+            <button type="button" (click)="togglePassword()"
+                class="text-[var(--text-tertiary)] hover:text-[var(--primary)] transition-colors">
+                <i [class]="showPassword ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm'"></i>
+            </button>
+        </div>
+
+        <!-- ── Password Requirements ──────────────────────── -->
+        <div class="bg-gray-50 border border-[var(--outline)] rounded-xl px-4 py-3 mb-4 text-xs space-y-1.5">
+            <p class="font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2 text-[10px]">
+                Password Requirements
+            </p>
+
+            <div class="flex items-center gap-2" [class.text-green-500]="hasMinLength"
+                [class.text-gray-400]="!hasMinLength">
+                <i [class]="hasMinLength ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i>
+                <span>At least 8 characters long</span>
+            </div>
+
+            <div class="flex items-center gap-2" [class.text-green-500]="hasNumber" [class.text-gray-400]="!hasNumber">
+                <i [class]="hasNumber ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i>
+                <span>At least one number (0–9)</span>
+            </div>
+
+            <div class="flex items-center gap-2" [class.text-green-500]="hasSpecial"
+                [class.text-gray-400]="!hasSpecial">
+                <i [class]="hasSpecial ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i>
+                <span>One special character (@, #, $, etc.)</span>
+            </div>
+        </div>
+
+        <!-- ── Confirm Password ───────────────────────────── -->
+        <label class="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
+            Confirm New Password
+        </label>
+
+        <div class="flex items-center gap-3 border border-[var(--outline)] bg-white
+                rounded-xl px-4 py-3.5 mb-1 transition-all duration-200
+                focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/10"
+            [class.border-red-400]="resetForm.hasError('passwordMismatch') && resetForm.get('confirm_password')?.touched">
+            <i class="fa-solid fa-lock text-[var(--text-tertiary)] text-sm"></i>
+            <input [type]="showConfirm ? 'text' : 'password'" placeholder="Confirm Password"
+                formControlName="confirm_password" class="flex-1 border-none outline-none text-sm text-[var(--text-primary)]
+               placeholder:text-[var(--text-tertiary)] bg-transparent">
+            <button type="button" (click)="toggleConfirm()"
+                class="text-[var(--text-tertiary)] hover:text-[var(--primary)] transition-colors">
+                <i [class]="showConfirm ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm'"></i>
+            </button>
+        </div>
+
+        <!-- Mismatch error -->
+        <p *ngIf="resetForm.hasError('passwordMismatch') && resetForm.get('confirm_password')?.touched"
+            class="text-red-500 text-xs mb-4 pl-1">
+            Passwords do not match.
+        </p>
+        <div class="mb-5"></div>
+
+        <!-- ── Submit ──────────────────────────────────────── -->
+        <button type="submit" [disabled]="isLoading" class="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
+             border-none cursor-pointer transition-all duration-200
+             hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 hover:shadow-lg
+             disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+            <span *ngIf="!isLoading" class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i>
+                Reset Password
+            </span>
+            <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
+                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                Resetting...
+            </span>
+        </button>
+
+    </form>
+
+    <!-- Back to login -->
+    <p class="text-center text-sm text-[var(--text-secondary)] mt-6">
+        Remember your password?
+        <a routerLink="/auth/login" class="text-[var(--primary)] font-semibold hover:underline">
+            Back to Sign In
+        </a>
+    </p>
+
 </div>
-
-<div class="form-group">
-<input type="password" placeholder="New Password">
-</div>
-
-<button class="btn-primary">
-Reset Password
-</button>
-
-</form>

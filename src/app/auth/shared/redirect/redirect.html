@@ -1,0 +1,83 @@
+<!-- Animated background -->
+<div class="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#1a3a4a] to-[#0f2027] flex items-center justify-center px-4 relative overflow-hidden">
+
+  <!-- Decorative blobs -->
+  <div class="absolute top-[-80px] left-[-80px] w-72 h-72 bg-[var(--primary)]/20 rounded-full blur-3xl animate-pulse"></div>
+  <div class="absolute bottom-[-60px] right-[-60px] w-96 h-96 bg-teal-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+  <div class="absolute top-1/2 left-1/4 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl"></div>
+
+  <!-- Card -->
+  <div class="relative z-10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 max-w-md w-full text-center shadow-2xl">
+
+    <!-- Success icon with ripple -->
+    <div class="flex items-center justify-center mb-6">
+      <div class="relative">
+        <div class="absolute inset-0 rounded-full bg-[var(--primary)]/30 animate-ping"></div>
+        <div class="relative w-20 h-20 rounded-full bg-gradient-to-br from-[var(--primary)] to-teal-400
+                    flex items-center justify-center shadow-lg shadow-teal-500/30">
+          <i class="fa-solid fa-check text-white text-3xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Greeting -->
+    <p class="text-teal-300 text-sm font-semibold tracking-widest uppercase mb-1">
+      {{ greeting }} 👋
+    </p>
+
+    <!-- Name -->
+    <h1 class="text-3xl font-bold text-white mb-2" *ngIf="user">
+      {{ user.first_name }} {{ user.last_name }}
+    </h1>
+
+    <!-- Email badge -->
+    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-4 py-1.5 mb-6" *ngIf="user">
+      <i class="fa-solid fa-envelope text-teal-300 text-xs"></i>
+      <span class="text-white/70 text-xs">{{ user.email }}</span>
+    </div>
+
+    <!-- Role badge -->
+    <div class="flex justify-center mb-8" *ngIf="user">
+      <span class="bg-teal-500/20 text-teal-300 border border-teal-400/30 text-xs font-bold
+                   uppercase tracking-widest px-4 py-1.5 rounded-full">
+        {{ user.role }}
+      </span>
+    </div>
+
+    <!-- Welcome message -->
+    <p class="text-white/50 text-sm mb-8 leading-relaxed">
+      You've successfully logged in to your account.<br>
+      Your learning journey continues here.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-col gap-3">
+
+      <button
+        (click)="goToDashboard()"
+        class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-teal-400
+               text-white font-semibold text-sm transition-all duration-200
+               hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-500/30
+               flex items-center justify-center gap-2">
+        <i class="fa-solid fa-gauge-high"></i>
+        Go to Dashboard
+      </button>
+
+      <button
+        (click)="logout()"
+        class="w-full py-3 rounded-xl border border-white/10 text-white/50 text-sm
+               hover:text-white hover:border-white/30 transition-all duration-200
+               flex items-center justify-center gap-2">
+        <i class="fa-solid fa-right-from-bracket text-xs"></i>
+        Sign out
+      </button>
+
+    </div>
+
+    <!-- Footer note -->
+    <p class="text-white/20 text-xs mt-8">
+      Commit Ma3ana · Your progress, your future.
+    </p>
+
+  </div>
+</div>
