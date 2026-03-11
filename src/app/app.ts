@@ -6,8 +6,16 @@ import { LucideAngularModule } from 'lucide-angular';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, AuthModule, LucideAngularModule],
+import Swal from 'sweetalert2';
+import { Button } from "./components/shared/button/button";
+import { NavbarComponent } from "./components/shared/navbar/navbar";
+
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, Button, NavbarComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
    

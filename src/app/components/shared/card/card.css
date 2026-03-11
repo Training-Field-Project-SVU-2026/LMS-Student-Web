@@ -4,6 +4,12 @@
     border-radius: 20px;
     overflow: hidden;
     width: 260px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
 .image-section {

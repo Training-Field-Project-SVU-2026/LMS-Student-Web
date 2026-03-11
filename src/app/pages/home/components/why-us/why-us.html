@@ -1,0 +1,57 @@
+<section class="py-16 md:py-24 ">
+
+  <div class="container mx-auto px-6">
+
+    <div class="text-center mb-16">
+      <h2 class="text-display text-[var(--text-primary)] mb-6">
+        Why SkillUp is Different
+      </h2>
+
+      <p class="text-body text-[var(--text-secondary)] max-w-2xl mx-auto">
+        We don't just provide videos; we provide an immersive environment designed for real skill acquisition.
+      </p>
+    </div>
+
+ @if (features.length > 0) {
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+  @for (item of features; track item.title) {
+
+  <div class="p-10 rounded-[32px]
+              bg-[var(--background)]
+              shadow-sm
+              flex flex-col items-center text-center
+              space-y-4">
+
+    @if (item.iconClass) {
+
+    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6
+                bg-[var(--background)]
+                text-[var(--primary)]">
+
+      <i [class]="item.iconClass + ' text-2xl'"></i>
+
+    </div>
+
+    }
+
+    <h3 class="text-xl font-bold text-[var(--text-primary)]">
+      {{ item.title }}
+    </h3>
+
+    <p class="text-sm text-[var(--text-secondary)] leading-6">
+      {{ item.desc }}
+    </p>
+
+  </div>
+
+  }
+
+</div>
+
+}
+
+  </div>
+
+</section>

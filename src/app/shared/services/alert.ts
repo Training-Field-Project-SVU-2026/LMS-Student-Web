@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
+export class AlertService {
 
-export class Alert {
-    constructor(private alert: Alert) {}
-
-testAlert() {
-  this.alert.success('Done 🔥');
-}
+  constructor(private router: Router) {}
 
   private baseConfig = {
     confirmButtonColor: 'var(--primary)',
@@ -20,13 +17,32 @@ testAlert() {
     }
   };
 
+  requireLogin(message: string = 'You need to login first to access this!') {
+    Swal.fire({
+      ...this.baseConfig,
+      icon: 'info',
+      title: 'Login Required',
+      text: message,
+      showCancelButton: true,
+      confirmButtonText: 'Login Now',
+      cancelButtonText: 'Later'
+    }).then((result) => {
+
+      if (result.isConfirmed) {
+        localStorage.setItem('redirectUrl', this.router.url);
+        this.router.navigate(['/login']);
+      }
+
+    });
+  }
+
   success(message: string) {
     Swal.fire({
       ...this.baseConfig,
       icon: 'success',
-      title: message
+      title: 'Success',
+      text: message
     });
   }
-
 
 }
