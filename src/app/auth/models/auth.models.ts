@@ -18,7 +18,8 @@ export interface VerifyEmailRequest {
 }
 
 export interface VerifyEmailResponse {
-  message: string;
+  email: string;
+  otp: string;
 }
 
 export interface ResendOtpRequest {
@@ -62,7 +63,8 @@ export interface ResetPasswordRequest {
 }
 
 export interface ResetPasswordResponse {
-  message: string;
+  otp: string;
+  new_password: string;
 }
 
 export interface TokenRefreshRequest {

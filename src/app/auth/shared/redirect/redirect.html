@@ -30,13 +30,11 @@
       {{ user.first_name }} {{ user.last_name }}
     </h1>
 
-    <!-- Email badge -->
     <div class="inline-flex items-center gap-2 bg-white/10 border border-white/10 rounded-full px-4 py-1.5 mb-6" *ngIf="user">
       <i class="fa-solid fa-envelope text-teal-300 text-xs"></i>
       <span class="text-white/70 text-xs">{{ user.email }}</span>
     </div>
 
-    <!-- Role badge -->
     <div class="flex justify-center mb-8" *ngIf="user">
       <span class="bg-teal-500/20 text-teal-300 border border-teal-400/30 text-xs font-bold
                    uppercase tracking-widest px-4 py-1.5 rounded-full">

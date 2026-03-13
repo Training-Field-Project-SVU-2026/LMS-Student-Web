@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { Auth } from '../services/auth';
+import { AuthService } from '../services/auth';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-reset-pass',
@@ -18,17 +19,17 @@ export class ResetPass implements OnInit, OnDestroy {
 
   resetForm!: FormGroup;
 
-  isLoading      = false;
-  showPassword   = false;
-  showConfirm    = false;
+  isLoading = false;
+  showPassword = false;
+  showConfirm = false;
 
-  otpControls = Array(6);   
+  otpControls = Array(6);
 
   constructor(
-    private fb:     FormBuilder,
-    private auth:   Auth,
+    private fb: FormBuilder,
+    private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     const group: any = {};
@@ -37,16 +38,16 @@ export class ResetPass implements OnInit, OnDestroy {
       group[`digit${i}`] = ['', [Validators.required, Validators.pattern(/^\d$/)]];
     }
 
-    group['new_password']     = ['', [Validators.required, Validators.minLength(8)]];
+    group['new_password'] = ['', [Validators.required, Validators.minLength(8)]];
     group['confirm_password'] = ['', Validators.required];
 
     this.resetForm = this.fb.group(group, { validators: this.passwordMatchValidator });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 
   passwordMatchValidator(group: AbstractControl) {
-    const pw  = group.get('new_password')?.value;
+    const pw = group.get('new_password')?.value;
     const cpw = group.get('confirm_password')?.value;
     return pw === cpw ? null : { passwordMismatch: true };
   }
@@ -55,17 +56,17 @@ export class ResetPass implements OnInit, OnDestroy {
     return this.resetForm?.get('new_password')?.value ?? '';
   }
 
-  get hasMinLength():  boolean { return this.pw.length >= 8; }
-  get hasNumber():     boolean { return /[0-9]/.test(this.pw); }
-  get hasSpecial():    boolean { return /[@#$%^&*!]/.test(this.pw); }
+  get hasMinLength(): boolean { return this.pw.length >= 8; }
+  get hasNumber(): boolean { return /[0-9]/.test(this.pw); }
+  get hasSpecial(): boolean { return /[@#$%^&*!]/.test(this.pw); }
 
   onDigitInput(event: Event, index: number) {
     const input = event.target as HTMLInputElement;
-    const value = input.value.replace(/\D/g, '');   
+    const value = input.value.replace(/\D/g, '');
     input.value = value;
     this.resetForm.get(`digit${index}`)?.setValue(value);
 
-    
+
     if (value && index < 5) {
       const inputs = document.querySelectorAll<HTMLInputElement>('.otp-input');
       inputs[index + 1]?.focus();
@@ -96,7 +97,7 @@ export class ResetPass implements OnInit, OnDestroy {
   // ── Submit ─────
   onSubmit() {
 
-    const otpInvalid = [0,1,2,3,4,5].some(i =>
+    const otpInvalid = [0, 1, 2, 3, 4, 5].some(i =>
       this.resetForm.get(`digit${i}`)?.invalid
     );
 
@@ -117,10 +118,10 @@ export class ResetPass implements OnInit, OnDestroy {
 
     this.isLoading = true;
 
-    const otp = [0,1,2,3,4,5].map(i => this.resetForm.get(`digit${i}`)?.value).join('');
-    const new_password = this.resetForm.get('new_password')?.value;
+    const otp = [0, 1, 2, 3, 4, 5].map(i => this.resetForm.get(`digit${i}`)?.value).join('');
+    const newPassword = this.resetForm.get('new_password')?.value;
 
-    this.auth.resetPassword({ otp, new_password }).subscribe({
+    this.authService.resetPassword({ otp, new_Password: newPassword }).subscribe({
 
       next: (res: any) => {
         this.isLoading = false;
@@ -136,7 +137,7 @@ export class ResetPass implements OnInit, OnDestroy {
         });
       },
 
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.isLoading = false;
 
         Swal.fire({
@@ -150,5 +151,5 @@ export class ResetPass implements OnInit, OnDestroy {
   }
 
   togglePassword() { this.showPassword = !this.showPassword; }
-  toggleConfirm()  { this.showConfirm  = !this.showConfirm;  }
+  toggleConfirm() { this.showConfirm = !this.showConfirm; }
 }

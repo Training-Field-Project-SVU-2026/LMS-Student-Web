@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
-import { AuthModule } from '../auth-module';
 import { LoginResponse } from '../models/auth.models';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class Auth {
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
 
 
   private baseUrl = environment.baseUrl;
@@ -36,12 +37,18 @@ export class Auth {
     );
   }
 
-  resetPassword(data:any){
+  resetPassword(data:{ otp:string, new_Password:string}){
     return this.http.post(
       `${this.baseUrl}${API_ENDPOINTS.resetPassword}`,
       data
     );
   }
-
+  
+verifyOtp(data: { email: string; otp: string }) {
+  return this.http.post(
+    `${this.baseUrl}${API_ENDPOINTS.verifyEmail}`,
+    data
+  );
+}
 
 }

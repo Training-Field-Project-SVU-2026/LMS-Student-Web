@@ -1,21 +1,17 @@
 <div class="flex min-h-screen font-sans">
 
-  <!-- LEFT SIDEBAR — hidden on mobile/tablet -->
   <div class="hidden lg:flex lg:w-[48%] bg-gradient-to-br from-[var(--primary)] to-[#0c6d88]
               text-white flex-col justify-center items-center px-16 py-20 relative">
 
-    <!-- Logo -->
     <div class="absolute top-8 left-10 flex items-center gap-3">
       <span class="w-9 h-9 bg-[var(--secondary)] rounded-xl block"></span>
       <span class="font-semibold text-lg tracking-wide">Commit Ma3ana</span>
     </div>
 
-    <!-- Hero Image -->
     <div class="bg-white p-5 rounded-2xl shadow-2xl mb-10">
       <img src="/auth-illustration.png" alt="coding illustration" class="w-56">
     </div>
 
-    <!-- Hero Text -->
     <div class="text-center max-w-sm">
       <h1 class="text-4xl font-bold leading-snug mb-4">
         Commit today.<br>
@@ -27,16 +23,14 @@
       </p>
     </div>
 
-    <!-- Features -->
     <div class="flex gap-7 mt-9 text-sm opacity-90">
-      <span class="flex items-center gap-2">💻 Learn by doing</span>
-      <span class="flex items-center gap-2">📊 Track progress</span>
-      <span class="flex items-center gap-2">🚀 Grow daily</span>
+      <span class="flex items-center gap-2"> Learn by doing</span>
+      <span class="flex items-center gap-2"> Track progress</span>
+      <span class="flex items-center gap-2"> Grow daily</span>
     </div>
 
   </div>
 
-  <!-- RIGHT FORM AREA -->
   <div class="flex-1 lg:w-[52%] bg-[var(--background)] flex justify-center items-center p-6 sm:p-10">
     <div class="w-full max-w-[420px]">
       <router-outlet></router-outlet>

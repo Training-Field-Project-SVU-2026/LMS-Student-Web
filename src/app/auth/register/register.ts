@@ -1,29 +1,29 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
-import { Auth } from '../services/auth';
-import { RouterModule } from '@angular/router';
-import { LucideAngularModule} from 'lucide-angular';
+import { AuthService } from '../services/auth';
+import { RouterModule, Router } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule,LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
 export class Register {
-  
 
-  
+
+
   showPassword = false;
   showConfirm = false;
   registerForm!: FormGroup;
 
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private auth: Auth) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService, private router: Router) {
 
     this.registerForm = this.fb.group({
       first_name: ['', Validators.required],
@@ -40,26 +40,29 @@ export class Register {
   toggleConfirm() {
     this.showConfirm = !this.showConfirm;
   }
-
   onSubmit() {
 
     if (this.registerForm.invalid) {
+
       Swal.fire({
         icon: 'error',
         title: 'Invalid form',
         text: 'Please fill all fields correctly'
       });
+
       return;
     }
 
     const { first_name, last_name, email, password, confirmPassword } = this.registerForm.value;
 
     if (password !== confirmPassword) {
+
       Swal.fire({
         icon: 'error',
         title: 'Password mismatch',
         text: 'Passwords do not match'
       });
+
       return;
     }
 
@@ -70,21 +73,26 @@ export class Register {
       password
     };
 
-    this.auth.register(body).subscribe({
+    this.authService.register(body).subscribe({
 
       next: (res: any) => {
+
+        sessionStorage.setItem('verify_email', email);
 
         Swal.fire({
           icon: 'success',
           title: 'Account created!',
-          text: res.message
+          text: 'Please verify your email',
+          timer: 1500,
+          showConfirmButton: false
         });
 
-        this.registerForm.reset();
+        this.router.navigate(['/auth/verify-email']);
 
+        this.registerForm.reset();
       },
 
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
 
         Swal.fire({
           icon: 'error',

@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
-import { Auth } from '../services/auth';
+import { AuthService } from '../services/auth';
 import { LoginResponse } from '../models/auth.models';   
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class Login {
 
   constructor(
     private fb:     FormBuilder,
-    private auth:   Auth,
+    private authService:   AuthService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -48,7 +49,7 @@ export class Login {
     this.isLoading = true;
     const { email, password } = this.loginForm.value;
 
-    this.auth.login({ email, password }).subscribe({
+    this.authService.login({ email, password }).subscribe({
 
       next: (res: LoginResponse) => {
         this.isLoading = false;
@@ -69,7 +70,7 @@ export class Login {
         });
       },
 
-      error: (err) => {
+      error: (err:HttpErrorResponse) => {
         this.isLoading = false;
 
         Swal.fire({
