@@ -41,13 +41,7 @@ access:string;
 refresh:string;
 }
 
-export interface LogoutRequest {
-  refresh: string;
-}
 
-export interface LogoutResponse {
-  Refresh : string;
-}
 
 export interface ForgotPasswordRequest {
   email: string;
@@ -74,12 +68,4 @@ export interface TokenRefreshRequest {
 export interface TokenRefreshResponse {
   refresh: string;
   access: string;
-}
-// user--->Settings
-export interface ChangePasswordRequest {
-  old_password: string;
-  new_password: string;
-}
-export interface ChangePasswordResponse {
-  message: string;
 }
