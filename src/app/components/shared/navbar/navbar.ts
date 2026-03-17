@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/ro
 import { filter } from 'rxjs';
 import { ThemeService } from '../../../core/theme';
 import { AlertService } from '../../../shared/services/alert';
+import { AuthService } from '../../../auth/services/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -16,23 +17,35 @@ export class NavbarComponent {
   private router = inject(Router);
   private theme = inject(ThemeService);
   private alert = inject(AlertService);
-
+  private authService = inject(AuthService);
   // 🔹 Auth & UI State
   isProfileMenuOpen = false;
   isMobileMenuOpen = false;
 
-  username = 'Reham';
-
-  // 🔹 Current Page
   currentUrl: string = '';
-
+  username:string|null=null;
+   userAvatar:string|null=null;
   constructor() {
-
+    // track current route
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.currentUrl = event.url;
+      this.loadUser();
+
     });
+    this.loadUser();
+  }
+  loadUser(){
+    const user=localStorage.getItem('current_user')
+    if(user){
+       const data = JSON.parse(user);
+      this.username = data.username || 'User';
+      this.userAvatar = `https://ui-avatars.com/api/?name=${this.username}`;
+    }else{
+      this.username=null;
+      this.userAvatar=null
+    }
   }
 
   // 🔹 Theme
@@ -46,7 +59,13 @@ export class NavbarComponent {
 
   // 🔹 Auth Actions
   logout() {
+     localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('current_user');
+    this.username = null;
+    this.userAvatar = null;
     this.alert.success('You have logged out 👋');
+    this.router.navigate(['/auth/login']);
   }
 
   goLogin() {
@@ -63,7 +82,9 @@ export class NavbarComponent {
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-
+   get isLoggedIn() {
+    return !!localStorage.getItem('access_token');
+  }
   // 🔹 Check if we are in Explore page
  get isExplorePage() {
   return this.currentUrl ? this.currentUrl.includes('/explore') : false;

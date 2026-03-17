@@ -7,7 +7,7 @@ import { LoginResponse } from '../models/auth.models';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('access_token');
   }
 
 
@@ -43,7 +43,7 @@ export class AuthService {
       data
     );
   }
-  
+
 verifyOtp(data: { email: string; otp: string }) {
   return this.http.post(
     `${this.baseUrl}${API_ENDPOINTS.verifyEmail}`,

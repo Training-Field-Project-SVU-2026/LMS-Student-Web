@@ -1,6 +1,6 @@
-import { Routes } from '@angular/router';
+import { Routes, Router } from '@angular/router';
+import { inject } from '@angular/core';
 import { PublicLayout } from './layouts/public-layout/public-layout';
-import { PrivateLayout } from './layouts/private-layout/private-layout';
 import { authGuard } from './auth/guards/auth-guard';
 
 export const routes: Routes = [
@@ -10,39 +10,33 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/home/home').then(m => m.Home),
+
+        canActivate: [() => {
+          const router = inject(Router);
+          const token = localStorage.getItem('access_token');
+          return token ? router.createUrlTree(['/dashboard']) : true;
+        }],
+        loadComponent: () => import('./pages/home/home').then(m => m.Home),
+      },
+      {
+        path: 'dashboard',
+
+        loadComponent: () => import('./pages/user-dashboard/user-dashboard').then(m => m.UserDashboard),
+        canActivate: [authGuard]
       },
       {
         path: 'explore',
-        loadComponent: () =>
-          import('./pages/explore/explore').then(m => m.Explore),
+        loadComponent: () => import('./pages/explore/explore').then(m => m.Explore),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'course/:slug',
+        loadComponent: () => import('./pages/course-details/course-details').then(m => m.CourseDetails)
       },
       {
         path: 'auth',
-        loadChildren: () =>
-          import('./auth/auth-module').then(m => m.AuthModule),
+        loadChildren: () => import('./auth/auth-module').then(m => m.AuthModule),
       },
-    ],
-  },
-
-  {
-    path: 'app',                   
-    component: PrivateLayout,
-    canActivate: [authGuard],
-    children: [
-    
-      {
-        path: '',
-        redirectTo: 'profile',
-        pathMatch: 'full'
-      },
-      {
-        path: 'profile',
-        loadComponent: () =>
-          import('./pages/profile/profile').then(m => m.Profile),
-      },
-    
     ],
   },
 

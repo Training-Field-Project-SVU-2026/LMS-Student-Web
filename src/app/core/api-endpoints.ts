@@ -14,6 +14,6 @@ export const API_ENDPOINTS = {
     resendOtp: 'api/auth/resend-otp/',
     refreshToken: 'api/auth/token/refresh/',
 
-
+    
 };
 

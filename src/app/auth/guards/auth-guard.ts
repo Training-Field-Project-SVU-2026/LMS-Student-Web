@@ -6,7 +6,11 @@ export const authGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
 
-  return auth.isLoggedIn()
-    ? true
-    : router.createUrlTree(['/auth/login']);
+  if (auth.isLoggedIn()) {
+    return true;
+  } else {
+    const currentUrl = router.url;
+    localStorage.setItem('redirectUrl', currentUrl);
+    return router.createUrlTree(['/auth/login']);
+  }
 };

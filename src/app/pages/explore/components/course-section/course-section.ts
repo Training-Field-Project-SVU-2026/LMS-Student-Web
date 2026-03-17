@@ -1,37 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Card } from "../../../../components/shared/card/card";
+import { CourseService } from '../../../../shared/services/course';
+import { ICourseCardData } from '../../../home/components/featured-courses/featured-courses';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-course-section',
-  imports: [Card],
+  standalone: true,
+  imports: [Card,RouterLink],
   templateUrl: './course-section.html',
   styleUrl: './course-section.css',
 })
-export class CourseSection {
+export class CourseSection implements OnInit {
+  private courseService = inject(CourseService);
 
+learningTracks:ICourseCardData[] = []
+manyCourses:ICourseCardData[] = []
 
-learningTracks = [
-  {
-    title: 'Full-Stack Web Development',
-    description: 'Master the art of building complete, modern web applications from scratch...',
-    tags: ['FRONTEND', 'BACKEND'],
-    skills: ['HTML', 'CSS', 'JS', 'REACT', 'NODE.JS', 'GITHUB'],
-    stats: { courses: 12, hours: 84, enrolled: '14.2k' }
-  },
-  {
-    title: 'Full-Stack Web Development',
-    description: 'Master the art of building complete, modern web applications from scratch...',
-    tags: ['FRONTEND', 'BACKEND'],
-    skills: ['HTML', 'CSS', 'JS', 'REACT', 'NODE.JS', 'GITHUB'],
-    stats: { courses: 12, hours: 84, enrolled: '14.2k' }
-  }
-];
+ngOnInit() {
+ this.courseService.getLearningTracks().subscribe({
+  next:(data)=>this.learningTracks=data,
+  error:(err)=>console.error('Tracks Error:', err)
 
-
-manyCourses = [
-  { title: 'Modern Fullstack Web Dev', rating: 4.9, students: '15.4k', badge: 'BESTSELLER' },
-  { title: 'Python for Data Science', rating: 4.5, students: '12.4k', badge: 'NEW' },
-  { title: 'Advanced JavaScript Patterns', rating: 4.7, students: '8.2k', badge: 'BESTSELLER' },
-  { title: 'iOS Development with Swift', rating: 4.9, students: '3.4k', badge: 'POPULAR' }
-];
+ })
+ this.courseService.getAllCourses().subscribe({
+  next:(data)=>this.manyCourses=data,
+  error:(err)=>console.error('Courses Error:', err)
+ })
+}
 }
