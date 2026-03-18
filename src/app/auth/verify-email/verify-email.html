@@ -9,16 +9,10 @@
 
     <!-- OTP Inputs -->
     <div class="flex justify-center gap-3 mb-4">
-      <input *ngFor="let ctrl of otpControls; let i = index"
-        type="text"
-        maxlength="1"
-        inputmode="numeric"
-        [formControlName]="'digit' + i"
-        (input)="onDigitInput($event, i)"
-        (keydown)="onKeyDown($event, i)"
-        (paste)="onPaste($event)"
-        class="w-14 h-14 text-center text-xl font-bold border-2 border-[var(--outline)]
-               rounded-xl outline-none transition-all duration-200 bg-white
+      <input *ngFor="let ctrl of otpControls; let i = index" type="text" maxlength="1" inputmode="numeric"
+        [formControlName]="'digit' + i" (input)="onDigitInput($event, i)" (keydown)="onKeyDown($event, i)"
+        (paste)="onPaste($event)" class="w-14 h-14 text-center text-xl font-bold border-2 border-[var(--outline)]
+               rounded-xl outline-none transition-all duration-200 bg-[var(--surface)]
                text-[var(--text-primary)] caret-[var(--primary)]
                focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10">
     </div>
@@ -31,9 +25,7 @@
       </span>
       <span *ngIf="countdown === 0">
         Didn't receive it?
-        <button
-          type="button"
-          (click)="resendOtp()"
+        <button type="button" (click)="resendOtp()"
           class="text-[var(--primary)] font-semibold hover:underline bg-transparent border-none cursor-pointer">
           Resend
         </button>
@@ -41,18 +33,15 @@
     </p>
 
     <!-- Submit -->
-    <button
-      type="submit"
-      [disabled]="isLoading || otpForm.invalid"
-      class="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
+    <button type="submit" [disabled]="isLoading || otpForm.invalid" class="w-full py-3.5 rounded-xl bg-[var(--primary)] text-white font-semibold text-sm
              border-none cursor-pointer transition-all duration-200
              hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 hover:shadow-lg
              disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0">
       <span *ngIf="!isLoading">Verify OTP</span>
       <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
         <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
         Verifying...
       </span>

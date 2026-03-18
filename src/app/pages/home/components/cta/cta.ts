@@ -18,7 +18,7 @@ export class Cta {
       this.alertService.requireLogin(
         'Please login first'
       );
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
 

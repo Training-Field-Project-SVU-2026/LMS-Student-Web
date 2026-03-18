@@ -13,7 +13,9 @@ export const API_ENDPOINTS = {
 
     resendOtp: 'api/auth/resend-otp/',
     refreshToken: 'api/auth/token/refresh/',
-
+    logoutRequest: 'api/auth/logout/',
+    students: 'api/students/',
+    studentBySlug: (slug: string) => `api/students/${slug}/`,
 
 };
 

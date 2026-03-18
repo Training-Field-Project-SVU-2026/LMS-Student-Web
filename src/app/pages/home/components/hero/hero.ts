@@ -23,7 +23,9 @@ export class Hero {
       this.alertService.requireLogin(
         'Please login first to view all courses'
       );
-      this.router.navigate(['/login']);
+      setTimeout(() => {
+        this.router.navigate(['/auth/login']);
+      }, 2000);
       return;
     }
 

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { AuthLayout } from './shared/auth-layout/auth-layout';
 import { Register } from './register/register';
 import { Login } from './login/login';

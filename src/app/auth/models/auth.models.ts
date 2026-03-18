@@ -1,20 +1,20 @@
 
 export interface RegisterRequest {
   first_name: string;
-  last_name:  string;
-  email:      string;
-  password:   string;
+  last_name: string;
+  email: string;
+  password: string;
 }
 
 export interface RegisterResponse {
   message: string;
- 
+
 }
 
 // ── Verify Email ---->OTP after register─────────
 export interface VerifyEmailRequest {
   email: string;
-  otp:   string;
+  otp: string;
 }
 
 export interface VerifyEmailResponse {
@@ -30,15 +30,15 @@ export interface ResendOtpResponse {
   message: string;
 }
 export interface LoginRequest {
-  email:    string;
+  email: string;
   password: string;
 }
 
 export interface LoginResponse {
-email:string;
-password:string;
-access:string;
-refresh:string;
+  email: string;
+  password: string;
+  access: string;
+  refresh: string;
 }
 
 
@@ -52,7 +52,7 @@ export interface ForgotPasswordResponse {
 }
 
 export interface ResetPasswordRequest {
-  otp:string;   
+  otp: string;
   new_password: string;
 }
 

@@ -40,22 +40,21 @@ export class NavbarComponent {
     this.theme.toggleTheme();
   }
 
-  get isDark() {
-    return document.documentElement.classList.contains('dark');
-  }
-
+get isDark() {
+  return document.documentElement.classList.contains('dark');
+}
   // 🔹 Auth Actions
   logout() {
     this.alert.success('You have logged out 👋');
   }
 
   goLogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
     this.isMobileMenuOpen = false;
   }
 
   goSignup() {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/auth/register']);
     this.isMobileMenuOpen = false;
   }
 

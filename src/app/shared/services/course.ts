@@ -10,10 +10,7 @@ export class CourseService {
   constructor(private http: HttpClient) {}
 
   getTopRated(limit: number = 5): Observable<any> {
-    // لو الـ API جاهز
-    // return this.http.get(`${this.apiUrl}?limit=${limit}`);
-
-    // مؤقتاً Mock Data
+  
     return of([
       { id: 1, title: 'Angular Basics', imageUrl: 'url1', rating: 4.8, studentsCount: 1200 },
       { id: 2, title: 'React Advanced', imageUrl: 'url2', rating: 4.7, studentsCount: 980 },

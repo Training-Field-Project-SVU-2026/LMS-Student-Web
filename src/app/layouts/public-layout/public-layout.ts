@@ -1,11 +1,20 @@
+// import { Component } from '@angular/core';
+// import { RouterOutlet } from '@angular/router';
+// import { NavBar } from '../../components/shared/navbar/navbar';
+
+
+
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from '../../components/shared/navbar/navbar';
 
 @Component({
   selector: 'app-public-layout',
-  imports:  [],
-  templateUrl: './public-layout.html',
-  styleUrl: './public-layout.css',
+  standalone: true,
+  imports: [RouterOutlet, NavbarComponent],
+  template: `
+    <app-navbar />
+    <router-outlet />
+  `,
 })
-export class PublicLayout {
-
-}
+export class PublicLayout {}

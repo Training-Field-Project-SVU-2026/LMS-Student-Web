@@ -121,7 +121,7 @@ export class ResetPass implements OnInit, OnDestroy {
     const otp = [0, 1, 2, 3, 4, 5].map(i => this.resetForm.get(`digit${i}`)?.value).join('');
     const newPassword = this.resetForm.get('new_password')?.value;
 
-    this.authService.resetPassword({ otp, new_Password: newPassword }).subscribe({
+    this.authService.resetPassword({ otp, new_password: newPassword }).subscribe({
 
       next: (res: any) => {
         this.isLoading = false;
