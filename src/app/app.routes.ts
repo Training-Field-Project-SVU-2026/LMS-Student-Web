@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { PublicLayout } from './layouts/public-layout/public-layout';
 import { PrivateLayout } from './layouts/private-layout/private-layout';
+import { AuthLayout } from './auth/shared/auth-layout/auth-layout';
 import { authGuard, guestGuard } from './auth/guards/auth-guard';
 
 export const routes: Routes = [
@@ -26,7 +27,7 @@ export const routes: Routes = [
   // Auth —
   {
     path: 'auth',
-    component: PublicLayout,
+    component: AuthLayout,
     children: [
       {
         path: '',
