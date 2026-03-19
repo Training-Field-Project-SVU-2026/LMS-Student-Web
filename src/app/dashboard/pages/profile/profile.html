@@ -1,208 +1,250 @@
 <div class="flex flex-col gap-5">
 
-    @if (saveSuccess()) {
-    <div class="flex items-center gap-2 text-sm text-green-700 bg-green-50
-                border border-green-200 rounded-xl px-4 py-2.5">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-            stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-        </svg>
-        Profile saved successfully.
+  <!-- ✅ FIX: Use the dedicated `fetching` signal for the initial spinner,    -->
+  <!-- not `profile()`. This prevents flashing the spinner again after errors. -->
+  @if (fetching()) {
+  <div class="bg-[var(--surface)] rounded-2xl border border-[var(--outline)] p-10
+              flex items-center justify-center">
+    <div class="flex flex-col items-center gap-3">
+      <div class="w-8 h-8 border-2 border-[var(--primary)] border-t-transparent
+                  rounded-full animate-spin"></div>
+      <p class="text-sm text-[var(--text-tertiary)]">Loading profile...</p>
     </div>
-    }
+  </div>
 
-    @if (profile(); as p) {
+  } @else if (profile(); as p) {
 
-    <div class="bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--outline)] p-6">
+  <!-- ── Success banner ──────────────────────────────────────────────────── -->
+  @if (saveSuccess()) {
+  <div class="flex items-center gap-2 text-sm text-green-700 bg-green-50
+              border border-green-200 rounded-xl px-4 py-2.5">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+    </svg>
+    Profile saved successfully.
+  </div>
+  }
 
-        <div class="flex items-center justify-between mb-5">
-            <div class="flex items-center gap-4">
+  <!-- ── Profile card ────────────────────────────────────────────────────── -->
+  <div class="bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--outline)] p-6">
 
-                @if (p.image) {
-                <img [src]="p.image" [alt]="fullName"
-                    class="w-14 h-14 rounded-full object-cover border-4 border-[#A8DF8E]" />
-                } @else {
-                <div class="w-14 h-14 rounded-full bg-[var(--primary)] border-4
-                        border-[#A8DF8E] flex items-center justify-center
-                        text-white text-lg font-bold">
-                    {{ initials }}
-                </div>
-                }
+    <!-- Header row: avatar + name + edit button -->
+    <div class="flex items-center justify-between mb-5">
+      <div class="flex items-center gap-4">
 
-                <div>
-                    <p class="text-xs text-[var(--text-tertiary)] mb-0.5">Full Name</p>
-                    <h2 class="text-base font-semibold text-[var(--text-primary)]">
-                        {{ fullName }}
-                    </h2>
-                </div>
-            </div>
+        @if (p.image) {
+        <img [src]="p.image" [alt]="fullName"
+             class="w-14 h-14 rounded-full object-cover border-4 border-[#A8DF8E]" />
+        } @else {
+        <div class="w-14 h-14 rounded-full bg-[var(--primary)] border-4
+                    border-[#A8DF8E] flex items-center justify-center
+                    text-white text-lg font-bold">
+          {{ initials }}
+        </div>
+        }
 
-            @if (!isEditing()) {
-            <button (click)="openEdit()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary)]
-                   text-white text-sm font-semibold hover:bg-[var(--primary-hover)]
-                   transition-colors duration-150">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652
+        <div>
+          <p class="text-xs text-[var(--text-tertiary)] mb-0.5">Full Name</p>
+          <h2 class="text-base font-semibold text-[var(--text-primary)]">
+            {{ fullName }}
+          </h2>
+        </div>
+      </div>
+
+      @if (!isEditing()) {
+      <button (click)="openEdit()"
+              class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--primary)]
+                     text-white text-sm font-semibold hover:bg-[var(--primary-hover)]
+                     transition-colors duration-150">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652
                    L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685
                    a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
-                </svg>
-                Edit Profile
-            </button>
-            }
-        </div>
+        </svg>
+        Edit Profile
+      </button>
+      }
+    </div>
 
-        @if (!isEditing()) {
-        <div class="flex flex-col gap-4">
-            <div>
-                <p class="text-xs text-[var(--text-tertiary)] mb-1">Email Address</p>
-                <div class="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--text-tertiary)]" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0
+    <!-- ── View mode ─────────────────────────────────────────────────────── -->
+    @if (!isEditing()) {
+    <div class="flex flex-col gap-4">
+
+      <div>
+        <p class="text-xs text-[var(--text-tertiary)] mb-1">Email Address</p>
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 text-[var(--text-tertiary)]"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0
                      1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25
                      0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5
                      4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1
                      -1.07-1.916V6.75" />
-                    </svg>
-                    <span class="text-sm font-semibold text-[var(--text-primary)]">
-                        {{ p.email }}
-                    </span>
-                </div>
-            </div>
-
-            <div>
-                <p class="text-xs text-[var(--text-tertiary)] mb-1">Account Status</p>
-                <div class="flex items-center gap-2">
-                    @if (p.is_verified) {
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
-                             text-xs font-semibold bg-green-50 text-green-700
-                             border border-green-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
-                        Verified
-                    </span>
-                    } @else {
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
-                             text-xs font-semibold bg-yellow-50 text-yellow-700
-                             border border-yellow-200">
-                        Not Verified
-                    </span>
-                    }
-                </div>
-            </div>
+          </svg>
+          <span class="text-sm font-semibold text-[var(--text-primary)]">
+            {{ p.email }}
+          </span>
         </div>
+      </div>
 
+      <div>
+        <p class="text-xs text-[var(--text-tertiary)] mb-1">Account Status</p>
+        @if (p.is_verified) {
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
+                     text-xs font-semibold bg-green-50 text-green-700
+                     border border-green-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          Verified
+        </span>
         } @else {
-        <form [formGroup]="editForm" class="flex flex-col gap-4">
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs font-medium text-[var(--text-tertiary)] block mb-1.5">
-                        First Name
-                    </label>
-                    <input formControlName="first_name" class="w-full border border-[var(--outline)] rounded-xl px-4 py-2.5
-                       text-sm text-[var(--text-primary)] focus:outline-none
-                       focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-30 bg-[var(--surface)]"
-                        placeholder="First name" />
-                    @if (editForm.get('first_name')?.invalid && editForm.get('first_name')?.touched) {
-                    <p class="text-xs text-[var(--error)] mt-1">First name is required.</p>
-                    }
-                </div>
-                <div>
-                    <label class="text-xs font-medium text-[var(--text-tertiary)] block mb-1.5">
-                        Last Name
-                    </label>
-                    <input formControlName="last_name" class="w-full border border-[var(--outline)] rounded-xl px-4 py-2.5
-                       text-sm text-[var(--text-primary)] focus:outline-none
-                       focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-30 bg-[var(--surface)]"
-                        placeholder="Last name" />
-                    @if (editForm.get('last_name')?.invalid && editForm.get('last_name')?.touched) {
-                    <p class="text-xs text-[var(--error)] mt-1">Last name is required.</p>
-                    }
-                </div>
-            </div>
-
-            <div>
-                <label class="text-xs font-medium text-[var(--text-tertiary)] block mb-1.5">
-                    Email
-                </label>
-                <input formControlName="email" type="email" class="w-full border border-[var(--outline)] rounded-xl px-4 py-2.5
-                     text-sm text-[var(--text-primary)] focus:outline-none
-                     focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-30 bg-[var(--surface)]"
-                    placeholder="you@example.com" />
-                @if (editForm.get('email')?.invalid && editForm.get('email')?.touched) {
-                <p class="text-xs text-[var(--error)] mt-1">Valid email is required.</p>
-                }
-            </div>
-
-            <div class="flex gap-3">
-                <button type="button" (click)="saveEdit()" [disabled]="loading()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)]
-                     text-white text-sm font-semibold hover:bg-[var(--primary-hover)]
-                     disabled:opacity-60 transition-colors duration-150">
-                    @if (loading()) { Saving... } @else { Save Changes }
-                </button>
-                <button type="button" (click)="cancelEdit()" class="px-5 py-2.5 rounded-xl border border-[var(--outline)]
-                     text-sm font-medium text-[var(--text-secondary)]
-                     hover:bg-[var(--background)] transition-colors duration-150">
-                    Cancel
-                </button>
-            </div>
-
-        </form>
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
+                     text-xs font-semibold bg-yellow-50 text-yellow-700
+                     border border-yellow-200">
+          Not Verified
+        </span>
         }
-    </div>
-
-    <div class="bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--outline)] p-6">
-
-        <div class="flex items-center gap-2 mb-1">
-            <div class="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71
-                 c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5
-                 -3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                </svg>
-            </div>
-            <h3 class="text-sm font-semibold text-red-600">Danger Zone</h3>
-        </div>
-        <p class="text-xs text-[var(--text-tertiary)] mb-4">
-            Critical actions that affect your account.
-        </p>
-
-        <!-- Sign Out -->
-        <div class="flex items-center justify-between bg-[var(--background)]
-                  border border-[var(--outline)] rounded-xl px-4 py-3">
-            <div>
-                <p class="text-sm font-semibold text-[var(--text-primary)]">Sign Out</p>
-                <p class="text-xs text-[var(--text-tertiary)]">This will end your current session.</p>
-            </div>
-            <button (click)="onSignOut()" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--outline)]
-                 text-sm font-semibold text-[var(--text-secondary)]
-                 hover:bg-[var(--surface)] transition-colors duration-150">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25
-                 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25
-                 -2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
-                </svg>
-                Sign Out
-            </button>
-        </div>
+      </div>
 
     </div>
 
+    <!-- ── Edit mode ──────────────────────────────────────────────────────── -->
     } @else {
-    <div class="bg-[var(--surface)] rounded-2xl border border-[var(--outline)] p-10
-                flex items-center justify-center">
-        <div class="flex flex-col items-center gap-3">
-            <div class="w-8 h-8 border-2 border-[var(--primary)] border-t-transparent
-                    rounded-full animate-spin"></div>
-            <p class="text-sm text-[var(--text-tertiary)]">Loading profile...</p>
+    <form [formGroup]="editForm" class="flex flex-col gap-4">
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-medium text-[var(--text-tertiary)] block mb-1.5">
+            First Name
+          </label>
+          <input formControlName="first_name"
+                 class="w-full border border-[var(--outline)] rounded-xl px-4 py-2.5
+                        text-sm text-[var(--text-primary)] focus:outline-none
+                        focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-30
+                        bg-[var(--surface)]"
+                 placeholder="First name" />
+          <!-- ✅ FIX: Check touched OR dirty so errors appear on submit via -->
+          <!-- markAllAsTouched(), not just when the user physically touches the field. -->
+          @if (editForm.get('first_name')?.invalid &&
+               (editForm.get('first_name')?.touched || editForm.get('first_name')?.dirty)) {
+          <p class="text-xs text-[var(--error)] mt-1">First name is required.</p>
+          }
         </div>
-    </div>
+        <div>
+          <label class="text-xs font-medium text-[var(--text-tertiary)] block mb-1.5">
+            Last Name
+          </label>
+          <input formControlName="last_name"
+                 class="w-full border border-[var(--outline)] rounded-xl px-4 py-2.5
+                        text-sm text-[var(--text-primary)] focus:outline-none
+                        focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-30
+                        bg-[var(--surface)]"
+                 placeholder="Last name" />
+          @if (editForm.get('last_name')?.invalid &&
+               (editForm.get('last_name')?.touched || editForm.get('last_name')?.dirty)) {
+          <p class="text-xs text-[var(--error)] mt-1">Last name is required.</p>
+          }
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-[var(--text-tertiary)] block mb-1.5">
+          Email
+        </label>
+        <input formControlName="email" type="email"
+               class="w-full border border-[var(--outline)] rounded-xl px-4 py-2.5
+                      text-sm text-[var(--text-primary)] focus:outline-none
+                      focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-30
+                      bg-[var(--surface)]"
+               placeholder="you@example.com" />
+        @if (editForm.get('email')?.invalid &&
+             (editForm.get('email')?.touched || editForm.get('email')?.dirty)) {
+        <p class="text-xs text-[var(--error)] mt-1">Valid email is required.</p>
+        }
+      </div>
+
+      <div class="flex gap-3">
+        <button type="button" (click)="saveEdit()" [disabled]="loading()"
+                class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--primary)]
+                       text-white text-sm font-semibold hover:bg-[var(--primary-hover)]
+                       disabled:opacity-60 disabled:cursor-not-allowed
+                       transition-colors duration-150">
+          @if (loading()) {
+          <span class="w-4 h-4 border-2 border-white border-t-transparent
+                       rounded-full animate-spin inline-block"></span>
+          Saving...
+          } @else {
+          Save Changes
+          }
+        </button>
+        <button type="button" (click)="cancelEdit()" [disabled]="loading()"
+                class="px-5 py-2.5 rounded-xl border border-[var(--outline)]
+                       text-sm font-medium text-[var(--text-secondary)]
+                       hover:bg-[var(--background)] disabled:opacity-60
+                       disabled:cursor-not-allowed transition-colors duration-150">
+          Cancel
+        </button>
+      </div>
+
+    </form>
     }
+  </div>
+
+  <!-- ── Danger Zone card ───────────────────────────────────────────────── -->
+  <div class="bg-[var(--surface)] rounded-2xl shadow-sm border border-[var(--outline)] p-6">
+
+    <div class="flex items-center gap-2 mb-1">
+      <div class="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-500"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71
+                   c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5
+                   -3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        </svg>
+      </div>
+      <h3 class="text-sm font-semibold text-red-600">Danger Zone</h3>
+    </div>
+    <p class="text-xs text-[var(--text-tertiary)] mb-4">
+      Critical actions that affect your account.
+    </p>
+
+    <div class="flex items-center justify-between bg-[var(--background)]
+                border border-[var(--outline)] rounded-xl px-4 py-3">
+      <div>
+        <p class="text-sm font-semibold text-[var(--text-primary)]">Sign Out</p>
+        <p class="text-xs text-[var(--text-tertiary)]">This will end your current session.</p>
+      </div>
+      <button (click)="onSignOut()"
+              class="flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--outline)]
+                     text-sm font-semibold text-[var(--text-secondary)]
+                     hover:bg-[var(--surface)] transition-colors duration-150">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25
+                   2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25
+                   -2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
+        </svg>
+        Sign Out
+      </button>
+    </div>
+
+  </div>
+
+    <!-- ✅ FIX: This @else now only shows when fetching is false AND profile is null -->
+  <!-- (i.e. the API returned an empty list or the request genuinely failed).      -->
+  } @else {
+  <div class="bg-[var(--surface)] rounded-2xl border border-[var(--outline)] p-10
+              flex items-center justify-center">
+    <p class="text-sm text-[var(--text-tertiary)]">No profile data found.</p>
+  </div>
+  }
 
 </div>

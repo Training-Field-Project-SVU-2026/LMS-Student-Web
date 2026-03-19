@@ -35,7 +35,7 @@
         </a>
         
         @if(isLoggedIn) {
-        <a routerLink="/dashboard" routerLinkActive="text-[var(--primary)] font-semibold"
+        <a routerLink="/" routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           Dashboard
         </a>
@@ -88,7 +88,7 @@
       <div class="relative hidden md:flex items-center gap-3 border-l border-[var(--divider)] pl-4">
 
         <span class="text-sm font-semibold text-[var(--text-primary)]">
-          {{ username }}
+         {{ username ? username : 'User' }}
         </span>
 
         <!-- Avatar -->

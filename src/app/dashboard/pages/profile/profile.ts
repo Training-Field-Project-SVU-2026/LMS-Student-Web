@@ -1,62 +1,80 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { switchMap, catchError, EMPTY } from 'rxjs';
 import { Settings } from '../../../user-services/settings';
-import Swal from 'sweetalert2';
-import { Student } from '../../../models/user.models';
 import { AuthService } from '../../../auth/services/auth';
-
+import { Student } from '../../../models/user.models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-profile',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
-export class Profile implements OnInit { profile  = signal<Student | null>(null);
+export class Profile implements OnInit {
+
+  profile     = signal<Student | null>(null);
   isEditing   = signal(false);
   saveSuccess = signal(false);
   loading     = signal(false);
+  fetching    = signal(true);
 
-  editForm!: FormGroup;
+  // Form built immediately — patchValue() fills it once data arrives.
+  editForm: FormGroup = this.buildForm();
 
   constructor(
     private settings: Settings,
     private fb: FormBuilder,
-    private router: Router,
     private auth: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.settings.getProfile().subscribe({
-      next: (student) => {
-        this.profile.set(student);
-        this.editForm = this.fb.group({
-          first_name: [student.first_name, Validators.required],
-          last_name:  [student.last_name,  Validators.required],
-          email:      [student.email, [Validators.required, Validators.email]],
-        });
-      },
-      error: () => {
+    this.loadProfile();
+  }
+
+  private loadProfile(): void {
+    this.fetching.set(true);
+
+
+    this.auth.authReady$.pipe(
+      switchMap(() => this.settings.getProfile()),
+      catchError(() => {
+        this.fetching.set(false);
         Swal.fire({
           title: 'Error',
-          text: 'Failed to load profile. Please try again.',
-          icon: 'error',
+          text:  'Failed to load profile. Please try again.',
+          icon:  'error',
         });
-      },
+        return EMPTY;
+      })
+    ).subscribe((student) => {
+      this.profile.set(student);
+      this.editForm.patchValue({
+        first_name: student.first_name,
+        last_name:  student.last_name,
+        email:      student.email,
+      });
+      this.fetching.set(false);
     });
   }
 
   get fullName(): string {
     const p = this.profile();
-    return p ? `${p.first_name} ${p.last_name}` : '';
+    return p ? `${p.first_name} ${p.last_name}`.trim() : '';
   }
 
   get initials(): string {
     const p = this.profile();
     if (!p) return '';
-    return `${p.first_name[0]}${p.last_name[0]}`.toUpperCase();
+    return `${p.first_name.charAt(0)}${p.last_name.charAt(0)}`.toUpperCase();
   }
 
   openEdit(): void {
@@ -74,14 +92,19 @@ export class Profile implements OnInit { profile  = signal<Student | null>(null)
         email:      p.email,
       });
     }
+    this.editForm.markAsPristine();
+    this.editForm.markAsUntouched();
   }
 
   saveEdit(): void {
+    this.editForm.markAllAsTouched();
     if (this.editForm.invalid) return;
+
     const p = this.profile();
     if (!p) return;
 
     this.loading.set(true);
+
     this.settings.updateProfile(p.slug, this.editForm.value).subscribe({
       next: (updated) => {
         this.profile.set(updated);
@@ -90,34 +113,39 @@ export class Profile implements OnInit { profile  = signal<Student | null>(null)
         this.saveSuccess.set(true);
         setTimeout(() => this.saveSuccess.set(false), 3000);
       },
-      error: () => {
+      error: (err) => {
         this.loading.set(false);
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to update profile. Please try again.',
-          icon: 'error',
-        });
+        const serverErrors = err?.error;
+        let errorText = 'Failed to update profile. Please try again.';
+        if (serverErrors && typeof serverErrors === 'object') {
+          const messages = Object.values(serverErrors).flat().join(' ');
+          if (messages) errorText = messages;
+        }
+        Swal.fire({ title: 'Error', text: errorText, icon: 'error' });
       },
     });
   }
 
   onSignOut(): void {
     Swal.fire({
-      title: 'Sign Out',
-      text: 'Are you sure you want to sign out?',
-      icon: 'question',
-      showCancelButton: true,
+      title:             'Sign Out',
+      text:              'Are you sure you want to sign out?',
+      icon:              'question',
+      showCancelButton:  true,
       confirmButtonText: 'Yes, sign out',
-      cancelButtonText: 'Cancel',
+      cancelButtonText:  'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-         this.auth.logout();
-        // const refresh = localStorage.getItem('refresh_token') ?? '';
-        // this.settings.logout({ refresh }).subscribe({
-        //   next:  () => { localStorage.clear(); this.router.navigate(['/auth/login']); },
-        //   error: () => { localStorage.clear(); this.router.navigate(['/auth/login']); },
-        // });
+        this.auth.logout();
       }
+    });
+  }
+
+  private buildForm(): FormGroup {
+    return this.fb.group({
+      first_name: ['', Validators.required],
+      last_name:  ['', Validators.required],
+      email:      ['', [Validators.required, Validators.email]],
     });
   }
 }

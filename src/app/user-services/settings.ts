@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import {
-   Student,
+  Student,
   StudentUpdateRequest,
   ChangePasswordRequest,
   ChangePasswordResponse,
@@ -14,16 +14,14 @@ import { AuthService } from '../auth/services/auth';
 
 @Injectable({ providedIn: 'root' })
 export class Settings {
-  constructor(private http: HttpClient, private auth: AuthService) {}
- 
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
-   getProfile(): Observable<Student> {
+  getProfile(): Observable<Student> {
     return this.http
       .get<Student[]>(API_ENDPOINTS.students)
-      .pipe(map((students) => students[0]));
+      .pipe(map((list) => list[0]));
   }
 
- 
   updateProfile(slug: string, data: StudentUpdateRequest): Observable<Student> {
     return this.http.put<Student>(API_ENDPOINTS.studentBySlug(slug), data);
   }
@@ -34,12 +32,9 @@ export class Settings {
     );
   }
 
-  // logout(data: LogoutRequest): Observable<LogoutResponse> {
-  //   return this.http.post<LogoutResponse>(API_ENDPOINTS.logout, data);
-  // }
   logout(): void {
-  this.auth.logout();
-}
+    this.auth.logout();
+  }
 
- 
+
 }
