@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth';
-import { LoginResponse } from '../models/auth.models';   
+import { LoginResponse } from '../models/auth.models';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -55,10 +55,7 @@ export class Login {
       next: (res: LoginResponse) => {
         this.isLoading = false;
 
-        localStorage.setItem('access_token',  res.access);
-        localStorage.setItem('refresh_token', res.refresh);
-
-        localStorage.setItem('current_user', JSON.stringify(res));
+        
 
         Swal.fire({
           icon: 'success',
@@ -67,13 +64,18 @@ export class Login {
           timer: 1500,
           showConfirmButton: false
         }).then(() => {
-          this.router.navigate(['/redirect']);  
+          //Take the page that the user tried to go to before login
+          // const redirectUrl = localStorage.getItem('redirectUrl') || '/UserDashboard';
+          const redirectUrl = localStorage.getItem('redirectUrl') || '/UserDashboard';
+           localStorage.removeItem('redirectUrl'); //Delete the key after use
+            this.router.navigate([redirectUrl]);    
         });
       },
 
       error: (err:HttpErrorResponse) => {
         this.isLoading = false;
-
+    console.log('ERROR RESPONSE ', err);
+    console.log('SENT DATA ', { email, password });
         Swal.fire({
           icon: 'error',
           title: 'Login failed',

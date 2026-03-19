@@ -4,7 +4,7 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth  = inject(AuthService);
+  const auth = inject(AuthService);
   const token = auth.getToken();
 
   const authReq = token
@@ -13,7 +13,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !req.url.includes('token/refresh')) {
+      if (
+        error.status === 401 &&
+        !req.url.includes('refresh') &&
+        !req.url.includes('login')
+      ) {
         return auth.refreshAccessToken().pipe(
           switchMap((res) => {
             const retryReq = req.clone({

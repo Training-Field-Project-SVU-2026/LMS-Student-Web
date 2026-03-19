@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class Cta {
   constructor(private alertService: AlertService, private router: Router) {}
    onViewHome() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
 
     if (!token) {
       this.alertService.requireLogin(

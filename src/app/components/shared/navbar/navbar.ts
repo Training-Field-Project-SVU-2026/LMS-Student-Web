@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { ThemeService } from '../../../core/theme';
 import { AlertService } from '../../../shared/services/alert';
+import { AuthService } from '../../../auth/services/auth';
 
 @Component({
   selector: 'app-navbar',
@@ -16,37 +17,61 @@ export class NavbarComponent {
   private router = inject(Router);
   private theme = inject(ThemeService);
   private alert = inject(AlertService);
-
+  private authService = inject(AuthService);
   // 🔹 Auth & UI State
   isProfileMenuOpen = false;
   isMobileMenuOpen = false;
 
-  username = 'Reham';
-
-  // 🔹 Current Page
   currentUrl: string = '';
-
+  username: string | null = null;
+  userAvatar: string | null = null;
   constructor() {
-
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
+  this.router.events
+    .pipe(filter(event => event instanceof NavigationEnd))
+    .subscribe((event: any) => {
       this.currentUrl = event.url;
     });
-  }
 
+ effect(() => {
+  if (this.authService.isLoggedIn()) {
+    const user = this.authService.getUserFromToken();
+    this.username = user?.username || null;
+
+    this.userAvatar = this.username
+      ? `https://ui-avatars.com/api/?name=${this.username}`
+      : null;
+
+  } else {
+    this.username = null;
+    this.userAvatar = null;
+  }
+});
+}
+
+  // loadUser() {
+  //   const user = this.authService.getUserFromToken();
+
+  //   if (user) {
+  //     this.username = user.username;
+  //     this.userAvatar = `https://ui-avatars.com/api/?name=${this.username}`;
+  //   } else {
+  //     this.username = null;
+  //     this.userAvatar = null;
+  //   }
+  // }
   // 🔹 Theme
   toggleTheme() {
     this.theme.toggleTheme();
   }
 
-get isDark() {
-  return document.documentElement.classList.contains('dark');
-}
-  // 🔹 Auth Actions
-  logout() {
-    this.alert.success('You have logged out 👋');
+  get isDark() {
+    return document.documentElement.classList.contains('dark');
   }
+  // 🔹 Auth Actions
+logout() {
+  this.authService.logout();
+  this.alert.success('You have logged out 👋');
+}
 
   goLogin() {
     this.router.navigate(['/auth/login']);
@@ -62,15 +87,21 @@ get isDark() {
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-
-  // 🔹 Check if we are in Explore page
- get isExplorePage() {
-  return this.currentUrl ? this.currentUrl.includes('/explore') : false;
+ get isLoggedIn() {
+  return this.authService.isLoggedIn();
 }
-
-
-  get isLoggedInTemp() {
-    return this.isExplorePage;
-      // return true;
+  // 🔹 Check if we are in Explore page
+  get isExplorePage() {
+    return this.currentUrl ? this.currentUrl.includes('/explore') : false;
   }
+
+  toggleProfileMenu() {
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  goDashboard() {
+    this.router.navigate(['']);
+  }
+
+
 }

@@ -1,54 +1,53 @@
-<!-- learning track -->
 <div class="mb-12">
-
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-h2 text-[var(--text-primary)]">Explore Learning Tracks</h2>
     <a href="#" class="text-[var(--primary)] font-bold text-small">View all tracks →</a>
   </div>
 
   <div class="space-y-6">
-    @for (track of learningTracks; track $index) {
+    @for (track of learningTracks; track track.slug) {
       <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden shadow-sm">
 
-        <!-- Icon -->
-        <div class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center justify-center shrink-0 border border-[var(--outline)]">
-           <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
+        <div class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center justify-center shrink-0 border border-[var(--outline)] overflow-hidden">
+           @if (track.image) {
+             <img [src]="track.image" alt="track" class="w-full h-full object-cover">
+           } @else {
+             <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
+           }
         </div>
 
-        <!-- Content -->
         <div class="flex-grow">
           <div class="flex gap-2 mb-3">
-            @for (tag of track.tags; track tag) {
-              <span class="text-[10px] font-bold bg-[var(--background)] text-[var(--text-tertiary)] px-2 py-0.5 rounded uppercase">{{tag}}</span>
-            }
+             <span class="text-[10px] font-bold bg-[var(--background)] text-[var(--text-tertiary)] px-2 py-0.5 rounded uppercase">
+               {{ track.badge }}
+             </span>
           </div>
-          <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{track.title}}</h3>
-          <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">{{track.description}}</p>
 
-          <div class="flex flex-wrap gap-2 mb-6">
-            @for (skill of track.skills; track skill) {
-              <span class="text-[11px] bg-[var(--background)] border border-[var(--outline)] px-3 py-1 rounded-full text-[var(--text-tertiary)]">{{skill}}</span>
-            }
-          </div>
+          <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{ track.title }}</h3>
+          <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">{{ track.description }}</p>
 
           <div class="flex gap-6 text-[var(--text-tertiary)] text-[12px] font-medium">
-            <span>📚 {{track.stats.courses}} Courses</span>
-            <span>🕒 {{track.stats.hours}} Hours</span>
-            <span>👥 {{track.stats.enrolled}} Enrolled</span>
+            <span>📚 {{ track.students_count }} Courses</span> <span>⭐ {{ track.avg_rating }} Rating</span>
+            <span>💰 {{ track.price }}</span>
           </div>
         </div>
 
-        <!-- Join Button -->
         <div class="mt-auto md:mt-0">
-          <button class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">Join now</button>
+          <button [routerLink]="['/packages', track.slug]" class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">
+            Join now
+          </button>
         </div>
 
+      </div>
+    } @empty {
+      <div class="text-center p-10 bg-[var(--background)] rounded-2xl">
+        <p class="text-[var(--text-tertiary)]">No tracks available right now.</p>
       </div>
     }
   </div>
 </div>
-<!-- many courses -->
- <div class="mt-16">
+
+<div class="mt-16">
   <div class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-2">
       <span class="text-xl">🎓</span>
@@ -58,8 +57,14 @@
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    @for (course of manyCourses; track $index) {
-      <app-card [courseData]="course"></app-card>
+    @for (course of manyCourses; track course.slug) {
+      <a [routerLink]="['/course', course.slug]" class="block cursor-pointer transition-transform hover:scale-[1.02]">
+        <app-card [courseData]="course"></app-card>
+      </a>
+    } @empty {
+       @for (i of [1,2,3,4]; track i) {
+         <div class="h-64 bg-[var(--surface)] animate-pulse rounded-2xl border border-[var(--outline)]"></div>
+       }
     }
   </div>
 </div>

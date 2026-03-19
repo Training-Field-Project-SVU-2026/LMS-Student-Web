@@ -16,8 +16,7 @@ export class Hero {
   ) {}
 
   onViewCourses() {
-
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token'); 
 
     if (!token) {
       this.alertService.requireLogin(
@@ -29,17 +28,14 @@ export class Hero {
       return;
     }
 
-    this.router.navigate(['/courses']);
+    this.router.navigate(['/UserDashboard']);
   }
-    onViewHome() {
 
-    const token = localStorage.getItem('token');
+  onViewHome() {
+    const token = localStorage.getItem('access_token');
 
     if (!token) {
-      this.alertService.requireLogin(
-        'Please login first'
-      );
-      this.router.navigate(['/login']);
+      this.alertService.requireLogin('Please login first');
       return;
     }
 

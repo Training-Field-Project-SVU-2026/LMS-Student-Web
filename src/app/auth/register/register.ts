@@ -5,12 +5,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 import Swal from 'sweetalert2';
-import { LucideAngularModule } from 'lucide-angular';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
 })
 export class Register {
@@ -22,8 +22,10 @@ export class Register {
   constructor(
     private fb:     FormBuilder,
     private http:   HttpClient,
+    private auth:   AuthService,
     private router: Router
   ) {
+   
     this.registerForm = this.fb.group({
       first_name:      ['', Validators.required],
       last_name:       ['', Validators.required],
@@ -49,14 +51,14 @@ export class Register {
     this.loading.set(true);
     const { confirmPassword, ...payload } = this.registerForm.value;
 
-    this.http.post(API_ENDPOINTS.register, payload).subscribe({
+   this.auth.register(payload).subscribe({
       next: () => {
         this.loading.set(false);
         Swal.fire({
           title: 'Account Created!',
           text: 'Please check your email to verify your account.',
           icon: 'success',
-        }).then(() => this.router.navigate(['/auth/login']));
+        }).then(() => this.router.navigate(['/auth/verify-email']));
       },
       error: () => {
         this.loading.set(false);

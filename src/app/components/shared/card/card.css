@@ -1,44 +1,7 @@
-.card {
-    background: var(--surface);
-    border: 1px solid var(--outline);
-    border-radius: 20px;
-    overflow: hidden;
-    width: 260px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.image-section {
-    position: relative;
-    height: 150px;
-}
-
-.image-section img {
-    width: 100%;
+/* امسحي كل القديم وحطي ده */
+:host {
+    display: block;
     height: 100%;
-    object-fit: cover;
 }
 
-.badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: var(--primary);
-    color: var(--on-primary);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-}
 
-.content {
-    padding: 16px;
-    color: var(--text-primary);
-}
-
-.rating span {
-    color: #607D8B;
-}

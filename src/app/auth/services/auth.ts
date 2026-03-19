@@ -1,8 +1,9 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, BehaviorSubject } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
+import { jwtDecode } from 'jwt-decode';
 import {
   LoginRequest, LoginResponse,
   ForgotPasswordRequest, ForgotPasswordResponse,
@@ -30,8 +31,32 @@ export class AuthService {
     }
   }
 
+
+  // ─── Get username from Token ─────────────────────────────────
+  getUserFromToken() {
+    const token = localStorage.getItem('access_token');
+
+    if (!token) return null;
+
+    try {
+      const decoded: any = jwtDecode(token);
+
+      return {
+        username:
+          decoded.first_name ||
+          decoded.username ||
+          decoded.email ||
+          'User',
+      };
+
+    } catch (error) {
+      return null;
+    }
+  }
+
   // ─── Register ─────────────────────────────────────────
   register(data: RegisterRequest): Observable<RegisterResponse> {
+
     return this.http.post<RegisterResponse>(API_ENDPOINTS.register, data);
   }
 
@@ -50,7 +75,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(API_ENDPOINTS.login, data).pipe(
       tap((res) => {
         this.accessToken = res.access;
+
+        localStorage.setItem('access_token', res.access); // هنا بس
         sessionStorage.setItem(this.REFRESH_KEY, res.refresh);
+
         this.isLoggedIn.set(true);
       })
     );
@@ -64,6 +92,8 @@ export class AuthService {
     ).pipe(
       tap((res) => {
         this.accessToken = res.access;
+        localStorage.setItem('access_token', res.access);
+
         this.isLoggedIn.set(true);
       })
     );
@@ -87,13 +117,17 @@ export class AuthService {
   logout(): void {
     const refresh = sessionStorage.getItem(this.REFRESH_KEY) ?? '';
     this.http.post(API_ENDPOINTS.logout, { refresh }).subscribe({
-      next:  () => this.clearSession(),
+      next: () => this.clearSession(),
       error: () => this.clearSession(),
     });
   }
 
+  // getToken(): string | null {
+  //   return this.accessToken;
+  // }
+
   getToken(): string | null {
-    return this.accessToken;
+    return this.accessToken || localStorage.getItem('access_token');
   }
 
   private clearSession(): void {
@@ -103,3 +137,5 @@ export class AuthService {
     this.router.navigate(['/auth/login']);
   }
 }
+
+

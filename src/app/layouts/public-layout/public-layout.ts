@@ -1,9 +1,3 @@
-// import { Component } from '@angular/core';
-// import { RouterOutlet } from '@angular/router';
-// import { NavBar } from '../../components/shared/navbar/navbar';
-
-
-
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../../components/shared/navbar/navbar';

@@ -17,7 +17,7 @@ export class AlertService {
     }
   };
 
-  requireLogin(message: string = 'You need to login first to access this!') {
+  requireLogin(message: string = 'You need to login first!') {
     Swal.fire({
       ...this.baseConfig,
       icon: 'info',
@@ -27,12 +27,12 @@ export class AlertService {
       confirmButtonText: 'Login Now',
       cancelButtonText: 'Later'
     }).then((result) => {
-
       if (result.isConfirmed) {
+       
         localStorage.setItem('redirectUrl', this.router.url);
-        this.router.navigate(['/login']);
-      }
 
+        this.router.navigate(['/auth/login']);
+      }
     });
   }
 
@@ -41,6 +41,15 @@ export class AlertService {
       ...this.baseConfig,
       icon: 'success',
       title: 'Success',
+      text: message
+    });
+  }
+
+   error(message: string) {
+    Swal.fire({
+      ...this.baseConfig,
+      icon: 'error',
+      title: 'Error',
       text: message
     });
   }
