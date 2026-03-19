@@ -27,7 +27,6 @@ export class Profile implements OnInit {
   loading     = signal(false);
   fetching    = signal(true);
 
-  // Form built immediately — patchValue() fills it once data arrives.
   editForm: FormGroup = this.buildForm();
 
   constructor(

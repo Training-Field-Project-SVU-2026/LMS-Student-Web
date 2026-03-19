@@ -21,16 +21,7 @@ export class AuthService {
 
   isLoggedIn = signal<boolean>(!!sessionStorage.getItem(this.REFRESH_KEY));
 
-  /**
-   * ✅ KEY FIX: Shared observable that completes once the startup token
-   * refresh finishes. Any component that needs an authenticated token
-   * (e.g. Profile) should switchMap/concatMap off this before calling APIs.
-   *
-   * shareReplay(1) means:
-   *  - The HTTP refresh is made only ONCE, regardless of how many components subscribe.
-   *  - Late subscribers (components that mount after refresh is done) get the
-   *    cached result immediately instead of waiting.
-   */
+
   readonly authReady$: Observable<TokenRefreshResponse | null>;
 
   constructor(private http: HttpClient, private router: Router) {
@@ -38,12 +29,10 @@ export class AuthService {
       this.authReady$ = this.refreshAccessToken().pipe(
         shareReplay(1)
       );
-      // Subscribe once to handle session cleanup on failure.
       this.authReady$.subscribe({
         error: () => this.clearSession()
       });
     } else {
-      // Not logged in — resolve immediately so components don't hang.
       this.authReady$ = of(null).pipe(shareReplay(1));
     }
   }
