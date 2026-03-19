@@ -1,37 +1,59 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
 import { AuthService } from '../services/auth';
+
+let isRefreshing = false;
+const refreshDone$ = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
-  const token = auth.getToken();
 
-  const authReq = token
-    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-    : req;
+  const addToken = (request: typeof req, token: string) =>
+    request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+
+  const token = auth.getToken();
+  const authReq = token ? addToken(req, token) : req;
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (
-        error.status === 401 &&
-        !req.url.includes('refresh') &&
-        !req.url.includes('login')
-      ) {
+
+      const isAuthEndpoint =
+        req.url.includes('/auth/login') ||
+        req.url.includes('/auth/token/refresh') ||
+        req.url.includes('/auth/register');
+
+      if (error.status !== 401 || isAuthEndpoint) {
+        return throwError(() => error);
+      }
+
+      // ─── Refresh lock logic ─────────────────────────────────────────
+      if (!isRefreshing) {
+        isRefreshing = true;
+        refreshDone$.next(null); 
+
         return auth.refreshAccessToken().pipe(
           switchMap((res) => {
-            const retryReq = req.clone({
-              setHeaders: { Authorization: `Bearer ${res.access}` }
-            });
-            return next(retryReq);
+            isRefreshing = false;
+            refreshDone$.next(res.access);
+
+            return next(addToken(req, res.access));
           }),
-          catchError(() => {
+          catchError((refreshError) => {
+            isRefreshing = false;
+            refreshDone$.next(null);
             auth.logout();
-            return throwError(() => error);
+            return throwError(() => refreshError);
           })
         );
+      } else {
+   
+        return refreshDone$.pipe(
+          filter((t): t is string => t !== null), 
+          take(1),
+          switchMap((newToken) => next(addToken(req, newToken)))
+        );
       }
-      return throwError(() => error);
     })
   );
 };

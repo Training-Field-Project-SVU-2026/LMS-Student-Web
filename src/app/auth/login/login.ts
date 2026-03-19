@@ -21,9 +21,9 @@ export class Login {
   isLoading    = false;
 
   constructor(
-    private fb:     FormBuilder,
-    private authService:   AuthService,
-    private router: Router
+    private fb:          FormBuilder,
+    private authService: AuthService,
+    private router:      Router
   ) {
     this.loginForm = this.fb.group({
       email:    ['', [Validators.required, Validators.email]],
@@ -34,15 +34,13 @@ export class Login {
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
-  
 
   onSubmit() {
-
     if (this.loginForm.invalid) {
       Swal.fire({
-        icon: 'error',
+        icon:  'error',
         title: 'Invalid form',
-        text: 'Please enter a valid email and password'
+        text:  'Please enter a valid email and password',
       });
       return;
     }
@@ -52,38 +50,32 @@ export class Login {
 
     this.authService.login({ email, password }).subscribe({
 
-      next: (res: LoginResponse) => {
+      next: (_res: LoginResponse) => {
         this.isLoading = false;
 
-        
-
         Swal.fire({
-          icon: 'success',
-          title: `Welcome Programming World!`,
-          text: 'Logged in successfully',
-          timer: 1500,
-          showConfirmButton: false
+          icon:              'success',
+          title:             'Welcome!',
+          text:              'Logged in successfully',
+          timer:             1500,
+          showConfirmButton: false,
         }).then(() => {
-          //Take the page that the user tried to go to before login
-          // const redirectUrl = localStorage.getItem('redirectUrl') || '/UserDashboard';
-          const redirectUrl = localStorage.getItem('redirectUrl') || '/UserDashboard';
-           localStorage.removeItem('redirectUrl'); //Delete the key after use
-            this.router.navigate([redirectUrl]);    
+         
+          const redirectUrl = localStorage.getItem('redirectUrl') || '/user-dashboard';
+          localStorage.removeItem('redirectUrl');
+          this.router.navigate([redirectUrl]);
         });
       },
 
-      error: (err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-    console.log('ERROR RESPONSE ', err);
-    console.log('SENT DATA ', { email, password });
         Swal.fire({
-          icon: 'error',
+          icon:  'error',
           title: 'Login failed',
-          text: err.error?.message || 'Invalid email or password'
+          text:  err.error?.detail || err.error?.message || 'Invalid email or password',
         });
-      }
+      },
 
     });
   }
 }
-  

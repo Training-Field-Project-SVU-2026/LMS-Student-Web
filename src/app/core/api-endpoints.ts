@@ -4,7 +4,7 @@ const BASE_URL = environment.baseUrl;
 
 export const API_ENDPOINTS = {
 
-login:BASE_URL + '/auth/login/',
+    login: `${BASE_URL}api/auth/login/`,
     register: `${BASE_URL}api/auth/register/`,
     logout: `${BASE_URL}api/auth/logout/`,
 

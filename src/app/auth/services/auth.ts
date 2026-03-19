@@ -17,6 +17,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
+
   private accessToken: string | null = null;
 
   private readonly REFRESH_KEY = 'r_tok';
@@ -31,16 +32,13 @@ export class AuthService {
     }
   }
 
-
-  // ─── Get username from Token ─────────────────────────────────
+  // ─── Get user info from the current in-memory token ─────────
   getUserFromToken() {
-    const token = localStorage.getItem('access_token');
-
+    const token = this.getToken();
     if (!token) return null;
 
     try {
       const decoded: any = jwtDecode(token);
-
       return {
         username:
           decoded.first_name ||
@@ -48,35 +46,31 @@ export class AuthService {
           decoded.email ||
           'User',
       };
-
-    } catch (error) {
+    } catch {
       return null;
     }
   }
 
-  // ─── Register ─────────────────────────────────────────
+  // ─── Register ─────────────────────────────────────────────────
   register(data: RegisterRequest): Observable<RegisterResponse> {
-
     return this.http.post<RegisterResponse>(API_ENDPOINTS.register, data);
   }
 
-  // ─── Verify Email ──────────────────────────────────────
+  // ─── Verify Email ──────────────────────────────────────────────
   verifyEmail(data: VerifyEmailRequest): Observable<VerifyEmailResponse> {
     return this.http.post<VerifyEmailResponse>(API_ENDPOINTS.verifyEmail, data);
   }
 
-  // ─── Resend OTP ────────────────────────────────────────
+  // ─── Resend OTP ────────────────────────────────────────────────
   resendOtp(data: ResendOtpRequest): Observable<ResendOtpResponse> {
     return this.http.post<ResendOtpResponse>(API_ENDPOINTS.resendOtp, data);
   }
 
-  // ─── Login ─────────────────────────────────────────────
+  // ─── Login ──────────────────────────────────────────────────────
   login(data: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(API_ENDPOINTS.login, data).pipe(
       tap((res) => {
         this.accessToken = res.access;
-
-        localStorage.setItem('access_token', res.access); // هنا بس
         sessionStorage.setItem(this.REFRESH_KEY, res.refresh);
 
         this.isLoggedIn.set(true);
@@ -84,7 +78,7 @@ export class AuthService {
     );
   }
 
-  // ─── Refresh Access Token ──────────────────────────────
+  // ─── Refresh Access Token ──────────────────────────────────────
   refreshAccessToken(): Observable<TokenRefreshResponse> {
     const refresh = sessionStorage.getItem(this.REFRESH_KEY) ?? '';
     return this.http.post<TokenRefreshResponse>(
@@ -92,28 +86,26 @@ export class AuthService {
     ).pipe(
       tap((res) => {
         this.accessToken = res.access;
-        localStorage.setItem('access_token', res.access);
-
         this.isLoggedIn.set(true);
       })
     );
   }
 
-  // ─── Forgot Password ───────────────────────────────────
+  // ─── Forgot Password ───────────────────────────────────────────
   forgotPassword(email: string): Observable<ForgotPasswordResponse> {
     return this.http.post<ForgotPasswordResponse>(
       API_ENDPOINTS.forgotPassword, { email }
     );
   }
 
-  // ─── Reset Password ────────────────────────────────────
+  // ─── Reset Password ────────────────────────────────────────────
   resetPassword(data: ResetPasswordRequest): Observable<ResetPasswordResponse> {
     return this.http.post<ResetPasswordResponse>(
       API_ENDPOINTS.resetPassword, data
     );
   }
 
-  // ─── Logout ──────────────────────
+  // ─── Logout ────────────────────────────────────────────────────
   logout(): void {
     const refresh = sessionStorage.getItem(this.REFRESH_KEY) ?? '';
     this.http.post(API_ENDPOINTS.logout, { refresh }).subscribe({
@@ -122,20 +114,17 @@ export class AuthService {
     });
   }
 
-  // getToken(): string | null {
-  //   return this.accessToken;
-  // }
 
   getToken(): string | null {
-    return this.accessToken || localStorage.getItem('access_token');
+    return this.accessToken;
   }
 
   private clearSession(): void {
     this.accessToken = null;
     sessionStorage.removeItem(this.REFRESH_KEY);
+
+    localStorage.removeItem('access_token');
     this.isLoggedIn.set(false);
     this.router.navigate(['/auth/login']);
   }
 }
-
-
