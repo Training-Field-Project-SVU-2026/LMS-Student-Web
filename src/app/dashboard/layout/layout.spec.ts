@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExploreHeader } from './explore-header';
+import { Layout } from './layout';
 
-describe('ExploreHeader', () => {
-  let component: ExploreHeader;
-  let fixture: ComponentFixture<ExploreHeader>;
+describe('Layout', () => {
+  let component: Layout;
+  let fixture: ComponentFixture<Layout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExploreHeader]
+      imports: [Layout]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ExploreHeader);
+    fixture = TestBed.createComponent(Layout);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

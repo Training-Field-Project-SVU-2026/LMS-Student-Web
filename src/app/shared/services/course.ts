@@ -1,24 +1,58 @@
-// src/app/shared/services/course.service.ts
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { Observable, map } from 'rxjs';
+import { ICourseCardData, ICourseDetail } from '../../components/shared/interfaces/course.model';
 
 @Injectable({ providedIn: 'root' })
 export class CourseService {
-  private apiUrl = '/api/courses/topRated';
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private baseUrl = environment.baseUrl ;
 
-  getTopRated(limit: number = 5): Observable<any> {
-    // لو الـ API جاهز
-    // return this.http.get(`${this.apiUrl}?limit=${limit}`);
-
-    // مؤقتاً Mock Data
-    return of([
-      { id: 1, title: 'Angular Basics', imageUrl: 'url1', rating: 4.8, studentsCount: 1200 },
-      { id: 2, title: 'React Advanced', imageUrl: 'url2', rating: 4.7, studentsCount: 980 },
-      { id: 3, title: 'Vue 3 Complete', imageUrl: 'url3', rating: 4.9, studentsCount: 750 },
-      { id: 4, title: 'Node.js Mastery', imageUrl: 'url4', rating: 4.6, studentsCount: 1500 }
-    ]);
+  private mapToCourseCard(item: any, type: 'COURSE' | 'TRACK'): ICourseCardData {
+    return {
+      slug: item.slug,
+      title: item.title,
+      description: item.description,
+      image: item.image || null,
+      avg_rating: item.avg_rating || 0,
+      students_count: item.students_count || item.courses_count || 0,
+      instructor_name: item.instructor_name || 'Expert Instructor',
+      price: item.price,
+      badge: type === 'TRACK' ? 'Learning Track' : (item.badge || 'Course')
+    };
+  }
+ getTopRatedCourses(): Observable<ICourseCardData[]> {
+    return this.http.get<any[]>(`${this.baseUrl}courses/topRated/`).pipe(
+      map((res: any[]) => res.map(((item: any) => this.mapToCourseCard(item, 'COURSE'))))
+    );
+  }
+//top rated after login
+getMyCourses(): Observable<ICourseCardData[]> {
+    return this.http.get<any[]>(`${this.baseUrl}courses/myEnrollments/`).pipe(
+      map((res: any[]) => res.map((item: any) => this.mapToCourseCard(item, 'COURSE')))
+    );
+  }
+//course details
+getCourseDetails(slug: string): Observable<ICourseDetail> {
+    return this.http.get<ICourseDetail>(`${this.baseUrl}courses/${slug}/`);
+  }
+//many course==>exploreB BP
+getAllCourses(): Observable<ICourseCardData[]> {
+    return this.http.get<any>(`${this.baseUrl}courses/all/`).pipe(
+      map((res: any) => {
+        const data = res.results ? res.results : res;
+        return data.map((item: any) => this.mapToCourseCard(item, 'COURSE'));
+      })
+    );
+  }
+//package==>explore
+ getLearningTracks(): Observable<ICourseCardData[]> {
+    return this.http.get<any[]>(`${this.baseUrl}packages/all/`).pipe(
+      map((res: any[]) => res.map((item: any) => this.mapToCourseCard(item, 'TRACK')))
+    );
   }
 }
+
+

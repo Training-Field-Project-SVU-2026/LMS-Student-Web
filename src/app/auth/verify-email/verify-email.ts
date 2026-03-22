@@ -176,7 +176,7 @@ export class VerifyEmail {
     const otp = Object.values(this.otpForm.value).join('');
     const email = sessionStorage.getItem('verify_email') ?? '';
 
-    this.authService.verifyOtp({ email, otp }).subscribe({
+    this.authService.verifyEmail({ email,otp }).subscribe({
 
       next: (res: any) => {
 

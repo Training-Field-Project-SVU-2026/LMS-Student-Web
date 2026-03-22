@@ -1,59 +1,57 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AlertService } from '../../../../shared/services/alert';
 import { Card } from "../../../../components/shared/card/card";
 import { Router } from '@angular/router';
-export interface Course {
-  id: number;
-  title: string;
-  image: string;
-  rating: number;
-  studentsCount: string;
-  badge?: string;
-}
+import { CourseService } from '../../../../shared/services/course';
+import { ICourseCardData } from '../../../../components/shared/interfaces/course.model';
+import { CommonModule } from '@angular/common';
+
+
 @Component({
   selector: 'app-featured-courses',
   standalone: true,
-  imports: [Card],
+  imports: [Card,CommonModule],
   templateUrl: './featured-courses.html',
   styleUrl: './featured-courses.css',
 })
-export class FeaturedCourses {
-   constructor(private alertService: AlertService, private router: Router) {}
-  courses: Course[] = [
-  { id: 1, title: 'Modern Fullstack Web Dev', image: 'assets/images/c1.png', rating: 4.9, studentsCount: '12.4K', badge: 'BESTSELLER' },
-  { id: 2, title: 'Python for Data Science', image: 'assets/images/c2.png', rating: 4.8, studentsCount: '10K', badge: 'NEW' },
-  { id: 3, title: 'Advanced JavaScript Patterns', image: 'assets/images/c3.png', rating: 4.7, studentsCount: '5.2K', badge: 'BESTSELLER' },
-  { id: 4, title: 'iOS Development with Swift', image: 'assets/images/c4.png', rating: 4.9, studentsCount: '3.4K', badge: 'POPULAR' }
-];
+export class FeaturedCourses implements OnInit {
+  private courseService = inject(CourseService);
+  private alertService=inject(AlertService)
+  private router = inject(Router);
 
-onCourseClick(courseId: number) {
+  courses:ICourseCardData[]=[]
 
-  const token = localStorage.getItem('token');
 
-  if (!token) {
-    this.alertService.requireLogin(
-      'You need to login first to view this course'
-    );
-    return;
-  }
-
-  this.router.navigate(['/course', courseId]);
-
+ngOnInit(){
+  this.courseService.getTopRatedCourses().subscribe({
+    next:(data)=>{
+      console.log('Data received:', data)
+      this.courses=data
+    },
+    error: (err) => {
+       console.error('Error fetching courses', err);
+    this.courses = [];
+      console.error('Error fetching courses', err);
+      // this.alertService.error('Failed to load courses. Please try again.');
+    },
+  })
 }
+onCourseClick(slug:string){
+const token=localStorage.getItem('access_token');
+if(!token){
+  this.alertService.requireLogin('You need to login first to view this course');
+  return;
+}
+this.router.navigate(['/course',slug])
+}
+
 onViewAllCourses() {
-
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-    this.alertService.requireLogin(
-      'Please login first to view all courses'
-    );
-    return;
-  }
-
   this.router.navigate(['/courses']);
-
+}
+trackBySlug(index: number, course: ICourseCardData) {
+  return course.slug;
+}
 }
 
-}
+export type { ICourseCardData };
 

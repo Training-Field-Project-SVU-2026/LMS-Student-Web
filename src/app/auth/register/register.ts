@@ -1,109 +1,73 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
+import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth';
-import { RouterModule, Router } from '@angular/router';
-import { LucideAngularModule } from 'lucide-angular';
+
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, LucideAngularModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
-  styleUrl: './register.css',
 })
 export class Register {
+  registerForm: FormGroup;
+  showPassword = signal(false);
+  showConfirm  = signal(false);
+  loading      = signal(false);
 
-
-
-  showPassword = false;
-  showConfirm = false;
-  registerForm!: FormGroup;
-
-
-  constructor(private fb: FormBuilder, private http: HttpClient, private authService: AuthService, private router: Router) {
-
+  constructor(
+    private fb:     FormBuilder,
+    private http:   HttpClient,
+    private auth:   AuthService,
+    private router: Router
+  ) {
+   
     this.registerForm = this.fb.group({
-      first_name: ['', Validators.required],
-      last_name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
-    });
-  }
-  togglePassword() {
-    this.showPassword = !this.showPassword;
+      first_name:      ['', Validators.required],
+      last_name:       ['', Validators.required],
+      email:           ['', [Validators.required, Validators.email]],
+      password:        ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
+    }, { validators: this.passwordsMatch });
   }
 
-  toggleConfirm() {
-    this.showConfirm = !this.showConfirm;
+  private passwordsMatch(g: FormGroup) {
+    return g.get('password')?.value === g.get('confirmPassword')?.value
+      ? null : { mismatch: true };
   }
-  onSubmit() {
 
+  togglePassword() { this.showPassword.update(v => !v); }
+  toggleConfirm()  { this.showConfirm.update(v => !v); }
+
+  onSubmit(): void {
     if (this.registerForm.invalid) {
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid form',
-        text: 'Please fill all fields correctly'
-      });
-
+      this.registerForm.markAllAsTouched();
       return;
     }
+    this.loading.set(true);
+    const { confirmPassword, ...payload } = this.registerForm.value;
 
-    const { first_name, last_name, email, password, confirmPassword } = this.registerForm.value;
-
-    if (password !== confirmPassword) {
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Password mismatch',
-        text: 'Passwords do not match'
-      });
-
-      return;
-    }
-
-    const body = {
-      first_name,
-      last_name,
-      email,
-      password
-    };
-
-    this.authService.register(body).subscribe({
-
-      next: (res: any) => {
-
-        sessionStorage.setItem('verify_email', email);
-
+   this.auth.register(payload).subscribe({
+      next: () => {
+        this.loading.set(false);
         Swal.fire({
+          title: 'Account Created!',
+          text: 'Please check your email to verify your account.',
           icon: 'success',
-          title: 'Account created!',
-          text: 'Please verify your email',
-          timer: 1500,
-          showConfirmButton: false
-        });
-
-        this.router.navigate(['/auth/verify-email']);
-
-        this.registerForm.reset();
+        }).then(() => this.router.navigate(['/auth/verify-email']));
       },
-
-      error: (err: HttpErrorResponse) => {
-
+      error: () => {
+        this.loading.set(false);
         Swal.fire({
+          title: 'Registration Failed',
+          text: 'Something went wrong. Please try again.',
           icon: 'error',
-          title: 'Registration failed',
-          text: err.error?.message || 'Something went wrong'
         });
-
-      }
-
+      },
     });
-
   }
 }
-

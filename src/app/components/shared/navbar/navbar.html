@@ -1,161 +1,136 @@
-<nav class="sticky top-0 z-40 bg-[var(--surface)] border-b border-[var(--divider)] px-6 py-3 transition-all duration-300">
+<nav class="sticky top-0 z-40 bg-[var(--surface)] border-b border-[var(--divider)] px-6 py-3">
 
-  <!-- Desktop Navbar -->
   <div class="flex items-center justify-between">
 
-    <!-- Left Section -->
+    <!-- LEFT -->
     <div class="flex items-center gap-8">
 
       <!-- Logo -->
-      <a routerLink="/home" class="flex items-center gap-3 cursor-pointer">
-
+      <a routerLink="/home" class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-lg"
-             style="background-color: var(--primary); color: var(--on-primary);">
+          style="background-color: var(--primary); color: var(--on-primary);">
           SU
         </div>
-
         <span class="text-xl font-semibold" style="color: var(--primary);">
           Skill<span style="color: var(--secondary);">Up</span>
         </span>
-
       </a>
 
-      <!-- Desktop Links -->
+      <!-- Links -->
       <div class="hidden md:flex items-center gap-6">
 
-        <a routerLink="/home"
-           routerLinkActive="text-[var(--primary)] font-semibold"
-           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition">
+        <a routerLink="/home" routerLinkActive="text-[var(--primary)] font-semibold"
+          class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           Home
         </a>
 
-        <a routerLink="/courses"
-           routerLinkActive="text-[var(--primary)] font-semibold"
-           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition">
+        <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold"
+          class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           My Courses
         </a>
 
-        <a routerLink="/explore"
-           routerLinkActive="text-[var(--primary)] font-semibold"
-           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition">
+        <a routerLink="/explore" routerLinkActive="text-[var(--primary)] font-semibold"
+          class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           Explore
         </a>
+        
+        @if(isLoggedIn) {
+        <a routerLink="/" routerLinkActive="text-[var(--primary)] font-semibold"
+          class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
+          Dashboard
+        </a>
+        }
 
       </div>
-
     </div>
 
-    <!-- Right Section -->
     <div class="flex items-center gap-4">
 
-      <!-- Dark Mode -->
       <button (click)="toggleTheme()"
-              class="p-2 rounded-lg border border-[var(--outline)] hover:bg-[var(--background)] transition">
+        class="p-2 rounded-lg border border-[var(--outline)] hover:bg-[var(--background)]">
         {{ isDark ? '☀️' : '🌙' }}
       </button>
-      <!-- Search Bar for Explore Page -->
-@if (isLoggedInTemp && isExplorePage) {
-  <div class="hidden lg:flex flex-1 items-center gap-2 max-w-md mx-8">
-    <div class="relative w-full">
-      <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
-        🔍
-      </span>
-      <input
-        type="text"
-        placeholder="Search courses..."
-        class="w-full pl-10 pr-4 py-2 border border-[var(--outline)] rounded-xl bg-[var(--background)] text-sm focus:ring-2 focus:ring-[var(--primary)] outline-none"
-      />
-    </div>
 
-    <button class="p-2 rounded-xl border border-[var(--outline)] hover:bg-[var(--secondary)] transition text-xl">
-      <span class="text-sm">⚙️</span>
-    </button>
-  </div>
-}
+      @if(isLoggedIn && isExplorePage) {
+      <div class="hidden lg:flex items-center gap-2 max-w-md">
 
-      <!-- Guest User -->
-@if (!isLoggedInTemp) {
-  <div class="hidden md:flex items-center gap-2">
+        <div class="relative w-full">
+          <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+          <input type="text" placeholder="Search courses..."
+            class="w-full pl-10 pr-4 py-2 border border-[var(--outline)] rounded-xl bg-[var(--background)] text-sm focus:ring-2 focus:ring-[var(--primary)] outline-none" />
+        </div>
 
-    <button (click)="goLogin()"
-            class="px-4 py-1.5 rounded-lg border bg-[var(--secondary)] text-[var(--primary)] text-sm font-bold">
-      Login
-    </button>
+      </div>
+      }
 
-    <button (click)="goSignup()"
-            class="px-4 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--on-primary)] text-sm font-bold">
-      Sign Up
-    </button>
 
-  </div>
-}
+      
+    <!-- NavBar Before Login and After Login -->
+      <!-- GUEST -->
+      @if(!isLoggedIn) {
+      <div class="hidden md:flex gap-2">
 
-      <!-- Profile User -->
-      @if (isLoggedInTemp) {
+        <button (click)="goLogin()"
+          class="px-4 py-1.5 rounded-lg border bg-[var(--secondary)] text-[var(--primary)] text-sm font-bold">
+          Login
+        </button>
 
-  <div class="relative hidden md:flex items-center gap-3 border-l border-[var(--divider)] pl-4">
-
-    <span class="text-sm font-semibold text-[var(--text-primary)]">
-      {{ username }}
-    </span>
-
-    <img
-      (click)="isProfileMenuOpen = !isProfileMenuOpen"
-      src="https://ui-avatars.com/api/?name=Reham" alt=""
-      class="w-10 h-10 rounded-full border-2 border-[var(--secondary)] cursor-pointer hover:scale-105 transition"
-    />
-
-    @if (isProfileMenuOpen) {
-
-      <div class="absolute right-0 top-12 w-44 bg-[var(--surface)] border border-[var(--outline)] rounded-xl shadow-xl py-2">
-
-        <button (click)="logout()"
-                class="w-full text-left px-4 py-2 text-sm font-bold hover:bg-[var(--background)] transition"
-                style="color: var(--error);">
-          Logout
+        <button (click)="goSignup()"
+          class="px-4 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--on-primary)] text-sm font-bold">
+          Sign Up
         </button>
 
       </div>
+      }
 
-    }
+      <!-- USER -->
+      @if(isLoggedIn) {
+      <div class="relative hidden md:flex items-center gap-3 border-l border-[var(--divider)] pl-4">
 
-  </div>
+        <span class="text-sm font-semibold text-[var(--text-primary)]">
+         {{ username ? username : 'User' }}
+        </span>
 
-}
+        <!-- Avatar -->
+        <div (click)="toggleProfileMenu()"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--secondary)] text-[var(--primary)] font-bold cursor-pointer">
+          {{ username?.charAt(0) }}
+        </div>
 
-      <!-- Mobile Menu Button -->
-      <button
-        class="md:hidden p-2 rounded-lg border border-[var(--outline)]"
-        (click)="isMobileMenuOpen = !isMobileMenuOpen">
-        ☰
-      </button>
+        <!-- Dropdown -->
+        <div *ngIf="isProfileMenuOpen"
+          class="absolute right-0 top-12 w-44 bg-[var(--surface)] border border-[var(--outline)] rounded-xl shadow-xl py-2">
+
+          <button (click)="goDashboard()" class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--background)]">
+            Dashboard
+          </button>
+
+          <button (click)="logout()"
+            class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-[var(--background)]">
+            Logout
+          </button>
+
+        </div>
+
+      </div>
+      }
+
+      <!-- Mobile -->
+      <button class="md:hidden p-2 border rounded-lg" (click)="toggleMobileMenu()">☰</button>
 
     </div>
-
   </div>
 
   <!-- Mobile Menu -->
-  @if (isMobileMenuOpen) {
+  @if(isMobileMenuOpen) {
+  <div class="md:hidden mt-4 space-y-3">
 
-    <div class="md:hidden mt-4 space-y-4 px-2 pb-3">
+    <a routerLink="/home">Home</a>
+    <a routerLink="/courses">My Courses</a>
+    <a routerLink="/explore">Explore</a>
 
-      <a routerLink="/home"
-         class="block text-[var(--text-secondary)] hover:text-[var(--primary)] transition">
-        Home
-      </a>
+    <a *ngIf="isLoggedIn" routerLink="/dashboard">Dashboard</a>
 
-      <a routerLink="/courses"
-         class="block text-[var(--text-secondary)] hover:text-[var(--primary)] transition">
-        My Courses
-      </a>
-
-      <a routerLink="/explore"
-         class="block text-[var(--text-secondary)] hover:text-[var(--primary)] transition">
-        Explore
-      </a>
-
-    </div>
-
+  </div>
   }
-
 </nav>

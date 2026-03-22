@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth';
-import { LoginResponse } from '../models/auth.models';   
+import { LoginResponse } from '../models/auth.models';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -21,9 +21,9 @@ export class Login {
   isLoading    = false;
 
   constructor(
-    private fb:     FormBuilder,
-    private authService:   AuthService,
-    private router: Router
+    private fb:          FormBuilder,
+    private authService: AuthService,
+    private router:      Router
   ) {
     this.loginForm = this.fb.group({
       email:    ['', [Validators.required, Validators.email]],
@@ -36,12 +36,11 @@ export class Login {
   }
 
   onSubmit() {
-
     if (this.loginForm.invalid) {
       Swal.fire({
-        icon: 'error',
+        icon:  'error',
         title: 'Invalid form',
-        text: 'Please enter a valid email and password'
+        text:  'Please enter a valid email and password',
       });
       return;
     }
@@ -51,34 +50,31 @@ export class Login {
 
     this.authService.login({ email, password }).subscribe({
 
-      next: (res: LoginResponse) => {
+      next: (_res: LoginResponse) => {
         this.isLoading = false;
 
-        localStorage.setItem('access_token',  res.access);
-        localStorage.setItem('refresh_token', res.refresh);
-
-        localStorage.setItem('current_user', JSON.stringify(res));
-
         Swal.fire({
-          icon: 'success',
-          title: `Welcome Programming World!`,
-          text: 'Logged in successfully',
-          timer: 1500,
-          showConfirmButton: false
+          icon:              'success',
+          title:             'Welcome!',
+          text:              'Logged in successfully',
+          timer:             1500,
+          showConfirmButton: false,
         }).then(() => {
-          this.router.navigate(['/redirect']);  
+         
+          const redirectUrl = localStorage.getItem('redirectUrl') || '/user-dashboard';
+          localStorage.removeItem('redirectUrl');
+          this.router.navigate([redirectUrl]);
         });
       },
 
-      error: (err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-
         Swal.fire({
-          icon: 'error',
+          icon:  'error',
           title: 'Login failed',
-          text: err.error?.message || 'Invalid email or password'
+          text:  err.error?.detail || err.error?.message || 'Invalid email or password',
         });
-      }
+      },
 
     });
   }

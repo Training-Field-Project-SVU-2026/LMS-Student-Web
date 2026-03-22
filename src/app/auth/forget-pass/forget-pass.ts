@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Auth } from '../services/auth';
+import { AuthService } from '../services/auth';
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
@@ -19,7 +19,7 @@ export class ForgetPass {
 
   constructor(
     private fb: FormBuilder,
-    private auth: Auth,
+    private authService: AuthService,
     private router: Router
   ) {
     this.forgotForm = this.fb.group({
@@ -41,7 +41,7 @@ export class ForgetPass {
     this.isLoading = true;
     const { email } = this.forgotForm.value;
 
-    this.auth.forgotPassword(email).subscribe({
+    this.authService.forgotPassword(email).subscribe({
 
       next: (res: any) => {
         this.isLoading = false;
