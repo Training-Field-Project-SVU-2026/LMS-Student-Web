@@ -28,9 +28,14 @@ export class Hero {
       return;
     }
 
-    this.router.navigate(['/UserDashboard']);
+    this.router.navigate(['/courses']);
   }
 
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('access_token');
+  }
+  
+  
   onViewHome() {
     const token = localStorage.getItem('access_token');
 

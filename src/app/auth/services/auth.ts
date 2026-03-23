@@ -1,9 +1,10 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, of, shareReplay } from 'rxjs';
+import { Observable, tap, of, shareReplay, switchMap, map, catchError } from 'rxjs';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 import { jwtDecode } from 'jwt-decode';
+import { Student } from '../../models/user.models';
 import {
   LoginRequest, LoginResponse,
   ResetPasswordRequest, ResetPasswordResponse,
@@ -20,9 +21,9 @@ export class AuthService {
   private readonly REFRESH_KEY = 'r_tok';
 
   isLoggedIn = signal<boolean>(!!sessionStorage.getItem(this.REFRESH_KEY));
+  currentUser = signal<Student | null>(null);
 
-
-  readonly authReady$: Observable<TokenRefreshResponse | null>;
+  readonly authReady$: Observable<any>;
 
   constructor(private http: HttpClient, private router: Router) {
     if (this.isLoggedIn()) {
@@ -41,15 +42,14 @@ export class AuthService {
   getUserFromToken() {
     const token = this.getToken();
     if (!token) return null;
+
     try {
       const decoded: any = jwtDecode(token);
+
       return {
-        username:
-          decoded.first_name ||
-          decoded.username ||
-          decoded.email ||
-          'User',
+        email: decoded.email || null
       };
+
     } catch {
       return null;
     }
@@ -71,18 +71,21 @@ export class AuthService {
   }
 
   // ─── Login ────────────────────────────────────────────────────────────────
-  login(data: LoginRequest): Observable<LoginResponse> {
+  login(data: LoginRequest): Observable<any> {
     return this.http.post<LoginResponse>(API_ENDPOINTS.login, data).pipe(
+
       tap((res) => {
-        this.accessToken = res.access;
-        sessionStorage.setItem(this.REFRESH_KEY, res.refresh);
+        this.accessToken = res.data.access;
+        sessionStorage.setItem(this.REFRESH_KEY, res.data.refresh);
         this.isLoggedIn.set(true);
-      })
+      }),
+
+      switchMap(() => this.fetchCurrentUser())
     );
   }
 
   // ─── Refresh Access Token ─────────────────────────────────────────────────
-  refreshAccessToken(): Observable<TokenRefreshResponse> {
+  refreshAccessToken(): Observable<any> {
     const refresh = sessionStorage.getItem(this.REFRESH_KEY) ?? '';
     return this.http.post<TokenRefreshResponse>(
       API_ENDPOINTS.refreshToken, { refresh }
@@ -90,6 +93,24 @@ export class AuthService {
       tap((res) => {
         this.accessToken = res.access;
         this.isLoggedIn.set(true);
+      }),
+      switchMap(() => this.fetchCurrentUser())
+    );
+  }
+
+  // ─── Fetch Current User ───────────────────────────────────────────────────
+  fetchCurrentUser(): Observable<Student | null> {
+    const email = this.getUserFromToken()?.email;
+    if (!email) return of(null);
+    return this.http.get<any>(API_ENDPOINTS.students).pipe(
+      map(res => {
+        const students = Array.isArray(res) ? res : (res.results || []);
+        return students.find((s: Student) => s.email === email) || null;
+      }),
+      tap(user => this.currentUser.set(user)),
+      catchError(() => {
+        this.currentUser.set(null);
+        return of(null);
       })
     );
   }
@@ -124,6 +145,7 @@ export class AuthService {
     sessionStorage.removeItem(this.REFRESH_KEY);
     localStorage.removeItem('access_token'); // clear any legacy token
     this.isLoggedIn.set(false);
+    this.currentUser.set(null);
     this.router.navigate(['/auth/login']);
   }
 }

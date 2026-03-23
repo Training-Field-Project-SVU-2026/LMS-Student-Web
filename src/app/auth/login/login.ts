@@ -50,7 +50,7 @@ export class Login {
 
     this.authService.login({ email, password }).subscribe({
 
-      next: (_res: LoginResponse) => {
+      next: (res: LoginResponse) => {
         this.isLoading = false;
 
         Swal.fire({

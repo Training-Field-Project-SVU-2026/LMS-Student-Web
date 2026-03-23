@@ -16,10 +16,8 @@ import { AuthService } from '../auth/services/auth';
 export class Settings {
   constructor(private http: HttpClient, private auth: AuthService) { }
 
-  getProfile(): Observable<Student> {
-    return this.http
-      .get<Student[]>(API_ENDPOINTS.students)
-      .pipe(map((list) => list[0]));
+  getProfile(slug: string): Observable<Student> {
+    return this.http.get<Student>(API_ENDPOINTS.studentBySlug(slug));
   }
 
   updateProfile(slug: string, data: StudentUpdateRequest): Observable<Student> {

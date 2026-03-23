@@ -34,12 +34,12 @@
           Explore
         </a>
         
-        @if(isLoggedIn) {
+        <!-- @if(isLoggedIn) {
         <a routerLink="/" routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           Dashboard
         </a>
-        }
+        } -->
 
       </div>
     </div>
@@ -98,7 +98,8 @@
         </div>
 
         <!-- Dropdown -->
-        <div *ngIf="isProfileMenuOpen"
+         @if(isProfileMenuOpen) {
+        <div
           class="absolute right-0 top-12 w-44 bg-[var(--surface)] border border-[var(--outline)] rounded-xl shadow-xl py-2">
 
           <button (click)="goDashboard()" class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--background)]">
@@ -111,6 +112,7 @@
           </button>
 
         </div>
+      }
 
       </div>
       }
