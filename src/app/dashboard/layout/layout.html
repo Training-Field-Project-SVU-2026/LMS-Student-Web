@@ -14,6 +14,13 @@
     </div>
     <div class="flex items-center gap-4">
 
+      <button
+        (click)="toggleTheme()"
+        class="p-2 rounded-lg border border-[var(--outline)] hover:bg-[var(--background)]"
+      >
+        {{ isDark ? '☀️' : '🌙' }}
+      </button>
+
       @if (student(); as s) {
         <div class="text-right hidden sm:block">
           <p class="text-sm font-semibold text-[var(--text-primary)]">{{ fullName }}</p>

@@ -4,6 +4,7 @@ import { signal } from '@angular/core';
 import Swal from 'sweetalert2';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../../core/theme';
 
 @Component({
   selector: 'app-preference',
@@ -18,15 +19,28 @@ form: FormGroup;
 
   languages = ['English', 'Arabic'];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private theme: ThemeService) {
     this.form = this.fb.group({
       language: ['English'],
       theme: ['system'],
       emailNotifications: [true],
     });
+
+    // Initialize form with current theme
+    const currentTheme = localStorage.getItem('theme') || 'system';
+    this.form.patchValue({ theme: currentTheme });
   }
 
   save(): void {
+    const themeValue = this.form.value.theme;
+    if (themeValue === 'system') {
+      // For system, check prefers-color-scheme
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.theme.setTheme(prefersDark ? 'dark' : 'light');
+    } else {
+      this.theme.setTheme(themeValue);
+    }
+
     Swal.fire({
       title: 'Preferences Saved',
       text: 'Your preferences have been updated successfully.',

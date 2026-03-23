@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./components/shared/navbar/navbar";
 import { ThemeService } from './core/theme';
@@ -10,10 +10,10 @@ import { ThemeService } from './core/theme';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-    constructor(private theme: ThemeService) {}
+export class App implements OnInit {
+  constructor(private theme: ThemeService) { }
 
   ngOnInit(): void {
-    this.theme.initTheme(); 
+    this.theme.initTheme();
   }
 }

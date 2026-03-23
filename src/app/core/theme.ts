@@ -3,15 +3,38 @@ import { Injectable } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
 
+  private mediaQuery: MediaQueryList;
+
+  constructor() {
+    this.mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    this.mediaQuery.addEventListener('change', this.handleSystemThemeChange.bind(this));
+  }
+
   initTheme() {
     const saved = localStorage.getItem('theme');
 
     if (saved) {
-      this.setTheme(saved);
+      if (saved === 'system') {
+        this.setSystemTheme();
+      } else {
+        this.setTheme(saved);
+      }
     } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.setTheme(prefersDark ? 'dark' : 'light');
+      this.setSystemTheme();
     }
+  }
+
+  private handleSystemThemeChange(event: MediaQueryListEvent) {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'system') {
+      this.setTheme(event.matches ? 'dark' : 'light');
+    }
+  }
+
+  private setSystemTheme() {
+    const prefersDark = this.mediaQuery.matches;
+    this.setTheme(prefersDark ? 'dark' : 'light');
+    localStorage.setItem('theme', 'system');
   }
 
   toggleTheme() {
@@ -20,12 +43,15 @@ export class ThemeService {
   }
 
   setTheme(theme: string) {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
+    if (theme === 'system') {
+      this.setSystemTheme();
     } else {
-      document.documentElement.classList.remove('dark');
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      localStorage.setItem('theme', theme);
     }
-
-    localStorage.setItem('theme', theme);
   }
 }

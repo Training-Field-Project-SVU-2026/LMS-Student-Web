@@ -10,7 +10,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
 
   const addToken = (request: typeof req, token: string) =>
-    request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+  request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
 
   const token = auth.getToken();
   const authReq = token ? addToken(req, token) : req;
@@ -30,7 +30,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       // ─── Refresh lock logic ─────────────────────────────────────────
       if (!isRefreshing) {
         isRefreshing = true;
-        refreshDone$.next(null); 
+        refreshDone$.next(null);
 
         return auth.refreshAccessToken().pipe(
           switchMap((res) => {
@@ -47,9 +47,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           })
         );
       } else {
-   
+
         return refreshDone$.pipe(
-          filter((t): t is string => t !== null), 
+          filter((t): t is string => t !== null),
           take(1),
           switchMap((newToken) => next(addToken(req, newToken)))
         );

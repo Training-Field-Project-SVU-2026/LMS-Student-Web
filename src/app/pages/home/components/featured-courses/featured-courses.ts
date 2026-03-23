@@ -21,20 +21,17 @@ export class FeaturedCourses implements OnInit {
 
   courses:ICourseCardData[]=[]
 
-
-ngOnInit(){
+ngOnInit() {
   this.courseService.getTopRatedCourses().subscribe({
-    next:(data)=>{
-      console.log('Data received:', data)
-      this.courses=data
-    },
-    error: (err) => {
-       console.error('Error fetching courses', err);
-    this.courses = [];
-      console.error('Error fetching courses', err);
-      // this.alertService.error('Failed to load courses. Please try again.');
-    },
-  })
+    next: (data) => this.courses = data.slice(0, 4),
+    error: () => {
+      console.error('topRated fail, fallback to all courses');
+      this.courseService.getAllCourses().subscribe({
+        next: (all) => this.courses = all.slice(0, 4),
+        error: (e) => (this.courses = [])
+      });
+    }
+  });
 }
 onCourseClick(slug:string){
 const token=localStorage.getItem('access_token');
