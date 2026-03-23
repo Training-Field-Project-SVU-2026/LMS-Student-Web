@@ -23,8 +23,11 @@ export class NavbarComponent {
   isMobileMenuOpen = false;
 
   currentUrl: string = '';
-  username: string | null = null;
   userAvatar: string | null = null;
+  username: string | null = null;
+
+
+
   constructor() {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -34,11 +37,13 @@ export class NavbarComponent {
 
     effect(() => {
       if (this.authService.isLoggedIn()) {
-        const user = this.authService.getUserFromToken();
-        this.username = user?.username || null;
+        const user = this.authService.currentUser();
+        this.username = user
+          ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+          : null;
 
-        this.userAvatar = this.username
-          ? `https://ui-avatars.com/api/?name=${this.username}`
+        this.userAvatar = user && user.first_name
+          ? user.first_name.charAt(0).toUpperCase()
           : null;
 
       } else {

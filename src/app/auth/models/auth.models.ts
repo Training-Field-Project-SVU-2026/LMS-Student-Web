@@ -35,10 +35,20 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  email: string;
-  password: string;
-  access: string;
-  refresh: string;
+  success: boolean;
+  status: number;
+  message: string;
+  data: {
+    access: string;
+    refresh: string;
+    user: {
+      first_name: string;
+      last_name: string;
+      email: string;
+      role: string;
+      slug: string;
+    };
+  };
 }
 
 

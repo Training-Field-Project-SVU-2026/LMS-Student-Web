@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SideBarProfile } from '../side-bar-profile/side-bar-profile';
-import { signal } from '@angular/core';
 import { Student } from '../../models/user.models';
-import { Settings } from '../../user-services/settings';
 import { ThemeService } from '../../core/theme';
+import { AuthService } from '../../auth/services/auth';
 
 @Component({
   selector: 'app-layout',
@@ -14,16 +13,10 @@ import { ThemeService } from '../../core/theme';
   styleUrl: './layout.css',
 })
 export class Layout {
-   student = signal<Student | null>(null);
+  private auth = inject(AuthService);
+  student = this.auth.currentUser;
 
-  constructor(private settings: Settings, private theme: ThemeService) {}
-
-  ngOnInit(): void {
-    this.settings.getProfile().subscribe({
-      next: (s) => this.student.set(s),
-      error: () => {},
-    });
-  }
+  constructor(private theme: ThemeService) {}
 
     toggleTheme() {
     this.theme.toggleTheme();

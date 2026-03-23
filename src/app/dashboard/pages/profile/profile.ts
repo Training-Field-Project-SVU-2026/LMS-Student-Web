@@ -21,11 +21,11 @@ import Swal from 'sweetalert2';
 })
 export class Profile implements OnInit {
 
-  profile     = signal<Student | null>(null);
-  isEditing   = signal(false);
+  profile = signal<Student | null>(null);
+  isEditing = signal(false);
   saveSuccess = signal(false);
-  loading     = signal(false);
-  fetching    = signal(true);
+  loading = signal(false);
+  fetching = signal(true);
 
   editForm: FormGroup = this.buildForm();
 
@@ -33,7 +33,7 @@ export class Profile implements OnInit {
     private settings: Settings,
     private fb: FormBuilder,
     private auth: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadProfile();
@@ -42,26 +42,29 @@ export class Profile implements OnInit {
   private loadProfile(): void {
     this.fetching.set(true);
 
-
-    this.auth.authReady$.pipe(
-      switchMap(() => this.settings.getProfile()),
-      catchError(() => {
+    this.auth.authReady$.subscribe({
+      next: () => {
+        const student = this.auth.currentUser();
+        if (student) {
+          this.profile.set(student);
+          this.editForm.patchValue({
+            first_name: student.first_name,
+            last_name: student.last_name,
+            email: student.email,
+          });
+          this.fetching.set(false);
+        } else {
+          this.fetching.set(false);
+        }
+      },
+      error: () => {
         this.fetching.set(false);
         Swal.fire({
           title: 'Error',
-          text:  'Failed to load profile. Please try again.',
-          icon:  'error',
+          text: 'Failed to load profile. Please try again.',
+          icon: 'error',
         });
-        return EMPTY;
-      })
-    ).subscribe((student) => {
-      this.profile.set(student);
-      this.editForm.patchValue({
-        first_name: student.first_name,
-        last_name:  student.last_name,
-        email:      student.email,
-      });
-      this.fetching.set(false);
+      }
     });
   }
 
@@ -87,8 +90,8 @@ export class Profile implements OnInit {
     if (p) {
       this.editForm.patchValue({
         first_name: p.first_name,
-        last_name:  p.last_name,
-        email:      p.email,
+        last_name: p.last_name,
+        email: p.email,
       });
     }
     this.editForm.markAsPristine();
@@ -107,6 +110,7 @@ export class Profile implements OnInit {
     this.settings.updateProfile(p.slug, this.editForm.value).subscribe({
       next: (updated) => {
         this.profile.set(updated);
+        this.auth.currentUser.set(updated);
         this.isEditing.set(false);
         this.loading.set(false);
         this.saveSuccess.set(true);
@@ -127,12 +131,12 @@ export class Profile implements OnInit {
 
   onSignOut(): void {
     Swal.fire({
-      title:             'Sign Out',
-      text:              'Are you sure you want to sign out?',
-      icon:              'question',
-      showCancelButton:  true,
+      title: 'Sign Out',
+      text: 'Are you sure you want to sign out?',
+      icon: 'question',
+      showCancelButton: true,
       confirmButtonText: 'Yes, sign out',
-      cancelButtonText:  'Cancel',
+      cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
         this.auth.logout();
@@ -143,8 +147,9 @@ export class Profile implements OnInit {
   private buildForm(): FormGroup {
     return this.fb.group({
       first_name: ['', Validators.required],
-      last_name:  ['', Validators.required],
-      email:      ['', [Validators.required, Validators.email]],
+      last_name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
     });
   }
-}
+
+    }
