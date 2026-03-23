@@ -18,7 +18,7 @@ learningTracks:ICourseCardData[] = []
 manyCourses:ICourseCardData[] = []
 
 ngOnInit() {
- this.courseService.getLearningTracks().subscribe({
+ this.courseService.getPackages().subscribe({
   next:(data)=>this.learningTracks=data,
   error:(err)=>console.error('Tracks Error:', err)
 

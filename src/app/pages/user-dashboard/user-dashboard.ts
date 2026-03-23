@@ -1,13 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CourseService } from '../../shared/services/course';
-import { FeaturedCourses } from "../home/components/featured-courses/featured-courses";
 import { Card } from "../../components/shared/card/card";
-import { WhyUs } from "../home/components/why-us/why-us";
 import { CommonModule } from '@angular/common';
 import type { ICourseCardData } from "../home/components/featured-courses/featured-courses";
 import { AlertService } from '../../shared/services/alert';
 import { Router } from '@angular/router';
-//why us ..... featured courses
 
 @Component({
   selector: 'app-user-dashboard',
@@ -23,13 +20,14 @@ export class UserDashboard implements OnInit {
   featuredCourses: ICourseCardData[] = [];
 
   ngOnInit() {
-    this.loadTopRated();
+    this.loadCourses();
   }
 
-  loadTopRated() {
-    this.courseService.getTopRatedCourses().subscribe({
+  loadCourses() {
+    this.courseService.getAllCourses().subscribe({
       next: (data) => {
-
+        console.log(data); 
+        //first 4 courses
         this.featuredCourses = data.slice(0, 4);
       },
       error: (err) => {
