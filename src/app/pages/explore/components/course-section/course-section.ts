@@ -19,12 +19,12 @@ manyCourses:ICourseCardData[] = []
 
 ngOnInit() {
  this.courseService.getPackages().subscribe({
-  next:(data)=>this.learningTracks=data,
+  next:(data)=>this.learningTracks=data.slice(0,4),
   error:(err)=>console.error('Tracks Error:', err)
 
  })
  this.courseService.getAllCourses().subscribe({
-  next:(data)=>this.manyCourses=data,
+  next:(data)=>this.manyCourses=data.slice(0,4),
   error:(err)=>console.error('Courses Error:', err)
  })
 }
