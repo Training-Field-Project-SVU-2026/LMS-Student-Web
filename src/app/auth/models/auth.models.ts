@@ -8,6 +8,16 @@ export interface RegisterRequest {
 
 export interface RegisterResponse {
   message: string;
+  student: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    role: string;
+    slug: string;
+    is_active: boolean;
+    is_verified: boolean;
+    image: string;
+  }
 
 }
 
