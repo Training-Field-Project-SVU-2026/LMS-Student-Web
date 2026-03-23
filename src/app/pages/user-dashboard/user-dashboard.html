@@ -12,7 +12,7 @@
             Resume Last Lesson
           </button>
         </div>
-        <img src="assets/images/dashboard-hero.png" class="w-64 hidden lg:block animate-float" alt="hero">
+        <img src="/images/home-after-login.jpeg" class="w-64 hidden lg:block animate-float" alt="hero">
       </div>
     </section>
 
@@ -52,59 +52,33 @@
       </div>
     </section>
 
-    <section class="pb-10">
-      <div class="flex justify-between items-center mb-8">
-        <h2 class="text-[var(--text-primary)] font-title">Continue Learning</h2>
-        <a class="text-[var(--primary)] fw-bold hover:underline cursor-pointer font-caption uppercase tracking-wider">View All →</a>
+   <section class="pb-10">
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="text-[var(--text-primary)] font-title">Continue Learning</h2>
+    <a class="text-[var(--primary)] fw-bold hover:underline cursor-pointer font-caption uppercase tracking-wider">
+      View All →
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+    @for (course of featuredCourses; track course.slug) {
+      <div
+        class="h-full hover:-translate-y-2 transition-transform duration-300 cursor-pointer"
+        (click)="onCourseClick(course.slug)"
+      >
+        <app-card [courseData]="course"></app-card>
       </div>
+    }
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-        <div class="bg-[var(--surface)] rounded-[32px] border border-[var(--outline)] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all cursor-pointer group">
-          <img src="assets/images/static-course-1.png" alt="course" class="w-full h-40 md:h-44 object-cover group-hover:scale-105 transition-transform duration-500">
-          <div class="p-6">
-            <h3 class="fw-bold text-[var(--text-primary)] text-lg mb-2 leading-snug group-hover:text-[var(--primary)] transition-colors">
-              UI/UX Design Masterclass 2024
-            </h3>
-            <p class="text-[var(--text-tertiary)] font-caption mb-4">Gary Simon</p>
-            <div class="flex items-center gap-2 font-caption border-t pt-4 border-[var(--outline)]/50">
-              <span class="text-orange-400 fw-bold">⭐ 4.8</span>
-              <span class="text-[var(--text-tertiary)]">(12.4k students)</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-[var(--surface)] rounded-[32px] border border-[var(--outline)] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all cursor-pointer group">
-          <img src="assets/images/static-course-1.png" alt="course" class="w-full h-40 md:h-44 object-cover group-hover:scale-105 transition-transform duration-500">
-          <div class="p-6">
-            <h3 class="fw-bold text-[var(--text-primary)] text-lg mb-2 leading-snug group-hover:text-[var(--primary)] transition-colors">
-              UI/UX Design Masterclass 2024
-            </h3>
-            <p class="text-[var(--text-tertiary)] font-caption mb-4">Gary Simon</p>
-            <div class="flex items-center gap-2 font-caption border-t pt-4 border-[var(--outline)]/50">
-              <span class="text-orange-400 fw-bold">⭐ 4.8</span>
-              <span class="text-[var(--text-tertiary)]">(12.4k students)</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-[var(--surface)] rounded-[32px] border border-[var(--outline)] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all cursor-pointer group">
-          <img src="assets/images/static-course-1.png" alt="course" class="w-full h-40 md:h-44 object-cover group-hover:scale-105 transition-transform duration-500">
-          <div class="p-6">
-            <h3 class="fw-bold text-[var(--text-primary)] text-lg mb-2 leading-snug group-hover:text-[var(--primary)] transition-colors">
-              UI/UX Design Masterclass 2024
-            </h3>
-            <p class="text-[var(--text-tertiary)] font-caption mb-4">Gary Simon</p>
-            <div class="flex items-center gap-2 font-caption border-t pt-4 border-[var(--outline)]/50">
-              <span class="text-orange-400 fw-bold">⭐ 4.8</span>
-              <span class="text-[var(--text-tertiary)]">(12.4k students)</span>
-            </div>
-          </div>
-        </div>
-
+    @empty {
+      <div class="col-span-full text-center py-20 text-[var(--text-tertiary)]">
+        No courses found.
       </div>
-    </section>
+    }
 
+  </div>
+</section>
     <section >
       <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
         <div>

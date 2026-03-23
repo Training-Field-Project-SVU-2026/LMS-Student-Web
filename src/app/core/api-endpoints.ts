@@ -16,8 +16,20 @@ export const API_ENDPOINTS = {
   refreshToken:   `${BASE_URL}api/auth/token/refresh/`,
 
   // ── Students ──────────────────────────────────────────────────────────────
- 
+
   students:       `${BASE_URL}api/students/`,
   studentBySlug:  (slug: string) => `${BASE_URL}api/students/${slug}/`,
+
+
+  //course topRated
+  coursesTopRated: `${BASE_URL}api/courses/topRated/`,
+// enrollments
+  myCourses: `${BASE_URL}api/courses/myEnrollments/`,
+  //course details
+courseDetails: (slug: string) => `${BASE_URL}api/courses/${slug}/`,
+//all courses
+allCourses: `${BASE_URL}api/courses/all/`,
+//package
+package: `${BASE_URL}api/packages/all/`,
 
 };

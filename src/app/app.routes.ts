@@ -82,6 +82,23 @@ export const routes: Routes = [
   loadChildren: () =>
     import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
 },
+{
+  path: 'explore',
+  component: PrivateLayout,
+  canActivate: [authGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./pages/explore/explore').then(m => m.Explore)
+    },
+    {
+      path: 'packages/:slug',
+      loadComponent: () =>
+        import('./pages/package-details/package-details').then(m => m.PackageDetails)
+    }
+  ]
+},
 
   // Catch all
   { path: '**', redirectTo: '' },
