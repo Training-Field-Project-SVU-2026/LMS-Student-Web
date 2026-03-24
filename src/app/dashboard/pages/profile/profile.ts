@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { switchMap, catchError, EMPTY } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Settings } from '../../../user-services/settings';
 import { AuthService } from '../../../auth/services/auth';
 import { Student } from '../../../models/user.models';
@@ -21,19 +21,24 @@ import Swal from 'sweetalert2';
 })
 export class Profile implements OnInit {
 
-  profile = signal<Student | null>(null);
-  isEditing = signal(false);
-  saveSuccess = signal(false);
-  loading = signal(false);
-  fetching = signal(true);
+  private destroyRef = inject(DestroyRef);
 
-  editForm: FormGroup = this.buildForm();
+  profile     = signal<Student | null>(null);
+  isEditing   = signal(false);
+  saveSuccess = signal(false);
+  loading     = signal(false);
+  fetching    = signal(true);
+
+  // ✅ Assigned in constructor — after FormBuilder is injected
+  editForm!: FormGroup;
 
   constructor(
     private settings: Settings,
     private fb: FormBuilder,
     private auth: AuthService
-  ) { }
+  ) {
+    this.editForm = this.buildForm();
+  }
 
   ngOnInit(): void {
     this.loadProfile();
@@ -42,41 +47,52 @@ export class Profile implements OnInit {
   private loadProfile(): void {
     this.fetching.set(true);
 
-    this.auth.authReady$.subscribe({
-      next: () => {
-        const student = this.auth.currentUser();
+    // ✅ Use cached signal first (populated at app boot after token refresh)
+    const cached = this.auth.currentUser();
+    if (cached) {
+      this.profile.set(cached);
+      this.patchForm(cached);
+      this.fetching.set(false);
+      return;
+    }
+
+    // ✅ Fallback: fetch from API (e.g. hard refresh before boot completes)
+    this.auth.fetchCurrentUser().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (student) => {
+        console.log('[Profile] student loaded:', student);
         if (student) {
           this.profile.set(student);
-          this.editForm.patchValue({
-            first_name: student.first_name,
-            last_name: student.last_name,
-            email: student.email,
-          });
-          this.fetching.set(false);
-        } else {
-          this.fetching.set(false);
+          this.patchForm(student);
         }
-      },
-      error: () => {
         this.fetching.set(false);
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to load profile. Please try again.',
-          icon: 'error',
-        });
+      },
+      error: (err) => {
+        this.fetching.set(false);
+        console.error('[Profile] load error:', err);
+        Swal.fire({ title: 'Error', text: 'Failed to load profile.', icon: 'error' });
       }
+    });
+  }
+
+  private patchForm(s: Student): void {
+    this.editForm.patchValue({
+      first_name: s.first_name ?? '',
+      last_name:  s.last_name  ?? '',
+      email:      s.email      ?? '',
     });
   }
 
   get fullName(): string {
     const p = this.profile();
-    return p ? `${p.first_name} ${p.last_name}`.trim() : '';
+    return p ? `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim() : '';
   }
 
   get initials(): string {
     const p = this.profile();
-    if (!p) return '';
-    return `${p.first_name.charAt(0)}${p.last_name.charAt(0)}`.toUpperCase();
+    if (!p) return 'S';
+    return `${p.first_name?.charAt(0) ?? ''}${p.last_name?.charAt(0) ?? ''}`.toUpperCase() || 'S';
   }
 
   openEdit(): void {
@@ -87,13 +103,7 @@ export class Profile implements OnInit {
   cancelEdit(): void {
     this.isEditing.set(false);
     const p = this.profile();
-    if (p) {
-      this.editForm.patchValue({
-        first_name: p.first_name,
-        last_name: p.last_name,
-        email: p.email,
-      });
-    }
+    if (p) this.patchForm(p);
     this.editForm.markAsPristine();
     this.editForm.markAsUntouched();
   }
@@ -121,8 +131,7 @@ export class Profile implements OnInit {
         const serverErrors = err?.error;
         let errorText = 'Failed to update profile. Please try again.';
         if (serverErrors && typeof serverErrors === 'object') {
-          const messages = Object.values(serverErrors).flat().join(' ');
-          if (messages) errorText = messages;
+          errorText = Object.values(serverErrors).flat().join(' ') || errorText;
         }
         Swal.fire({ title: 'Error', text: errorText, icon: 'error' });
       },
@@ -138,18 +147,15 @@ export class Profile implements OnInit {
       confirmButtonText: 'Yes, sign out',
       cancelButtonText: 'Cancel',
     }).then((result) => {
-      if (result.isConfirmed) {
-        this.auth.logout();
-      }
+      if (result.isConfirmed) this.auth.logout();
     });
   }
 
   private buildForm(): FormGroup {
     return this.fb.group({
       first_name: ['', Validators.required],
-      last_name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      last_name:  ['', Validators.required],
+      email:      ['', [Validators.required, Validators.email]],
     });
   }
-
-    }
+}

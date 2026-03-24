@@ -17,7 +17,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-
       const isAuthEndpoint =
         req.url.includes('/auth/login') ||
         req.url.includes('/auth/token/refresh') ||
@@ -27,29 +26,31 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      // ─── Refresh lock logic ─────────────────────────────────────────
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) {
+        return throwError(() => error);
+      }
+
       if (!isRefreshing) {
         isRefreshing = true;
-        refreshDone$.next(null); 
+        refreshDone$.next(null);
 
         return auth.refreshAccessToken().pipe(
           switchMap((res) => {
             isRefreshing = false;
             refreshDone$.next(res.access);
-
             return next(addToken(req, res.access));
           }),
           catchError((refreshError) => {
             isRefreshing = false;
             refreshDone$.next(null);
-            auth.logout();
+            console.error('[Interceptor] Token refresh failed:', refreshError);
             return throwError(() => refreshError);
           })
         );
       } else {
-   
         return refreshDone$.pipe(
-          filter((t): t is string => t !== null), 
+          filter((t): t is string => t !== null),
           take(1),
           switchMap((newToken) => next(addToken(req, newToken)))
         );

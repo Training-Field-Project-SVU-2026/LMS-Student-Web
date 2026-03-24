@@ -4,7 +4,7 @@ const BASE_URL = environment.baseUrl;
 
 export const API_ENDPOINTS = {
 
-  // ── Auth ──────────────────────────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────
   login:          `${BASE_URL}api/auth/login/`,
   register:       `${BASE_URL}api/auth/register/`,
   logout:         `${BASE_URL}api/auth/logout/`,
@@ -15,9 +15,7 @@ export const API_ENDPOINTS = {
   resendOtp:      `${BASE_URL}api/auth/resend-otp/`,
   refreshToken:   `${BASE_URL}api/auth/token/refresh/`,
 
-  // ── Students ──────────────────────────────────────────────────────────────
- 
-  students:       `${BASE_URL}api/students/`,
-  studentBySlug:  (slug: string) => `${BASE_URL}api/students/${slug}/`,
-
+  // ── Students ──────────────────────────────────────────
+  students:      `${BASE_URL}api/students/`,
+  studentBySlug: (slug: string) => `${BASE_URL}api/students/${slug}/`,
 };

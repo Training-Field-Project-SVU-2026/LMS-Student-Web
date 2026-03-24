@@ -4,6 +4,8 @@ import { PublicLayout } from './layouts/public-layout/public-layout';
 import { PrivateLayout } from './layouts/private-layout/private-layout';
 import { AuthLayout } from './auth/shared/auth-layout/auth-layout';
 import { authGuard, guestGuard } from './auth/guards/auth-guard';
+import { AuthService } from './auth/services/auth';
+
 export const routes: Routes = [
 
   //  Public — landing + explore
@@ -17,8 +19,8 @@ export const routes: Routes = [
           import('./pages/home/home').then(m => m.Home),
         canActivate: [() => {
           const router = inject(Router);
-          const token = localStorage.getItem('access_token');
-          return token ? router.createUrlTree(['/user-dashboard']) : true;
+          const auth = inject(AuthService);
+          return auth.isLoggedIn() ? router.createUrlTree(['/user-dashboard']) : true;
         }],
       },
       {
@@ -66,22 +68,23 @@ export const routes: Routes = [
 
   // Private — User dashboard
   {
-  path: 'user-dashboard',
-  component: PrivateLayout,
-  canActivate: [authGuard],
-  children: [
-    {
-      path: '',
-      loadComponent: () =>
-        import('./pages/user-dashboard/user-dashboard').then(m => m.UserDashboard)
-    }
-  ]
-},
-{
-  path: 'dashboard',
-  loadChildren: () =>
-    import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
-},
+    path: 'user-dashboard',
+    component: PrivateLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/user-dashboard/user-dashboard').then(m => m.UserDashboard)
+      }
+    ]
+  },
+  {
+    path: 'dashboard',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
+  },
 
   // Catch all
   { path: '**', redirectTo: '' },

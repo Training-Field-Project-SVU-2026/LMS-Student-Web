@@ -34,20 +34,20 @@
       <div class="flex items-center gap-4">
 
         @if (p.image) {
-        <img [src]="p.image" [alt]="fullName"
+        <img [src]="p.image" [alt]="fullName || 'Student'"
              class="w-14 h-14 rounded-full object-cover border-4 border-[#A8DF8E]" />
         } @else {
         <div class="w-14 h-14 rounded-full bg-[var(--primary)] border-4
                     border-[#A8DF8E] flex items-center justify-center
                     text-white text-lg font-bold">
-          {{ initials }}
+          {{ initials || 'S' }}
         </div>
         }
 
         <div>
           <p class="text-xs text-[var(--text-tertiary)] mb-0.5">Full Name</p>
           <h2 class="text-base font-semibold text-[var(--text-primary)]">
-            {{ fullName }}
+            {{ fullName || 'Student' }}
           </h2>
         </div>
       </div>

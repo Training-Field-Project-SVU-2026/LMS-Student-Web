@@ -26,7 +26,6 @@
   }
 }
 
-/* Responsive typography (باستخدام Tailwind مباشرة) */
 @media (max-width: 768px) {
   .text-display {
     @apply text-[30px];
@@ -41,63 +40,66 @@
   }
 }
 
-:root {
-  /* Main Palette */
+
+
+:root,
+.light {
   --primary: #0A5C75;
   --on-primary: #FFFFFF;
   --secondary: #A8DF8E;
   --on-secondary: #0A3D2E;
 
-  /* Surfaces & Backgrounds */
   --background: #F3F7F8;
   --on-background: #102A33;
   --surface: #FFFFFF;
   --on-surface: #102A33;
 
-  /* Button States */
   --primary-hover: #084C61;
   --secondary-hover: #8FCC72;
   --disabled-button: #B0BEC5;
   --disabled-text: #78909C;
 
-  /* UI Elements */
   --outline: #D1DDE1;
   --divider: #D1DDE1;
 
-  /* Typography */
   --text-primary: #102A33;
   --text-secondary: #37474F;
   --text-tertiary: #607D8B;
 
-  /* Status */
   --error: #D32F2F;
   --on-error: #FFFFFF;
-
 }
 
 .dark {
-  /* Surfaces */
-  --background: #121A1F;
-  --surface: #1A242B;
+  --primary: #1A8FAD;
+  --on-primary: #FFFFFF;
+  --primary-hover: #1577910;
 
-  /* Text */
+  --background: #121A1F;
+  --on-background: #E0E7EB;
+  --surface: #1A242B;
+  --on-surface: #E0E7EB;
+
+  --outline: #2C3A40;
+  --divider: #2C3A40;
+
   --text-primary: #E0E7EB;
   --text-secondary: #B0BEC5;
   --text-tertiary: #90A4AE;
 
-  /* UI */
-  --divider: #2C3A40;
-  --outline: #2C3A40;
+  --disabled-button: #2C3A40;
+  --disabled-text: #607D8B;
+
+  --error: #EF5350;
+  --on-error: #FFFFFF;
 }
 
+/* Ensure body background & color always follow CSS variables */
 body {
-  background-color: var(--background);
-  color: var(--text-primary);
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  transition: background 0.3s ease, color 0.3s ease;
+  background-color: var(--background) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
-
 
 
 :root {

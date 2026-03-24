@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth';
-import { LoginResponse } from '../models/auth.models';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -50,7 +49,7 @@ export class Login {
 
     this.authService.login({ email, password }).subscribe({
 
-      next: (res: LoginResponse) => {
+      next: () => {
         this.isLoading = false;
 
         Swal.fire({
