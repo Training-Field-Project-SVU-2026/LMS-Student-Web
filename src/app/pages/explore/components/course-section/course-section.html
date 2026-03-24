@@ -17,11 +17,7 @@
         </div>
 
         <div class="flex-grow">
-          <div class="flex gap-2 mb-3">
-             <span class="text-[10px] font-bold bg-[var(--background)] text-[var(--text-tertiary)] px-2 py-0.5 rounded uppercase">
-               {{ track.badge }}
-             </span>
-          </div>
+          
 
           <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{ track.title }}</h3>
           <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">{{ track.description }}</p>
@@ -33,7 +29,7 @@
         </div>
 
         <div class="mt-auto md:mt-0">
-          <button [routerLink]="['/packages', track.slug]" class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">
+          <button [routerLink]="['/explore', 'packages', track.slug]" class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">
             Join now
           </button>
         </div>

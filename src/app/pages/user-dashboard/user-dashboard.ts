@@ -1,51 +1,58 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CourseService } from '../../shared/services/course';
-import { FeaturedCourses } from "../home/components/featured-courses/featured-courses";
+import { OnInit, inject } from "@angular/core";
+import { Router } from "@angular/router";
+import { CourseService } from "../../shared/services/course";
+import { ICourseCardData } from "../home/components/featured-courses/featured-courses";
 import { Card } from "../../components/shared/card/card";
-import { WhyUs } from "../home/components/why-us/why-us";
-import { CommonModule } from '@angular/common';
-import type { ICourseCardData } from "../home/components/featured-courses/featured-courses";
-import { AlertService } from '../../shared/services/alert';
-import { Router } from '@angular/router';
-//why us ..... featured courses
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-user-dashboard',
-  imports: [Card,CommonModule],
+  standalone: true,
+  imports: [Card],
   templateUrl: './user-dashboard.html',
   styleUrl: './user-dashboard.css',
 })
+
 export class UserDashboard implements OnInit {
   private courseService = inject(CourseService);
-  private alertService = inject(AlertService);
   private router = inject(Router);
 
-  featuredCourses: ICourseCardData[] = [];
+
+  myCourses: ICourseCardData[] = [];
+  topRatedCourses: ICourseCardData[] = [];
 
   ngOnInit() {
+    this.loadMyCourses();
     this.loadTopRated();
   }
 
-  loadTopRated() {
-    this.courseService.getTopRatedCourses().subscribe({
-      next: (data) => {
 
-        this.featuredCourses = data.slice(0, 4);
+  loadMyCourses() {
+    this.courseService.getMyCourses().subscribe({
+      next: (data) => {
+        this.myCourses = data.slice(0, 4);
       },
       error: (err) => {
-        console.error('Error fetching courses', err);
-        this.featuredCourses = [];
+        console.error('Error fetching my courses', err);
+        this.myCourses = [];
       }
     });
   }
 
 
-  onCourseClick(slug: string) {
-    this.router.navigate(['/course', slug]);
+  loadTopRated() {
+    this.courseService.getTopRatedCourses().subscribe({
+      next: (data) => {
+        this.topRatedCourses = data.slice(0, 4);
+      },
+      error: (err) => {
+        console.error('Error fetching top rated', err);
+        this.topRatedCourses = [];
+      }
+    });
   }
 
-
-  onViewAllCourses() {
-    this.router.navigate(['/courses']);
+  onCourseClick(slug: string) {
+    this.router.navigate(['/course', slug]);
   }
 }

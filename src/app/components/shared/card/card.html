@@ -3,11 +3,6 @@
   class="group flex flex-col h-full bg-[var(--surface)] border border-[var(--outline)] rounded-[20px] overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl cursor-pointer"
 >
   <div class="relative h-40 md:h-44 shrink-0 overflow-hidden">
-    @if (courseData.badge) {
-      <span class="absolute top-3 left-3 z-10 bg-[var(--primary)] text-white text-[10px] md:text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-        {{ courseData.badge }}
-      </span>
-    }
     <img
       [src]="courseData.image"
       alt="course"

@@ -68,23 +68,44 @@ export const routes: Routes = [
 
   // Private — User dashboard
   {
-    path: 'user-dashboard',
-    component: PrivateLayout,
-    canActivate: [authGuard],
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('./pages/user-dashboard/user-dashboard').then(m => m.UserDashboard)
-      }
-    ]
-  },
-  {
-    path: 'dashboard',
-    canActivate: [authGuard],
-    loadChildren: () =>
-      import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
-  },
+  path: 'user-dashboard',
+  component: PrivateLayout,
+  canActivate: [authGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./pages/user-dashboard/user-dashboard').then(m => m.UserDashboard)
+    }
+  ]
+},
+{
+  path: 'dashboard',
+  loadChildren: () =>
+    import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
+},
+{
+  path: 'explore',
+  component: PrivateLayout,
+  canActivate: [authGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./pages/explore/explore').then(m => m.Explore)
+    },
+    {
+      path: 'packages/:slug',
+      loadComponent: () =>
+        import('./pages/package-details/package-details').then(m => m.PackageDetails)
+    }
+  ]
+},
+{
+  path: 'home',
+  loadComponent: () =>
+    import('./pages/home/home').then(m => m.Home)
+},
 
   // Catch all
   { path: '**', redirectTo: '' },

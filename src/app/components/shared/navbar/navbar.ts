@@ -85,11 +85,11 @@ export class NavbarComponent {
   get isLoggedIn() {
     return this.authService.isLoggedIn();
   }
+
   // 🔹 Check if we are in Explore page
   get isExplorePage() {
     return this.currentUrl ? this.currentUrl.includes('/explore') : false;
   }
-
   toggleProfileMenu() {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }

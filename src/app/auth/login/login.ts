@@ -59,7 +59,7 @@ export class Login {
           timer:             1500,
           showConfirmButton: false,
         }).then(() => {
-         
+
           const redirectUrl = localStorage.getItem('redirectUrl') || '/user-dashboard';
           localStorage.removeItem('redirectUrl');
           this.router.navigate([redirectUrl]);
