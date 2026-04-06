@@ -30,7 +30,7 @@
           routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]"
         >
-          My Courses
+         Courses
         </a>
 
         <a
@@ -40,16 +40,15 @@
         >
           Explore
         </a>
-
-        @if (isLoggedIn) {
-          <a
-            routerLink="/"
-            routerLinkActive="text-[var(--primary)] font-semibold"
-            class="text-[var(--text-secondary)] hover:text-[var(--primary)]"
-          >
-            Dashboard
-          </a>
-        }
+@if (isLoggedIn) {
+  <a
+    routerLink="/my-courses"
+    routerLinkActive="text-[var(--primary)] font-semibold"
+    class="text-[var(--text-secondary)] hover:text-[var(--primary)]"
+  >
+    My Courses
+  </a>
+}
       </div>
     </div>
 

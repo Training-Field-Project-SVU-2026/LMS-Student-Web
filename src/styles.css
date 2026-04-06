@@ -94,6 +94,21 @@
   --on-error: #FFFFFF;
 }
 
+body.auth-page {
+  --background: #F3F7F8;
+  --on-background: #102A33;
+  --surface: #FFFFFF;
+  --on-surface: #102A33;
+
+  --text-primary: #102A33;
+  --text-secondary: #37474F;
+  --text-tertiary: #607D8B;
+}
+
+.bg-surface {
+  background-color: var(--surface);
+}
+
 /* Ensure body background & color always follow CSS variables */
 body {
   background-color: var(--background) !important;

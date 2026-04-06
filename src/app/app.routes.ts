@@ -80,6 +80,18 @@ export const routes: Routes = [
   ]
 },
 {
+  path: 'my-courses',
+  component: PrivateLayout,
+  canActivate: [authGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./user-features/pages/my-courses/my-courses').then(m => m.MyCourses)
+    }
+  ]
+},
+{
   path: 'dashboard',
   loadChildren: () =>
     import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
@@ -106,6 +118,7 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/home/home').then(m => m.Home)
 },
+
 
   // Catch all
   { path: '**', redirectTo: '' },
