@@ -13,21 +13,22 @@ import { ICourseDetailRequest } from '../../components/shared/interfaces/course.
   standalone: true,
   imports: [CommonModule],
   templateUrl: './course-details.html',
-  styleUrl:    './course-details.css',
+  styleUrl: './course-details.css',
 })
 export class CourseDetails implements OnInit {
-  private route         = inject(ActivatedRoute);
-  private router        = inject(Router);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private courseService = inject(CourseService);
-  private alert         = inject(AlertService);
-  private destroyRef    = inject(DestroyRef);
+  private alert = inject(AlertService);
+  private destroyRef = inject(DestroyRef);
 
   auth = inject(AuthService);
 
   courseDetail: ICourseDetailRequest | null = null;
-  isLoading   = true;
+  isLoading = true;
   isEnrolling = false;
-  isEnrolled  = signal(false);
+  isEnrolled = signal(false);
+  userServices: any;
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -43,8 +44,8 @@ export class CourseDetails implements OnInit {
     this.courseService.getCourseDetails(slug).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next:  (data) => { this.courseDetail = data; this.isLoading = false; },
-      error: ()     =>   this.isLoading = false,
+      next: (data) => { this.courseDetail = data; this.isLoading = false; },
+      error: () => this.isLoading = false,
     });
   }
 
@@ -52,8 +53,8 @@ export class CourseDetails implements OnInit {
     this.courseService.getMyCourses().pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next:  (courses) => this.isEnrolled.set(courses.some(c => c.slug === slug)),
-      error: ()        => this.isEnrolled.set(false),
+      next: (courses) => this.isEnrolled.set(courses.some(c => c.slug === slug)),
+      error: () => this.isEnrolled.set(false),
     });
   }
 
@@ -89,7 +90,7 @@ export class CourseDetails implements OnInit {
         this.isEnrolling = false;
         this.isEnrolled.set(true);
         localStorage.removeItem('pendingCourseSlug');
-
+        this.userServices.getMyEnrollments();
         this.alert.enrollSuccess(
           this.courseDetail!.title,
           () => this.router.navigate(['/my-courses'])

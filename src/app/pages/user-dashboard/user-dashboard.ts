@@ -7,42 +7,51 @@ import { CourseService } from '../../shared/services/course';
 import { AuthService } from '../../auth/services/auth';
 import { ICourseCardData } from '../../components/shared/interfaces/course.model';
 import { Card } from '../../components/shared/card/card';
+import { User } from '../../user-features/services/user';
+import { EnrolledCourse } from '../../user-features/models/course.model';
+import { CourseCard } from "../../user-features/shared/components/course-card/course-card";
 
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [Card, CommonModule],
+  imports: [Card, CommonModule, CourseCard],
   templateUrl: './user-dashboard.html',
   styleUrl: './user-dashboard.css',
 })
 export class UserDashboard implements OnInit {
 
+  private userServices = inject(User);
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
   private courseService = inject(CourseService);
-  private router        = inject(Router);
-  private auth          = inject(AuthService);
-  private destroyRef    = inject(DestroyRef);
 
-  myCourses: ICourseCardData[] = [];
+
+  dashboardCourses: EnrolledCourse[] = [];
   topRatedCourses: ICourseCardData[] = [];
-
+latestCourse?: EnrolledCourse;
   ngOnInit() {
     this.auth.authReady$.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
-      this.loadMyCourses();
+      this.loadDashboardCourses();
       this.loadTopRated();
     });
   }
 
-  private loadMyCourses() {
-    this.courseService.getMyCourses().pipe(
+  private loadDashboardCourses() {
+    this.userServices.getMyEnrollments();
+
+    this.userServices.courses$.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next:  (data) => this.myCourses = data,
-      error: ()     => this.myCourses = [],
+      next: (courses) => {
+        this.dashboardCourses = courses.slice(0, 4);
+        this.latestCourse = courses[0];
+      },
+      error: () => this.dashboardCourses = [],
     });
   }
-
   private loadTopRated() {
     this.courseService.getTopRatedCourses(4).pipe(
       catchError(() => of([])),
@@ -54,5 +63,8 @@ export class UserDashboard implements OnInit {
 
   onCourseClick(slug: string) {
     this.router.navigate(['/course', slug]);
+  }
+  goToMyCourses() {
+    this.router.navigate(['/my-courses']);
   }
 }
