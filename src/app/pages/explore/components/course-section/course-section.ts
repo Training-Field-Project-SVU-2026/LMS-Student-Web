@@ -62,4 +62,8 @@ export class CourseSection implements OnInit {
     this.isLoadingMore = true;
     this.loadCourses();
   }
+
+  updateToDefault(event: Event) {
+    (event.target as HTMLImageElement).src = 'images/default_image.jpeg';
+  }
 }

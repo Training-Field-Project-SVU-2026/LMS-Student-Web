@@ -1,35 +1,111 @@
-<section class="px-6 py-8 max-w-7xl mx-auto">
+<section class="px-6 py-10 max-w-7xl mx-auto">
 
-  <!-- Header -->
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">My Courses</h1>
-    <p class="text-sm text-gray-500 mt-1">Manage your learning journey and track progress.</p>
+  <!-- ── Page Header ── -->
+  <div class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-[var(--primary)] mb-1">Dashboard</p>
+      <h1 class="text-3xl font-bold text-[var(--text-primary)]">My Courses</h1>
+      <p class="text-sm text-[var(--text-tertiary)] mt-1">
+        Track your progress and continue where you left off.
+      </p>
+    </div>
+
+    <!-- Stats pills – shown only when courses are loaded -->
+    @if (!isLoading && !error && courses.length > 0) {
+      <div class="flex items-center gap-3 flex-wrap">
+
+        <!-- Total -->
+        <span class="flex items-center gap-1.5 text-xs font-semibold
+                     bg-[var(--surface)] border border-[var(--outline)]
+                     text-[var(--text-secondary)] px-3 py-1.5 rounded-full">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          {{ courses.length }} Total
+        </span>
+
+        <!-- In progress -->
+        <span class="flex items-center gap-1.5 text-xs font-semibold
+                     bg-blue-500/10 border border-blue-500/20
+                     text-blue-500 px-3 py-1.5 rounded-full">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
+               style="width:12px;height:12px;flex-shrink:0">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          {{ inProgressCount }} In Progress
+        </span>
+
+        <!-- Completed -->
+        <span class="flex items-center gap-1.5 text-xs font-semibold
+                     bg-emerald-500/10 border border-emerald-500/20
+                     text-emerald-500 px-3 py-1.5 rounded-full">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="3" style="width:12px;height:12px;flex-shrink:0">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {{ completedCount }} Completed
+        </span>
+
+      </div>
+    }
   </div>
 
-  <!-- Loading -->
-  <div *ngIf="isLoading" class="flex justify-center items-center py-24">
-    <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-  </div>
+  <!-- ── Loading ── -->
+  @if (isLoading) {
+    <div class="flex justify-center items-center py-24">
+      <div class="w-9 h-9 border-4 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  }
 
-  <!-- Error -->
-  <div *ngIf="error && !isLoading" class="text-center py-16 text-red-500">
-    {{ error }}
-  </div>
+  <!-- ── Error ── -->
+  @if (error && !isLoading) {
+    <div class="flex flex-col items-center gap-3 py-20 text-[var(--error)]">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5" style="width:36px;height:36px;flex-shrink:0">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <p class="text-sm font-medium">{{ error }}</p>
+    </div>
+  }
 
-  <!-- Empty State -->
-  <div *ngIf="!isLoading && !error && courses.length === 0" class="text-center py-16 text-gray-400">
-    <p class="text-lg">You haven't enrolled in any courses yet.</p>
-  </div>
+  <!-- ── Empty State ── -->
+  @if (!isLoading && !error && courses.length === 0) {
+    <div class="flex flex-col items-center justify-center py-24 gap-5
+                bg-[var(--surface)] border-2 border-dashed border-[var(--outline)]
+                rounded-3xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-[var(--background)] border border-[var(--outline)]
+                  flex items-center justify-center text-[var(--primary)]">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;flex-shrink:0">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="font-bold text-lg text-[var(--text-primary)]">No courses yet</h3>
+        <p class="text-sm text-[var(--text-tertiary)] mt-1 max-w-xs">
+          You haven't enrolled in any courses yet. Explore our catalog to get started.
+        </p>
+      </div>
+      <a routerLink="/explore"
+         class="px-5 py-2 rounded-xl bg-[var(--primary)] text-white
+                text-sm font-semibold hover:bg-[var(--primary-hover)] transition-colors">
+        Explore Courses →
+      </a>
+    </div>
+  }
 
-  <!-- Course Grid -->
-  <div
-    *ngIf="!isLoading && !error && courses.length > 0"
-    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-  >
-    <app-user-course-card
-      *ngFor="let course of courses"
-      [course]="course"
-    />
-  </div>
+  <!-- ── Course Grid ── -->
+  @if (!isLoading && !error && courses.length > 0) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      @for (course of courses; track course.slug) {
+        <app-user-course-card [course]="course" />
+      }
+    </div>
+  }
 
 </section>

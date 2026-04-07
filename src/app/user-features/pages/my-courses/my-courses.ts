@@ -13,6 +13,8 @@ export class MyCourses implements OnInit {
   courses: EnrolledCourse[] = [];
   isLoading = true;
   error: string | null = null;
+  inProgressCount: number = 0;
+  completedCount: number = 0;
 
   constructor(private userServices: User) { }
 
@@ -27,6 +29,7 @@ export class MyCourses implements OnInit {
       error: (err) => {
         this.error = 'Failed to load courses. Please try again.';
         this.isLoading = false;
+
       }
     });
   }

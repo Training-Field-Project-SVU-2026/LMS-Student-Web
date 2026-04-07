@@ -6,39 +6,74 @@
 
   <div class="space-y-6">
     @for (track of learningTracks; track track.slug) {
-      <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden shadow-sm">
+    <div
+      class="bg-[var(--surface)] border border-[var(--outline)] rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden shadow-sm">
 
-        <div class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center justify-center shrink-0 border border-[var(--outline)] overflow-hidden">
-           @if (track.image) {
-             <img [src]="track.image" alt="track" class="w-full h-full object-cover">
-           } @else {
-             <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
-           }
-        </div>
-
-        <div class="flex-grow">
-
-
-          <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{ track.title }}</h3>
-          <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">{{ track.description }}</p>
-
-          <div class="flex gap-6 text-[var(--text-tertiary)] text-[12px] font-medium">
-            <span>📚 {{ track.students_count }} Courses</span> <span>⭐ {{ track.avg_rating }} Rating</span>
-            <span>💰 {{ track.price }}</span>
-          </div>
-        </div>
-
-        <div class="mt-auto md:mt-0">
-          <button [routerLink]="['/explore', 'packages', track.slug]" class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">
-            Join now
-          </button>
-        </div>
-
+      <div
+        class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center justify-center shrink-0 border border-[var(--outline)] overflow-hidden">
+        @if (track.image) {
+        <img [src]="track.image" alt="" class="w-full h-full object-cover" (error)="updateToDefault($event)">
+        } @else {
+        <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
+        }
       </div>
+
+      <div class="flex-grow">
+
+
+        <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{ track.title }}</h3>
+        <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">{{ track.description }}</p>
+
+        <div class="flex gap-6 text-[var(--text-tertiary)] text-[12px] font-medium">
+
+          <!-- Courses count -->
+          <span class="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              style="flex-shrink:0">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            {{ track.students_count }} Courses
+          </span>
+
+          <!-- Average rating -->
+          <span class="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              style="flex-shrink:0;color:#f59e0b">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            {{ track.avg_rating }} Rating
+          </span>
+
+          <!-- Price -->
+          <span class="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              style="flex-shrink:0">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+            {{ track.price }}
+          </span>
+
+        </div>
+      </div>
+
+      <div class="mt-auto md:mt-0">
+        <button [routerLink]="['/explore', 'packages', track.slug]"
+          class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">
+          Join now
+        </button>
+      </div>
+
+    </div>
     } @empty {
-      <div class="text-center p-10 bg-[var(--background)] rounded-2xl">
-        <p class="text-[var(--text-tertiary)]">No tracks available right now.</p>
-      </div>
+    <div class="text-center p-10 bg-[var(--background)] rounded-2xl">
+      <p class="text-[var(--text-tertiary)]">No tracks available right now.</p>
+    </div>
     }
   </div>
 </div>
@@ -53,45 +88,41 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @for (course of manyCourses; track course.slug) {
-      <a [routerLink]="['/course', course.slug]"
-         class="block cursor-pointer transition-transform hover:scale-[1.02]">
-        <app-card [courseData]="course"></app-card>
-      </a>
+    <a [routerLink]="['/course', course.slug]" class="block cursor-pointer transition-transform hover:scale-[1.02]">
+      <app-card [courseData]="course"></app-card>
+    </a>
     } @empty {
-      @for (i of [1,2,3,4]; track i) {
-        <div class="h-64 bg-[var(--surface)] animate-pulse
+    @for (i of [1,2,3,4]; track i) {
+    <div class="h-64 bg-[var(--surface)] animate-pulse
                     rounded-2xl border border-[var(--outline)]"></div>
-      }
+    }
     }
   </div>
 
   <!-- View All / Load More -->
   @if (hasMore) {
-    <div class="flex justify-center mt-10">
-      <button
-        (click)="loadMore()"
-        [disabled]="isLoadingMore"
-        class="px-10 py-3 rounded-xl border-2 border-[var(--primary)]
+  <div class="flex justify-center mt-10">
+    <button (click)="loadMore()" [disabled]="isLoadingMore" class="px-10 py-3 rounded-xl border-2 border-[var(--primary)]
                text-[var(--primary)] font-bold hover:bg-[var(--primary)]
                hover:text-white transition-all disabled:opacity-50
                disabled:cursor-not-allowed">
-        @if (isLoadingMore) {
-          <span class="flex items-center gap-2">
-            <span class="w-4 h-4 border-2 border-current border-t-transparent
+      @if (isLoadingMore) {
+      <span class="flex items-center gap-2">
+        <span class="w-4 h-4 border-2 border-current border-t-transparent
                          rounded-full animate-spin"></span>
-            Loading...
-          </span>
-        } @else {
-          View all courses →
-        }
-      </button>
-    </div>
+        Loading...
+      </span>
+      } @else {
+      View all courses →
+      }
+    </button>
+  </div>
   }
 
   @if (!hasMore && manyCourses.length > 0) {
-    <p class="text-center mt-8 text-sm text-[var(--text-tertiary)]">
-      You've seen all {{ manyCourses.length }} courses
-    </p>
+  <p class="text-center mt-8 text-sm text-[var(--text-tertiary)]">
+    You've seen all {{ manyCourses.length }} courses
+  </p>
   }
 
 </div>

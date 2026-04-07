@@ -1,168 +1,148 @@
 @if (courseDetail) {
-  <div class="min-h-screen bg-[var(--background)] py-12 px-4 md:px-8">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div class="lg:col-span-2 space-y-8">
-        <section>
-          <h1
-            class="font-display text-[var(--text-primary)] mt-4 text-3xl md:text-4xl font-bold leading-tight"
-          >
-            {{ courseDetail.title }}
-          </h1>
+<div class="min-h-screen bg-[var(--background)] py-12 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-8">
+      <section>
+        <h1 class="font-display text-[var(--text-primary)] mt-4 text-3xl md:text-4xl font-bold leading-tight">
+          {{ courseDetail.title }}
+        </h1>
 
-          <div class="flex flex-wrap items-center gap-4 mt-4">
-            <div class="flex items-center text-yellow-500 bg-yellow-50 px-2 py-1 rounded-lg">
-              <span class="font-bold mr-1">{{ courseDetail.avg_rating || '0.0' }}</span>
-              <span class="text-sm">⭐</span>
-            </div>
-
-            <span class="text-[var(--text-tertiary)] text-sm">
-              ({{ courseDetail.ratings_count || 0 }} reviews)
-            </span>
-
-            <span class="text-[var(--text-tertiary)] text-sm border-l pl-4 border-[var(--outline)]">
-              {{ courseDetail.student_enrollment_count || 0 }} students enrolled
-            </span>
+        <div class="flex flex-wrap items-center gap-4 mt-4">
+          <div class="flex items-center text-yellow-500 bg-yellow-50 px-2 py-1 rounded-lg">
+            <span class="font-bold mr-1">{{ courseDetail.avg_rating || '0.0' }}</span>
+            <span class="text-sm">⭐</span>
           </div>
 
-          <div class="text-[var(--text-secondary)] mt-4 text-sm flex flex-wrap items-center gap-2">
-            <span>Created by</span>
-            <span class="text-[var(--primary)] font-semibold hover:underline cursor-pointer">
-              {{ courseDetail.instructor_firstname }} {{ courseDetail.instructor_lastname }}
-            </span>
-            <span class="hidden md:inline mx-2">•</span>
-            <span>Last updated {{ courseDetail.created_at | date: 'MMM yyyy' }}</span>
-            <span class="mx-2">•</span>
-            <span>English</span>
-          </div>
-        </section>
+          <span class="text-[var(--text-tertiary)] text-sm">
+            ({{ courseDetail.ratings_count || 0 }} reviews)
+          </span>
 
-        <section
-          class="bg-[var(--surface)] p-8 rounded-2xl border border-[var(--outline)] shadow-sm"
-        >
-          <h2 class="text-xl font-bold text-[var(--text-primary)] mb-4">About this course</h2>
-          <p class="font-body text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
-            {{ courseDetail.description }}
-          </p>
-        </section>
+          <span class="text-[var(--text-tertiary)] text-sm border-l pl-4 border-[var(--outline)]">
+            {{ courseDetail.student_enrollment_count || 0 }} students enrolled
+          </span>
+        </div>
 
-        <section>
-          <h2 class="text-xl font-bold text-[var(--text-primary)] mb-6">Your Instructor</h2>
-          <div
-            class="flex flex-col md:flex-row items-start gap-6 bg-[var(--surface)] p-6 rounded-2xl border border-[var(--outline)]"
-          >
-            <img
-              [src]="courseDetail.instructor_image || 'assets/images/default-avatar.png'"
-              alt="Instructor"
-              class="w-24 h-24 rounded-2xl object-cover border-2 border-[var(--outline)] shadow-sm"
-            />
-            <div class="flex-1">
-              <h3 class="text-xl font-bold text-[var(--text-primary)]">
-                {{ courseDetail.instructor_firstname }} {{ courseDetail.instructor_lastname }}
-              </h3>
-              <p class="font-body text-[var(--text-secondary)] text-sm leading-relaxed mt-3 italic">
-                {{ courseDetail.instructor_bio || 'Expert instructor at our platform.' }}
-              </p>
-            </div>
-          </div>
-        </section>
-      </div>
+        <div class="text-[var(--text-secondary)] mt-4 text-sm flex flex-wrap items-center gap-2">
+          <span>Created by</span>
+          <span class="text-[var(--primary)] font-semibold hover:underline cursor-pointer">
+            {{ courseDetail.instructor_firstname }} {{ courseDetail.instructor_lastname }}
+          </span>
+          <span class="hidden md:inline mx-2">•</span>
+          <span>Last updated {{ courseDetail.created_at | date: 'MMM yyyy' }}</span>
+          <span class="mx-2">•</span>
+          <span>English</span>
+        </div>
+      </section>
 
-      <div class="lg:col-span-1">
+      <section class="bg-[var(--surface)] p-8 rounded-2xl border border-[var(--outline)] shadow-sm">
+        <h2 class="text-xl font-bold text-[var(--text-primary)] mb-4">About this course</h2>
+        <p class="font-body text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
+          {{ courseDetail.description }}
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold text-[var(--text-primary)] mb-6">Your Instructor</h2>
         <div
-          class="sticky top-8 bg-[var(--surface)] rounded-2xl border border-[var(--outline)] shadow-xl overflow-hidden"
-        >
-          <div class="aspect-video relative group overflow-hidden">
-            <img
-              [src]="courseDetail.image"
-              alt="Course cover"
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div
-              class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center"
+          class="flex flex-col md:flex-row items-start gap-6 bg-[var(--surface)] p-6 rounded-2xl border border-[var(--outline)]">
+          <img [src]="courseDetail.instructor_image || 'assets/images/default-avatar.png'" alt="Instructor"
+            class="w-24 h-24 rounded-2xl object-cover border-2 border-[var(--outline)] shadow-sm" />
+          <div class="flex-1">
+            <h3 class="text-xl font-bold text-[var(--text-primary)]">
+              {{ courseDetail.instructor_firstname }} {{ courseDetail.instructor_lastname }}
+            </h3>
+            <p class="font-body text-[var(--text-secondary)] text-sm leading-relaxed mt-3 italic">
+              {{ courseDetail.instructor_bio || 'Expert instructor at our platform.' }}
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="lg:col-span-1">
+      <div
+        class="sticky top-8 bg-[var(--surface)] rounded-2xl border border-[var(--outline)] shadow-xl overflow-hidden">
+        <div class="aspect-video relative group overflow-hidden">
+          <img [src]="courseDetail.image" alt="Course cover"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <div
+            class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center">
+            <span class="text-white bg-[var(--primary)] p-3 rounded-full">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
             >
-              <span
-                class="text-white bg-[var(--primary)] p-3 rounded-full shadow-lg transform group-hover:scale-110 transition-transform"
-                >play</span
-              >
-            </div>
+          </div>
+        </div>
+
+        <div class="p-6">
+          <div class="mb-4">
+            <span class="text-3xl font-bold text-[var(--text-primary)]">
+              {{
+              courseDetail.price === '0.00' || courseDetail.price === '0'
+              ? 'Free'
+              : (courseDetail.price | currency)
+              }}
+            </span>
           </div>
 
-          <div class="p-6">
-            <div class="mb-4">
-              <span class="text-3xl font-bold text-[var(--text-primary)]">
-                {{
-                  courseDetail.price === '0.00' || courseDetail.price === '0'
-                    ? 'Free'
-                    : (courseDetail.price | currency)
-                }}
-              </span>
-            </div>
-
-            <button
-              (click)="onEnroll()"
-              [disabled]="isLoading || isEnrolling"
-              class="w-full font-bold py-4 rounded-xl transition-all mb-4 shadow-lg active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
-              [ngClass]="{
+          <button (click)="onEnroll()" [disabled]="isLoading || isEnrolling"
+            class="w-full font-bold py-4 rounded-xl transition-all mb-4 shadow-lg active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+            [ngClass]="{
                 'bg-[var(--secondary)] text-[var(--on-secondary)]': isEnrolled(),
                 'bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white': !isEnrolled(),
-              }"
-            >
-              @if (isEnrolling) {
-                <span class="flex items-center justify-center gap-2">
-                  <span
-                    class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-                  ></span>
-                  Enrolling...
-                </span>
-              } @else if (isEnrolled()) {
-                Already Enrolled
-              } @else if (!auth.isLoggedIn()) {
-                Login to Enroll
-              } @else {
-                Enroll Now
-              }
-            </button>
+              }">
+            @if (isEnrolling) {
+            <span class="flex items-center justify-center gap-2">
+              <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Enrolling...
+            </span>
+            } @else if (isEnrolled()) {
+            Already Enrolled
+            } @else if (!auth.isLoggedIn()) {
+            Login to Enroll
+            } @else {
+            Enroll Now
+            }
+          </button>
 
-            <p class="text-center text-xs text-[var(--text-tertiary)] mb-6">
-              30-Day Money-Back Guarantee
+          <p class="text-center text-xs text-[var(--text-tertiary)] mb-6">
+            30-Day Money-Back Guarantee
+          </p>
+
+          <div class="space-y-4 text-sm text-[var(--text-secondary)]">
+            <p class="font-bold text-[var(--text-primary)] border-b pb-2">
+              This course includes:
             </p>
 
-            <div class="space-y-4 text-sm text-[var(--text-secondary)]">
-              <p class="font-bold text-[var(--text-primary)] border-b pb-2">
-                This course includes:
-              </p>
+            <div class="flex items-center gap-3">
+              <span class="w-5 text-center">📈</span>
+              <span>Level: <strong>{{ courseDetail.level }}</strong></span>
+            </div>
 
-              <div class="flex items-center gap-3">
-                <span class="w-5 text-center">📈</span>
-                <span
-                  >Level: <strong>{{ courseDetail.level }}</strong></span
-                >
-              </div>
+            <div class="flex items-center gap-3">
+              <span class="w-5 text-center">⏰</span>
+              <span>Full lifetime access</span>
+            </div>
 
-              <div class="flex items-center gap-3">
-                <span class="w-5 text-center">⏰</span>
-                <span>Full lifetime access</span>
-              </div>
+            <div class="flex items-center gap-3">
+              <span class="w-5 text-center">📱</span>
+              <span>Access on mobile and TV</span>
+            </div>
 
-              <div class="flex items-center gap-3">
-                <span class="w-5 text-center">📱</span>
-                <span>Access on mobile and TV</span>
-              </div>
-
-              <div class="flex items-center gap-3 border-t pt-4 font-medium text-[var(--primary)]">
-                <span>Category: {{ courseDetail.category }}</span>
-              </div>
+            <div class="flex items-center gap-3 border-t pt-4 font-medium text-[var(--primary)]">
+              <span>Category: {{ courseDetail.category }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 } @else {
-  <div class="flex flex-col justify-center items-center min-h-screen gap-4">
-    <div
-      class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"
-    ></div>
-    <p class="text-[var(--text-secondary)] animate-pulse font-medium">Loading Course Content...</p>
-  </div>
+<div class="flex flex-col justify-center items-center min-h-screen gap-4">
+  <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
+  <p class="text-[var(--text-secondary)] animate-pulse font-medium">Loading Course Content...</p>
+</div>
 }

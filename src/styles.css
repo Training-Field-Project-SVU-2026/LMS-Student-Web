@@ -108,11 +108,27 @@
 .bg-surface {
   background-color: var(--surface);
 }
+svg {
+  flex-shrink: 0;
+}
+svg:hover {
+  transform: scale(1.1);
+  transition: 0.2s;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--input-bg, #ffffff) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
 
 svg {
   width: 20px;
   height: 20px;
   color: var(--text-primary);
+
 }
 
 /* Ensure body background & color always follow CSS variables */
@@ -125,8 +141,7 @@ body {
 
 :root {
   --font-family: 'Inter', sans-serif;
-
-
+  --tab-active-bg: #ffffff;
   --fs-display: 48px;
   --fs-h2: 30px;
   --fs-body: 16px;
