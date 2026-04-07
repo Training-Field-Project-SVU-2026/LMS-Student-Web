@@ -1,0 +1,35 @@
+<section class="px-6 py-8 max-w-7xl mx-auto">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">My Courses</h1>
+    <p class="text-sm text-gray-500 mt-1">Manage your learning journey and track progress.</p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-24">
+    <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !isLoading" class="text-center py-16 text-red-500">
+    {{ error }}
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && courses.length === 0" class="text-center py-16 text-gray-400">
+    <p class="text-lg">You haven't enrolled in any courses yet.</p>
+  </div>
+
+  <!-- Course Grid -->
+  <div
+    *ngIf="!isLoading && !error && courses.length > 0"
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+  >
+    <app-user-course-card
+      *ngFor="let course of courses"
+      [course]="course"
+    />
+  </div>
+
+</section>

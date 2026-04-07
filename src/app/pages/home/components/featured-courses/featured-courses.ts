@@ -1,54 +1,74 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { AlertService } from '../../../../shared/services/alert';
-import { Card } from "../../../../components/shared/card/card";
+import { Component, inject, OnInit, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { CourseService } from '../../../../shared/services/course';
-import { ICourseCardData } from '../../../../components/shared/interfaces/course.model';
 import { CommonModule } from '@angular/common';
-
+import { catchError, of } from 'rxjs';
+import { Card } from '../../../../components/shared/card/card';
+import { CourseService } from '../../../../shared/services/course';
+import { AuthService } from '../../../../auth/services/auth';
+import { AlertService } from '../../../../shared/services/alert';
+import { ICourseCardData } from '../../../../components/shared/interfaces/course.model';
 
 @Component({
   selector: 'app-featured-courses',
   standalone: true,
-  imports: [Card,CommonModule],
+  imports: [Card, CommonModule],
   templateUrl: './featured-courses.html',
   styleUrl: './featured-courses.css',
 })
 export class FeaturedCourses implements OnInit {
   private courseService = inject(CourseService);
-  private alertService=inject(AlertService)
-  private router = inject(Router);
+  private alertService  = inject(AlertService);
+  private auth          = inject(AuthService);
+  private router        = inject(Router);
+  private destroyRef    = inject(DestroyRef);
 
-  courses:ICourseCardData[]=[]
+  courses:       ICourseCardData[] = [];
+  isLoadingMore  = false;
 
-ngOnInit() {
-  this.courseService.getTopRatedCourses().subscribe({
-    next: (data) => this.courses = data.slice(0, 4),
-    error: () => {
-      console.error('topRated fail, fallback to all courses');
-      this.courseService.getAllCourses().subscribe({
-        next: (all) => this.courses = all.slice(0, 4),
-        error: (e) => (this.courses = [])
-      });
-    }
-  });
-}
-onCourseClick(slug:string){
-const token=localStorage.getItem('access_token');
-if(!token){
-  this.alertService.requireLogin('You need to login first to view this course');
-  return;
-}
-this.router.navigate(['/course',slug])
-}
+  private currentPage     = 1;
+  private readonly pageSize = 4;
+  totalPages = 1;
 
-onViewAllCourses() {
-  this.router.navigate(['/courses']);
-}
-trackBySlug(index: number, course: ICourseCardData) {
-  return course.slug;
-}
-}
+  get hasMore(): boolean {
+    return this.currentPage <= this.totalPages;
+  }
 
-export type { ICourseCardData };
+  ngOnInit() {
+    //  top rated
+    this.courseService.getTopRatedCourses().pipe(
+      catchError(() => of([])),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (data) => this.courses = data.slice(0, 4),
+    });
+  }
 
+  loadMore() {
+    if (this.isLoadingMore) return;
+    this.isLoadingMore = true;
+
+    this.courseService.getAllCoursesPaged(this.currentPage, this.pageSize).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: ({ courses, totalPages }) => {
+        const existingSlugs = new Set(this.courses.map(c => c.slug));
+        const newCourses    = courses.filter(c => !existingSlugs.has(c.slug));
+
+        this.courses      = [...this.courses, ...newCourses];
+        this.totalPages   = totalPages;
+        this.currentPage++;
+        this.isLoadingMore = false;
+      },
+      error: () => this.isLoadingMore = false,
+    });
+  }
+
+  onCourseClick(slug: string) {
+    this.router.navigate(['/course', slug]);
+  }
+
+  onViewAllCourses() {
+    this.router.navigate(['/explore']);
+  }
+}

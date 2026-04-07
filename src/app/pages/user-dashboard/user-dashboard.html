@@ -2,13 +2,13 @@
   <div class="max-w-7xl mx-auto space-y-16">
 
     <section>
-      <div class="bg-[#E9F2F2] rounded-[32px] p-8 md:p-12 flex flex-col lg:flex-row justify-between items-center relative overflow-hidden shadow-sm border border-[var(--outline)]/50">
+      <div
+        class="bg-surface rounded-[32px] p-8 md:p-12 flex flex-col lg:flex-row justify-between items-center relative overflow-hidden shadow-sm border border-[var(--outline)]/50">
         <div class="z-10 text-center lg:text-left">
-          <h1 class="font-display text-[var(--text-primary)] mb-4 leading-tight">
-            Welcome back, <br class="hidden md:block"> Ready to study today?
-          </h1>
+          <h1 class="font-display text-[var(--text-primary)] mb-4 leading-tight">Ready to study today?</h1>
           <p class="font-body text-[var(--text-secondary)] mb-8 opacity-90">Continue your journey to mastery.</p>
-          <button class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-4 rounded-2xl fw-bold hover:bg-[var(--primary-hover)] transition-all shadow-lg shadow-teal-900/10 active:scale-95">
+          <button
+            class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-4 rounded-2xl fw-bold hover:bg-[var(--primary-hover)] transition-all shadow-lg shadow-teal-900/10 active:scale-95">
             Resume Last Lesson
           </button>
         </div>
@@ -20,8 +20,10 @@
       <h2 class="text-[var(--text-primary)] font-title mb-8 text-left">Your Progress</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div class="bg-[var(--surface)] p-8 rounded-[32px] border border-[var(--outline)] shadow-sm flex items-center gap-6 hover:shadow-md transition-all group">
-          <div class="w-16 h-16 bg-[#F0F7FF] rounded-2xl flex items-center justify-center text-[#2D8CFF] group-hover:scale-105 transition-transform">
+        <div
+          class="bg-[var(--surface)] p-8 rounded-[32px] border border-[var(--outline)] shadow-sm flex items-center gap-6 hover:shadow-md transition-all group">
+          <div
+            class="w-16 h-16 bg-[#F0F7FF] rounded-2xl flex items-center justify-center text-[#2D8CFF] group-hover:scale-105 transition-transform">
             <i class="fas fa-book-open text-2xl"></i>
           </div>
           <div class="flex flex-col">
@@ -30,8 +32,10 @@
           </div>
         </div>
 
-        <div class="bg-[var(--surface)] p-8 rounded-[32px] border border-[var(--outline)] shadow-sm flex items-center gap-6 hover:shadow-md transition-all group">
-          <div class="w-16 h-16 bg-[#F0FFF8] rounded-2xl flex items-center justify-center text-[#00C566] group-hover:scale-105 transition-transform">
+        <div
+          class="bg-[var(--surface)] p-8 rounded-[32px] border border-[var(--outline)] shadow-sm flex items-center gap-6 hover:shadow-md transition-all group">
+          <div
+            class="w-16 h-16 bg-[#F0FFF8] rounded-2xl flex items-center justify-center text-[#00C566] group-hover:scale-105 transition-transform">
             <i class="fas fa-chart-line text-2xl"></i>
           </div>
           <div class="flex flex-col">
@@ -40,8 +44,10 @@
           </div>
         </div>
 
-        <div class="bg-[var(--surface)] p-8 rounded-[32px] border border-[var(--outline)] shadow-sm flex items-center gap-6 hover:shadow-md transition-all group">
-          <div class="w-16 h-16 bg-[#FFF9F0] rounded-2xl flex items-center justify-center text-[#FF9500] group-hover:scale-105 transition-transform">
+        <div
+          class="bg-[var(--surface)] p-8 rounded-[32px] border border-[var(--outline)] shadow-sm flex items-center gap-6 hover:shadow-md transition-all group">
+          <div
+            class="w-16 h-16 bg-[#FFF9F0] rounded-2xl flex items-center justify-center text-[#FF9500] group-hover:scale-105 transition-transform">
             <i class="fas fa-award text-2xl"></i>
           </div>
           <div class="flex flex-col">
@@ -52,59 +58,69 @@
       </div>
     </section>
 
-   <section class="pb-10">
-  <div class="flex justify-between items-center mb-8">
-    <h2 class="text-[var(--text-primary)] font-title">My Courses</h2>
-    <a class="text-[var(--primary)] fw-bold hover:underline cursor-pointer font-caption uppercase tracking-wider">
-      View All →
-    </a>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-
-   @for (course of myCourses; track course.slug) {
-  <div class="h-full hover:-translate-y-2 transition-transform duration-300 cursor-pointer"
-       (click)="onCourseClick(course.slug)">
-    <app-card [courseData]="course"></app-card>
-  </div>
-}
-
-    @empty {
-      <div class="col-span-full text-center py-20 text-[var(--text-tertiary)]">
-        No courses found.
-      </div>
-    }
-
-  </div>
-</section>
-    <section >
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-        <div>
-          <h2 class="text-[var(--text-primary)] font-title mb-3">Top Rated</h2>
-          <p class="font-body text-[var(--text-secondary)] opacity-80">Our most popular paths for future developers</p>
-        </div>
-        <a class="text-[var(--primary)] fw-bold border-b-2 border-[var(--primary)] hover:text-[var(--primary-hover)] transition cursor-pointer font-caption uppercase tracking-wider">
-          View all courses →
+    <section class="pb-10">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-[var(--text-primary)] font-title">My Courses</h2>
+        <a class="text-[var(--primary)] fw-bold hover:underline cursor-pointer font-caption uppercase tracking-wider">
+          View All →
         </a>
       </div>
 
+    </section>
+    <section>
+      <div class="flex flex-col md:flex-row justify-between
+              items-start md:items-end mb-10 gap-4">
+        <div>
+          <h2 class="text-[var(--text-primary)] font-title mb-3">Top Rated</h2>
+          <p class="font-body text-[var(--text-secondary)] opacity-80">
+            Our most popular paths for future developers
+          </p>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-      @for (course of topRatedCourses; track course.slug) {
-  <div class="h-full hover:-translate-y-2 transition-transform duration-300">
-    <app-card [courseData]="course"></app-card>
-  </div>
-}
-       @empty {
-          <div class="col-span-full text-center py-20 text-[var(--text-tertiary)] bg-[var(--surface)] rounded-[32px] border-2 border-dashed border-[var(--outline)]">
-              <div class="space-y-3">
-                <i class="fas fa-rocket text-4xl opacity-50 mb-2"></i>
-                <h3 class="text-lg font-semibold text-[var(--text-primary)]">Coming Soon!</h3>
-                <p>Our top-rated courses are currently being curated. Stay tuned!</p>
-              </div>
+        @for (course of topRatedCourses; track course.slug) {
+        <div class="h-full hover:-translate-y-2 transition-transform
+                  duration-300 cursor-pointer" (click)="onCourseClick(course.slug)">
+          <app-card [courseData]="course"></app-card>
+        </div>
+        } @empty {
+        <div class="col-span-full text-center py-20 text-[var(--text-tertiary)]
+                  bg-[var(--surface)] rounded-[32px] border-2 border-dashed
+                  border-[var(--outline)]">
+          <div class="space-y-3">
+            <i class="fas fa-rocket text-4xl opacity-50 mb-2"></i>
+            <h3 class="text-lg font-semibold text-[var(--text-primary)]">Coming Soon!</h3>
+            <p>Our top-rated courses are currently being curated. Stay tuned!</p>
           </div>
+        </div>
         }
       </div>
-    </section>
 
-  </div>
-</div>
+      <!-- Load More -->
+      @if (hasMore) {
+      <div class="flex justify-center mt-10">
+        <button (click)="loadMoreTopRated()" [disabled]="isLoadingMore" class="px-10 py-3 rounded-xl border-2 border-[var(--primary)]
+               text-[var(--primary)] font-bold
+               hover:bg-[var(--primary)] hover:text-white
+               transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+          @if (isLoadingMore) {
+          <span class="flex items-center gap-2">
+            <span class="w-4 h-4 border-2 border-current
+                         border-t-transparent rounded-full animate-spin"></span>
+            Loading...
+          </span>
+          } @else {
+          View more →
+          }
+        </button>
+      </div>
+      }
+
+      @if (!hasMore && topRatedCourses.length > 4) {
+      <p class="text-center mt-8 text-sm text-[var(--text-tertiary)]">
+        You've seen all {{ topRatedCourses.length }} courses
+      </p>
+      }
+
+    </section>

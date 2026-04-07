@@ -94,6 +94,27 @@
   --on-error: #FFFFFF;
 }
 
+.auth-page {
+  --background: #F3F7F8 !important;
+  --on-background: #102A33 !important;
+  --surface: #FFFFFF !important;
+  --on-surface: #102A33 !important;
+
+  --text-primary: #102A33 !important;
+  --text-secondary: #37474F !important;
+  --text-tertiary: #607D8B !important;
+}
+
+.bg-surface {
+  background-color: var(--surface);
+}
+
+svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-primary);
+}
+
 /* Ensure body background & color always follow CSS variables */
 body {
   background-color: var(--background) !important;

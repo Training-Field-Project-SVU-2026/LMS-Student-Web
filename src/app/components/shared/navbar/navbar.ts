@@ -1,75 +1,90 @@
-import { Component, effect, inject, DestroyRef } from '@angular/core';
+import { Component, inject, DestroyRef, signal, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ThemeService } from '../../../core/theme';
-import { AlertService } from '../../../shared/services/alert';
 import { AuthService } from '../../../auth/services/auth';
+import { AlertService } from '../../../shared/services/alert';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
-  templateUrl: './navbar.html'
+  templateUrl: './navbar.html',
 })
 export class NavbarComponent {
 
+
   private router = inject(Router);
   private theme = inject(ThemeService);
+  private auth = inject(AuthService);
   private alert = inject(AlertService);
-  private authService = inject(AuthService);
-  // 🔹 Auth & UI State
+  private destroyRef = inject(DestroyRef);
+
+  // ── UI state ────────────────────────────────────────────────────────────
   isProfileMenuOpen = false;
   isMobileMenuOpen = false;
 
-  currentUrl: string = '';
-  userAvatar: string | null = null;
-  username: string | null = null;
 
+  isLoggedIn = this.auth.isLoggedIn;
 
+  username = computed(() => {
+    const user = this.auth.currentUser();
+    if (!user) return null;
+    return `${user.first_name || ''} ${user.last_name || ''}`.trim() || null;
+  });
+
+  userAvatar = computed(() => {
+    const user = this.auth.currentUser();
+    return user?.first_name?.charAt(0).toUpperCase() ?? null;
+  });
+
+  isDark = signal(document.documentElement.classList.contains('dark'));
 
   constructor() {
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        this.currentUrl = event.url;
-      });
 
-    effect(() => {
-      if (this.authService.isLoggedIn()) {
-        const user = this.authService.currentUser();
-        this.username = user
-          ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
-          : null;
-
-        this.userAvatar = user && user.first_name
-          ? user.first_name.charAt(0).toUpperCase()
-          : null;
-
-      } else {
-        this.username = null;
-        this.userAvatar = null;
-      }
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.isProfileMenuOpen = false;
+      this.isMobileMenuOpen = false;
     });
   }
 
+  // ── Close dropdown when clicking outside ────────────────────────────────
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.profile-menu-wrapper')) {
+      this.isProfileMenuOpen = false;
+    }
+  }
 
-  // 🔹 Theme
+  // ── Theme ────────────────────────────────────────────────────────────────
   toggleTheme() {
     this.theme.toggleTheme();
+    this.isDark.set(document.documentElement.classList.contains('dark'));
   }
 
-  get isDark() {
-    return document.documentElement.classList.contains('dark');
-  }
-  // 🔹 Auth Actions
+  // ── Auth actions ─────────────────────────────────────────────────────────
   logout() {
-    this.authService.logout();
-    this.alert.success('You have logged out 👋');
+    this.auth.logout();
+    this.isProfileMenuOpen = false;
   }
 
   goLogin() {
     this.router.navigate(['/auth/login']);
+    this.isMobileMenuOpen = false;
+  }
+
+  goMyCourses() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/user-dashboard']);
+    } else {
+      this.alert.requireLogin('Please login to access My Courses.', '/user-dashboard');
+    }
     this.isMobileMenuOpen = false;
   }
 
@@ -78,23 +93,13 @@ export class NavbarComponent {
     this.isMobileMenuOpen = false;
   }
 
-  // 🔹 Mobile Menu Toggle
-  toggleMobileMenu() {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-  }
-  get isLoggedIn() {
-    return this.authService.isLoggedIn();
-  }
-
-  // 🔹 Check if we are in Explore page
-  get isExplorePage() {
-    return this.currentUrl ? this.currentUrl.includes('/explore') : false;
-  }
-  toggleProfileMenu() {
-    this.isProfileMenuOpen = !this.isProfileMenuOpen;
-  }
   goDashboard() {
     this.router.navigate(['/dashboard/profile']);
+    this.isProfileMenuOpen = false;
   }
 
+
+  // ── Mobile ───────────────────────────────────────────────────────────────
+  toggleMobileMenu() { this.isMobileMenuOpen = !this.isMobileMenuOpen; }
+  toggleProfileMenu() { this.isProfileMenuOpen = !this.isProfileMenuOpen; }
 }

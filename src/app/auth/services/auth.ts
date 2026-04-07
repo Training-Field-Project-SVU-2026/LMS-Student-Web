@@ -68,9 +68,15 @@ export class AuthService {
   login(data: LoginRequest): Observable<Student | null> {
     return this.http.post<LoginResponse>(API_ENDPOINTS.login, data).pipe(
       tap((res) => {
-        this.accessToken = res.data.access;
-        localStorage.setItem(this.REFRESH_KEY, res.data.refresh);
+        const access = res.data.tokens.access;
+        const refresh = res.data.tokens.refresh;
+
+        this.accessToken = access;
+
+        localStorage.setItem('token', access);
+        localStorage.setItem(this.REFRESH_KEY, refresh);
         localStorage.setItem(this.SLUG_KEY, res.data.user.slug);
+
         this.isLoggedIn.set(true);
       }),
       switchMap(() => this.fetchCurrentUser())
@@ -84,15 +90,15 @@ export class AuthService {
       API_ENDPOINTS.refreshToken, { refresh }
     ).pipe(
       tap((res) => {
-        this.accessToken = res.access;
+        const access = res.access; 
+        this.accessToken = access;
+        localStorage.setItem('token', access);
         this.isLoggedIn.set(true);
       })
     );
   }
 
   // ─── Fetch Current User ───────────────────────────────────────────────────
-  // Backend returns: { success, status, message, data: Student }
-  // We unwrap .data and set the signal
   fetchCurrentUser(): Observable<Student | null> {
     const slug = localStorage.getItem(this.SLUG_KEY);
     if (!slug) {
@@ -102,7 +108,6 @@ export class AuthService {
 
     return this.http.get<ApiResponse<Student>>(API_ENDPOINTS.studentBySlug(slug)).pipe(
       map(res => {
-        // Handle both wrapped { data: Student } and plain Student (safety net)
         const user: Student = (res as any)?.data ?? res;
         console.log('[Auth] currentUser set to:', user);
         this.currentUser.set(user);
@@ -136,7 +141,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return this.accessToken;
+    return this.accessToken || localStorage.getItem('token');
   }
 
   private clearSession(): void {
@@ -145,6 +150,6 @@ export class AuthService {
     localStorage.removeItem(this.SLUG_KEY);
     this.isLoggedIn.set(false);
     this.currentUser.set(null);
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 }

@@ -39,8 +39,10 @@ export interface LoginResponse {
   status: number;
   message: string;
   data: {
-    access: string;
-    refresh: string;
+    tokens: {
+      access: string;
+      refresh: string;
+    };
     user: {
       first_name: string;
       last_name: string;

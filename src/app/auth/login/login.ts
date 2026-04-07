@@ -17,15 +17,15 @@ export class Login {
 
   loginForm!: FormGroup;
   showPassword = false;
-  isLoading    = false;
+  isLoading = false;
 
   constructor(
-    private fb:          FormBuilder,
+    private fb: FormBuilder,
     private authService: AuthService,
-    private router:      Router
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email:    ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
@@ -37,9 +37,9 @@ export class Login {
   onSubmit() {
     if (this.loginForm.invalid) {
       Swal.fire({
-        icon:  'error',
+        icon: 'error',
         title: 'Invalid form',
-        text:  'Please enter a valid email and password',
+        text: 'Please enter a valid email and password',
       });
       return;
     }
@@ -53,13 +53,26 @@ export class Login {
         this.isLoading = false;
 
         Swal.fire({
-          icon:              'success',
-          title:             'Welcome!',
-          text:              'Logged in successfully',
-          timer:             1500,
+          icon: 'success',
+          title: 'Welcome!',
+          text: 'Logged in successfully',
+          timer: 1500,
           showConfirmButton: false,
         }).then(() => {
 
+
+          const pendingCourse = localStorage.getItem('pendingCourseSlug');
+          if (pendingCourse) {
+            localStorage.removeItem('pendingCourseSlug');
+            this.router.navigate(['/course', pendingCourse]);
+            return;
+          }
+          const pendingPackage = localStorage.getItem('pendingPackageSlug');
+          if (pendingPackage) {
+            localStorage.removeItem('pendingPackageSlug');
+            this.router.navigate(['/explore/packages', pendingPackage]);
+            return;
+          }
           const redirectUrl = localStorage.getItem('redirectUrl') || '/user-dashboard';
           localStorage.removeItem('redirectUrl');
           this.router.navigate([redirectUrl]);
@@ -69,9 +82,9 @@ export class Login {
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
         Swal.fire({
-          icon:  'error',
+          icon: 'error',
           title: 'Login failed',
-          text:  err.error?.detail || err.error?.message || 'Invalid email or password',
+          text: err.error?.detail || err.error?.message || 'Invalid email or password',
         });
       },
 
