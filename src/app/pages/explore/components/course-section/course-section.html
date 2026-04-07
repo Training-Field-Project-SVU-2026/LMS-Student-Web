@@ -1,35 +1,38 @@
+<!-- ── Learning Tracks ───────────────────────────────────────────────────── -->
 <div class="mb-12">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-h2 text-[var(--text-primary)]">Explore Learning Tracks</h2>
-    <a href="#" class="text-[var(--primary)] font-bold text-small">View all tracks →</a>
   </div>
 
   <div class="space-y-6">
     @for (track of learningTracks; track track.slug) {
-      <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden shadow-sm">
+      <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-3xl
+                  p-8 flex flex-col md:flex-row gap-8 items-start
+                  relative overflow-hidden shadow-sm">
 
-        <div class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center justify-center shrink-0 border border-[var(--outline)] overflow-hidden">
-           @if (track.image) {
-             <img [src]="track.image" alt="track" class="w-full h-full object-cover">
-           } @else {
-             <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
-           }
+        <div class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center
+                    justify-center shrink-0 border border-[var(--outline)] overflow-hidden">
+          @if (track.image) {
+            <img [src]="track.image" alt="track" class="w-full h-full object-cover">
+          } @else {
+            <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
+          }
         </div>
 
         <div class="flex-grow">
-
-
           <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{ track.title }}</h3>
           <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">{{ track.description }}</p>
-
           <div class="flex gap-6 text-[var(--text-tertiary)] text-[12px] font-medium">
-            <span>📚 {{ track.students_count }} Courses</span> <span>⭐ {{ track.avg_rating }} Rating</span>
+            <span>📚 {{ track.students_count }} Courses</span>
+            <span>⭐ {{ track.avg_rating }} Rating</span>
             <span>💰 {{ track.price }}</span>
           </div>
         </div>
 
         <div class="mt-auto md:mt-0">
-          <button [routerLink]="['/explore', 'packages', track.slug]" class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">
+          <button [routerLink]="['/explore', 'packages', track.slug]"
+                  class="bg-[var(--primary)] text-[var(--on-primary)]
+                         px-10 py-3 rounded-xl font-bold">
             Join now
           </button>
         </div>
@@ -41,8 +44,39 @@
       </div>
     }
   </div>
+
+  <!-- Load More Tracks -->
+  @if (hasMoreTracks) {
+    <div class="flex justify-center mt-8">
+      <button
+        (click)="loadMoreTracks()"
+        [disabled]="isLoadingMoreTracks"
+        class="px-10 py-3 rounded-xl border-2 border-[var(--primary)]
+               text-[var(--primary)] font-bold hover:bg-[var(--primary)]
+               hover:text-white transition-all disabled:opacity-50
+               disabled:cursor-not-allowed">
+        @if (isLoadingMoreTracks) {
+          <span class="flex items-center gap-2">
+            <span class="w-4 h-4 border-2 border-current
+                         border-t-transparent rounded-full animate-spin"></span>
+            Loading...
+          </span>
+        } @else {
+          View more tracks →
+        }
+      </button>
+    </div>
+  }
+
+  @if (!hasMoreTracks && learningTracks.length > 4) {
+    <p class="text-center mt-6 text-sm text-[var(--text-tertiary)]">
+      You've seen all {{ learningTracks.length }} tracks
+    </p>
+  }
+
 </div>
 
+<!-- ── Many Courses ──────────────────────────────────────────────────────── -->
 <div class="mt-16">
   <div class="flex justify-between items-center mb-6">
     <div class="flex items-center gap-2">
@@ -65,20 +99,20 @@
     }
   </div>
 
-  <!-- View All / Load More -->
-  @if (hasMore) {
+  <!-- Load More Courses -->
+  @if (hasMoreCourses) {
     <div class="flex justify-center mt-10">
       <button
-        (click)="loadMore()"
-        [disabled]="isLoadingMore"
+        (click)="loadMoreCourses()"
+        [disabled]="isLoadingMoreCourses"
         class="px-10 py-3 rounded-xl border-2 border-[var(--primary)]
                text-[var(--primary)] font-bold hover:bg-[var(--primary)]
                hover:text-white transition-all disabled:opacity-50
                disabled:cursor-not-allowed">
-        @if (isLoadingMore) {
+        @if (isLoadingMoreCourses) {
           <span class="flex items-center gap-2">
-            <span class="w-4 h-4 border-2 border-current border-t-transparent
-                         rounded-full animate-spin"></span>
+            <span class="w-4 h-4 border-2 border-current
+                         border-t-transparent rounded-full animate-spin"></span>
             Loading...
           </span>
         } @else {
@@ -88,7 +122,7 @@
     </div>
   }
 
-  @if (!hasMore && manyCourses.length > 0) {
+  @if (!hasMoreCourses && manyCourses.length > 0) {
     <p class="text-center mt-8 text-sm text-[var(--text-tertiary)]">
       You've seen all {{ manyCourses.length }} courses
     </p>

@@ -20,7 +20,7 @@ export const API_ENDPOINTS = {
   studentBySlug: (slug: string) => `${BASE_URL}api/students/${slug}/`,
 
   // ───course topRated ──────────────────────────────────────────
-  coursesTopRated: `${BASE_URL}api/courses/topRated/`,
+  coursesTopRated:(limit:number)=> `${BASE_URL}api/courses/topRated/?limit=${limit}`,
   // enrollments
   myCourses: `${BASE_URL}api/courses/myEnrollments/`,
   // course details
@@ -34,6 +34,10 @@ allCoursesPaged: (page: number, pageSize: number) =>
   `${BASE_URL}api/courses/all/?page=${page}&page_size=${pageSize}`,
   // package
   package: `${BASE_URL}api/packages/all/`,
+  // ── All packages with pagination ──
+  packagePaged: (page: number, pageSize: number) =>
+    `${BASE_URL}api/packages/all/?page=${page}&page_size=${pageSize}`,
+
   //package details
   packageDetails: (slug: string) => `${BASE_URL}api/packages/${slug}/`,
 };

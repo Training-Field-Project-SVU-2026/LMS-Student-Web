@@ -17,49 +17,72 @@ export class CourseSection implements OnInit {
   private courseService = inject(CourseService);
   private destroyRef    = inject(DestroyRef);
 
-  learningTracks: ICourseCardData[] = [];
-  manyCourses:    ICourseCardData[] = [];
+  // ── Packages ──
+  learningTracks:       ICourseCardData[] = [];
+  isLoadingMoreTracks   = false;
+  private tracksPage    = 1;
+  private tracksPageSize = 4;
+  tracksTotalPages      = 1;
 
-  // ── Pagination ──
-  currentPage  = 1;
-  pageSize     = 8;
-  totalPages   = 1;
-  isLoadingMore = false;
+  get hasMoreTracks(): boolean {
+    return this.tracksPage <= this.tracksTotalPages;
+  }
 
-  get hasMore(): boolean {
-    return this.currentPage < this.totalPages;
+  // ── Courses ──
+  manyCourses:          ICourseCardData[] = [];
+  isLoadingMoreCourses  = false;
+  private coursesPage   = 1;
+  private coursesPageSize = 8;
+  coursesTotalPages     = 1;
+
+  get hasMoreCourses(): boolean {
+    return this.coursesPage <= this.coursesTotalPages;
   }
 
   ngOnInit() {
-    // Packages
-    this.courseService.getPackages().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next:  (data) => this.learningTracks = data.slice(0, 6),
-      error: (err)  => console.error('Tracks Error:', err),
-    });
-
-    // Courses first page
+    this.loadTracks();
     this.loadCourses();
   }
 
-  private loadCourses() {
-    this.courseService.getAllCoursesPaged(this.currentPage, this.pageSize).pipe(
+  // ── Packages ──────────────────────────────────────────────────────────────
+  private loadTracks() {
+    this.courseService.getPackagesPaged(this.tracksPage, this.tracksPageSize).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: ({ courses, totalPages }) => {
-        this.manyCourses  = [...this.manyCourses, ...courses]; // append
-        this.totalPages   = totalPages;
-        this.isLoadingMore = false;
+      next: ({ packages, totalPages }) => {
+        this.learningTracks    = [...this.learningTracks, ...packages];
+        this.tracksTotalPages  = totalPages;
+        this.isLoadingMoreTracks = false;
       },
-      error: () => this.isLoadingMore = false,
+      error: () => this.isLoadingMoreTracks = false,
     });
   }
 
-  loadMore() {
-    if (!this.hasMore || this.isLoadingMore) return;
-    this.currentPage++;
-    this.isLoadingMore = true;
+  loadMoreTracks() {
+    if (!this.hasMoreTracks || this.isLoadingMoreTracks) return;
+    this.tracksPage++;
+    this.isLoadingMoreTracks = true;
+    this.loadTracks();
+  }
+
+  // ── Courses ───────────────────────────────────────────────────────────────
+  private loadCourses() {
+    this.courseService.getAllCoursesPaged(this.coursesPage, this.coursesPageSize).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: ({ courses, totalPages }) => {
+        this.manyCourses        = [...this.manyCourses, ...courses];
+        this.coursesTotalPages  = totalPages;
+        this.isLoadingMoreCourses = false;
+      },
+      error: () => this.isLoadingMoreCourses = false,
+    });
+  }
+
+  loadMoreCourses() {
+    if (!this.hasMoreCourses || this.isLoadingMoreCourses) return;
+    this.coursesPage++;
+    this.isLoadingMoreCourses = true;
     this.loadCourses();
   }
 }

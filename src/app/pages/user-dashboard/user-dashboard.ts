@@ -16,22 +16,14 @@ import { Card } from '../../components/shared/card/card';
   styleUrl: './user-dashboard.css',
 })
 export class UserDashboard implements OnInit {
+
   private courseService = inject(CourseService);
   private router        = inject(Router);
   private auth          = inject(AuthService);
   private destroyRef    = inject(DestroyRef);
 
-  myCourses:     ICourseCardData[] = [];
+  myCourses: ICourseCardData[] = [];
   topRatedCourses: ICourseCardData[] = [];
-  isLoadingMore  = false;
-
-  private currentPage     = 1;
-  private readonly pageSize = 4;
-  totalPages = 1;
-
-  get hasMore(): boolean {
-    return this.currentPage <= this.totalPages;
-  }
 
   ngOnInit() {
     this.auth.authReady$.pipe(
@@ -52,31 +44,11 @@ export class UserDashboard implements OnInit {
   }
 
   private loadTopRated() {
-    this.courseService.getTopRatedCourses().pipe(
+    this.courseService.getTopRatedCourses(4).pipe(
       catchError(() => of([])),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: (data) => this.topRatedCourses = data.slice(0, 4),
-    });
-  }
-
-  loadMoreTopRated() {
-    if (this.isLoadingMore) return;
-    this.isLoadingMore = true;
-
-    this.courseService.getAllCoursesPaged(this.currentPage, this.pageSize).pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: ({ courses, totalPages }) => {
-        const existingSlugs = new Set(this.topRatedCourses.map(c => c.slug));
-        const newCourses    = courses.filter(c => !existingSlugs.has(c.slug));
-
-        this.topRatedCourses = [...this.topRatedCourses, ...newCourses];
-        this.totalPages      = totalPages;
-        this.currentPage++;
-        this.isLoadingMore   = false;
-      },
-      error: () => this.isLoadingMore = false,
+      next: (data) => this.topRatedCourses = data,
     });
   }
 

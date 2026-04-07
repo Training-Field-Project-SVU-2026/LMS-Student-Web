@@ -37,13 +37,13 @@ export class CourseService {
   }
 
   // ───── Top Rated Courses ─────
-  getTopRatedCourses(): Observable<ICourseCardData[]> {
-    return this.http.get<any>(API_ENDPOINTS.coursesTopRated).pipe(
-      map(res => {
-        const items = Array.isArray(res.data) ? res.data : (res.data?.courses || []);
+  getTopRatedCourses(limit: number): Observable<ICourseCardData[]>{
+    return this.http.get<any>(API_ENDPOINTS.coursesTopRated(limit)).pipe(
+      map(res=>{
+        const items=Array.isArray(res.data) ? res.data : Array.isArray(res) ? res : [];
         return items.map((item: any) => this.mapToCourseCard(item, 'COURSE'));
       })
-    );
+    )
   }
   // ───── My Courses ─────
   getMyCourses(): Observable<ICourseCardData[]> {
@@ -139,6 +139,24 @@ getAllCoursesPaged(page: number, pageSize: number): Observable<{ courses: ICours
     .pipe(
       map(res => res.data)
     );
+}
+// ───── Packages with Pagination ─────
+getPackagesPaged(page: number, pageSize: number): Observable<{ packages: ICourseCardData[], totalPages: number }> {
+  return this.http.get<IPackagesResponse>(API_ENDPOINTS.packagePaged(page, pageSize)).pipe(
+    map(res => ({
+      packages:   (res.data?.packages || []).map(pkg => ({
+        slug:             pkg.slug,
+        title:            pkg.title,
+        description:      pkg.description,
+        image:            pkg.image || null,
+        avg_rating:       pkg.avg_rating || 0,
+        students_count:   pkg.courses_count,
+        instructor_name:  pkg.instructor_name,
+        price:            pkg.price,
+      } as ICourseCardData)),
+      totalPages: res.data?.total_pages || 1,
+    }))
+  );
 }
 
 }
