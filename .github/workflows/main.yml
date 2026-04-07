@@ -1,8 +1,8 @@
-name: Jira Deployment Sync
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["*"]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -40,10 +40,13 @@ jobs:
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
+      - name: Create 404.html (for Angular Routing)
+        run: cp ./dist/lms-student-web/browser/index.html ./dist/lms-student-web/browser/404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist/lms-student-web'
+          path: './dist/lms-student-web/browser'
 
       - name: Deploy to GitHub Pages
         id: deployment
