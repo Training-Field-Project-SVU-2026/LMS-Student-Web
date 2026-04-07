@@ -101,11 +101,26 @@
             <button
               (click)="onEnroll()"
               [disabled]="isLoading || isEnrolling"
-              [class.opacity-50]="isLoading || isEnrolling"
-              [class.cursor-not-allowed]="isLoading || isEnrolling"
-              class="w-full bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white font-bold py-4 rounded-xl transition-all mb-4 shadow-lg active:scale-95 disabled:hover:bg-[var(--primary)]"
+              class="w-full font-bold py-4 rounded-xl transition-all mb-4 shadow-lg active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+              [ngClass]="{
+                'bg-[var(--secondary)] text-[var(--on-secondary)]': isEnrolled(),
+                'bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white': !isEnrolled(),
+              }"
             >
-              {{ isEnrolling ? 'Enrolling...' : isLoading ? 'Loading...' : 'Enroll Now' }}
+              @if (isEnrolling) {
+                <span class="flex items-center justify-center gap-2">
+                  <span
+                    class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+                  ></span>
+                  Enrolling...
+                </span>
+              } @else if (isEnrolled()) {
+                ✅ Already Enrolled
+              } @else if (!auth.isLoggedIn()) {
+                🔒 Login to Enroll
+              } @else {
+                Enroll Now
+              }
             </button>
 
             <p class="text-center text-xs text-[var(--text-tertiary)] mb-6">

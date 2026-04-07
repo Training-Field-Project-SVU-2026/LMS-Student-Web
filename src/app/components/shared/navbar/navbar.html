@@ -1,152 +1,186 @@
 <nav class="sticky top-0 z-40 bg-[var(--surface)] border-b border-[var(--divider)] px-6 py-3">
   <div class="flex items-center justify-between">
-    <!-- LEFT -->
+
+    <!-- ── LEFT: Logo + Links ── -->
     <div class="flex items-center gap-8">
+
       <!-- Logo -->
       <a routerLink="/home" class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-lg"
-          style="background-color: var(--primary); color: var(--on-primary)"
-        >
+        <div class="w-10 h-10 rounded-2xl flex items-center justify-center
+                    font-bold text-lg bg-[var(--primary)] text-[var(--on-primary)]">
           SU
         </div>
-        <span class="text-xl font-semibold" style="color: var(--primary)">
-          Skill<span style="color: var(--secondary)">Up</span>
+        <span class="text-xl font-semibold text-[var(--primary)]">
+          Skill<span class="text-[var(--secondary)]">Up</span>
         </span>
       </a>
 
-      <!-- Links -->
-      <div class="hidden md:flex items-center gap-6">
-        <a
-          routerLink="/home"
-          routerLinkActive="text-[var(--primary)] font-semibold"
-          class="text-[var(--text-secondary)] hover:text-[var(--primary)]"
-        >
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-6 text-sm">
+
+        <a routerLink="/home"
+           routerLinkActive="text-[var(--primary)] font-semibold"
+           [routerLinkActiveOptions]="{ exact: true }"
+           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">
           Home
         </a>
 
-        <a
-          routerLink="/courses"
-          routerLinkActive="text-[var(--primary)] font-semibold"
-          class="text-[var(--text-secondary)] hover:text-[var(--primary)]"
-        >
+        <!-- My Courses always visible -->
+        <a (click)="goMyCourses()"
+           class="cursor-pointer text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">
           My Courses
         </a>
 
-        <a
-          routerLink="/explore"
-          routerLinkActive="text-[var(--primary)] font-semibold"
-          class="text-[var(--text-secondary)] hover:text-[var(--primary)]"
-        >
+        <a routerLink="/explore"
+           routerLinkActive="text-[var(--primary)] font-semibold"
+           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">
           Explore
         </a>
 
-        @if (isLoggedIn) {
-          <a
-            routerLink="/"
-            routerLinkActive="text-[var(--primary)] font-semibold"
-            class="text-[var(--text-secondary)] hover:text-[var(--primary)]"
-          >
-            Dashboard
-          </a>
-        }
       </div>
     </div>
 
-    <div class="flex items-center gap-4">
-      <button
-        (click)="toggleTheme()"
-        class="p-2 rounded-lg border border-[var(--outline)] hover:bg-[var(--background)]"
-      >
-        {{ isDark ? '☀️' : '🌙' }}
+    <!-- ── RIGHT: Theme + Auth ── -->
+    <div class="flex items-center gap-3">
+
+      <!-- Theme Toggle -->
+      <button (click)="toggleTheme()"
+              class="p-2 rounded-lg border border-[var(--outline)]
+                     hover:bg-[var(--background)] transition-colors">
+        {{ isDark() ? '☀️' : '🌙' }}
       </button>
 
-      @if (isLoggedIn && isExplorePage) {
-        <div class="hidden lg:flex items-center gap-2 max-w-md">
-          <div class="relative w-full">
-            <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
-            <input
-              type="text"
-              placeholder="Search courses..."
-              class="w-full pl-10 pr-4 py-2 border border-[var(--outline)] rounded-xl bg-[var(--background)] text-sm focus:ring-2 focus:ring-[var(--primary)] outline-none"
-            />
-          </div>
-        </div>
-      }
-
-      <!-- NavBar Before Login and After Login -->
-      <!-- GUEST -->
-      @if (!isLoggedIn) {
+      <!-- GUEST buttons -->
+      @if (!isLoggedIn()) {
         <div class="hidden md:flex gap-2">
-          <button
-            (click)="goLogin()"
-            class="px-4 py-1.5 rounded-lg border bg-[var(--secondary)] text-[var(--primary)] text-sm font-bold"
-          >
+          <button (click)="goLogin()"
+                  class="px-4 py-1.5 rounded-lg border border-[var(--primary)]
+                         text-[var(--primary)] text-sm font-semibold
+                         hover:bg-[var(--primary)] hover:text-white transition-all">
             Login
           </button>
-
-          <button
-            (click)="goSignup()"
-            class="px-4 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--on-primary)] text-sm font-bold"
-          >
+          <button (click)="goSignup()"
+                  class="px-4 py-1.5 rounded-lg bg-[var(--primary)]
+                         text-[var(--on-primary)] text-sm font-semibold
+                         hover:bg-[var(--primary-hover)] transition-colors">
             Sign Up
           </button>
         </div>
       }
 
-      <!-- USER -->
-      @if (isLoggedIn) {
-        <div
-          class="relative hidden md:flex items-center gap-3 border-l border-[var(--divider)] pl-4"
-        >
-          <span class="text-sm font-semibold text-[var(--text-primary)]">
-            {{ username ? username : 'User' }}
-          </span>
+      <!-- USER avatar + dropdown -->
+      @if (isLoggedIn()) {
+        <div class="relative hidden md:block profile-menu-wrapper">
 
-          <!-- Avatar -->
-          <div
-            (click)="toggleProfileMenu()"
-            class="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--secondary)] text-[var(--primary)] font-bold cursor-pointer"
-          >
-            {{ username?.charAt(0) }}
-          </div>
+          <button (click)="toggleProfileMenu()"
+                  class="flex items-center gap-2 rounded-full
+                         hover:opacity-80 transition-opacity">
+
+            <span class="text-sm font-semibold text-[var(--text-primary)] hidden lg:block">
+              {{ username() ?? 'User' }}
+            </span>
+
+            <div class="w-9 h-9 flex items-center justify-center rounded-full
+                        bg-[var(--primary)] text-white font-bold text-sm">
+              {{ userAvatar() ?? 'U' }}
+            </div>
+          </button>
 
           <!-- Dropdown -->
           @if (isProfileMenuOpen) {
-            <div
-              class="absolute right-0 top-12 w-44 bg-[var(--surface)] border border-[var(--outline)] rounded-xl shadow-xl py-2"
-            >
-              <button
-                (click)="goDashboard()"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-[var(--background)]"
-              >
-                Dashboard
+            <div class="absolute right-0 top-12 w-44 bg-[var(--surface)]
+                        border border-[var(--outline)] rounded-xl shadow-xl py-2 z-50">
+
+              <button (click)="goDashboard()"
+                      class="w-full text-left px-4 py-2.5 text-sm
+                             text-[var(--text-primary)] hover:bg-[var(--background)]
+                             transition-colors">
+                ⚙️ Settings
               </button>
 
-              <button
-                (click)="logout()"
-                class="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-[var(--background)]"
-              >
-                Logout
+              <div class="mx-3 my-1 border-t border-[var(--divider)]"></div>
+
+              <button (click)="logout()"
+                      class="w-full text-left px-4 py-2.5 text-sm
+                             text-red-500 hover:bg-red-50 transition-colors">
+                🚪 Logout
               </button>
+
             </div>
           }
         </div>
       }
 
-      <!-- Mobile -->
-      <button class="md:hidden p-2 border rounded-lg" (click)="toggleMobileMenu()">☰</button>
+      <!-- Mobile hamburger -->
+      <button (click)="toggleMobileMenu()"
+              class="md:hidden p-2 rounded-lg border border-[var(--outline)]
+                     hover:bg-[var(--background)] transition-colors">
+        {{ isMobileMenuOpen ? '✕' : '☰' }}
+      </button>
+
     </div>
   </div>
 
-  <!-- Mobile Menu -->
+  <!-- ── Mobile Menu ── -->
   @if (isMobileMenuOpen) {
-    <div class="md:hidden mt-4 space-y-3">
-      <a routerLink="/home">Home</a>
-      <a routerLink="/courses">My Courses</a>
-      <a routerLink="/explore">Explore</a>
+    <div class="md:hidden mt-3 pt-3 border-t border-[var(--divider)]
+                flex flex-col gap-1 text-sm">
 
-      <a *ngIf="isLoggedIn" routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/home"
+         routerLinkActive="bg-[var(--primary)] text-white"
+         [routerLinkActiveOptions]="{ exact: true }"
+         class="px-4 py-2.5 rounded-xl text-[var(--text-secondary)]
+                hover:bg-[var(--background)] transition-colors">
+        Home
+      </a>
+
+      <a routerLink="/explore"
+         routerLinkActive="bg-[var(--primary)] text-white"
+         class="px-4 py-2.5 rounded-xl text-[var(--text-secondary)]
+                hover:bg-[var(--background)] transition-colors">
+        Explore
+      </a>
+
+      <!-- My Courses mobile -->
+      <a (click)="goMyCourses()"
+         class="px-4 py-2.5 rounded-xl text-[var(--text-secondary)]
+                hover:bg-[var(--background)] transition-colors cursor-pointer">
+        My Courses
+      </a>
+
+      @if (isLoggedIn()) {
+        <div class="mx-1 my-1 border-t border-[var(--divider)]"></div>
+
+        <button (click)="goDashboard()"
+                class="text-left px-4 py-2.5 rounded-xl text-[var(--text-secondary)]
+                       hover:bg-[var(--background)] transition-colors">
+          ⚙️ Settings
+        </button>
+
+        <button (click)="logout()"
+                class="text-left px-4 py-2.5 rounded-xl text-red-500
+                       hover:bg-red-50 transition-colors">
+          🚪 Logout
+        </button>
+      }
+
+      @if (!isLoggedIn()) {
+        <div class="mx-1 my-1 border-t border-[var(--divider)]"></div>
+
+        <button (click)="goLogin()"
+                class="text-left px-4 py-2.5 rounded-xl text-[var(--text-secondary)]
+                       hover:bg-[var(--background)] transition-colors">
+          Login
+        </button>
+
+        <button (click)="goSignup()"
+                class="mx-1 px-4 py-2.5 rounded-xl bg-[var(--primary)]
+                       text-[var(--on-primary)] font-semibold text-center">
+          Sign Up
+        </button>
+      }
+
     </div>
   }
+
 </nav>

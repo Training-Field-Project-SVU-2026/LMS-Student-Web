@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
-import { AuthRoutingModule } from "../../../auth/auth-routing-module";
-import { ICourseCardData } from '../interfaces/course.model';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ICourseCardData } from '../interfaces/course.model';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [AuthRoutingModule,CommonModule],
+  imports: [RouterLink, CommonModule],
   templateUrl: './card.html',
-  styleUrl: './card.css',
+  styleUrls: ['./card.css'], 
 })
 export class Card {
   @Input() courseData!: ICourseCardData;

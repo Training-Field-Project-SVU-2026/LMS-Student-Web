@@ -145,6 +145,6 @@ export class AuthService {
     localStorage.removeItem(this.SLUG_KEY);
     this.isLoggedIn.set(false);
     this.currentUser.set(null);
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 }

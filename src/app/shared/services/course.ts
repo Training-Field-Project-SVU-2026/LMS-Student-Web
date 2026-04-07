@@ -11,6 +11,7 @@ import {
   IPackagesResponse,
   IEnrollResponse,
   IMyEnrollmentsResponse,
+  IPackageDetailsResponse,
 } from '../../components/shared/interfaces/course.model';
 
 @Injectable({ providedIn: 'root' })
@@ -86,6 +87,18 @@ export class CourseService {
       })
     );
   }
+  // ───── All Courses with Pagination ─────
+getAllCoursesPaged(page: number, pageSize: number): Observable<{ courses: ICourseCardData[], totalPages: number }> {
+  return this.http.get<any>(API_ENDPOINTS.allCoursesPaged(page, pageSize)).pipe(
+    map(res => {
+      const items: IBaseCourse[] = res?.data?.courses || [];
+      return {
+        courses:    items.map(item => this.mapToCourseCard(item, 'COURSE')),
+        totalPages: res?.data?.total_pages || 1,
+      };
+    })
+  );
+}
 
   // ───── Course Details ─────
   getCourseDetails(slug: string): Observable<ICourseDetailRequest> {
@@ -120,4 +133,12 @@ export class CourseService {
       })
     );
   }
+  getPackageDetails(slug: string) {
+  return this.http
+    .get<IPackageDetailsResponse>(API_ENDPOINTS.packageDetails(slug))
+    .pipe(
+      map(res => res.data)
+    );
+}
+
 }

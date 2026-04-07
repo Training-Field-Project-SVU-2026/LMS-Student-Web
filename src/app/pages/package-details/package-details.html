@@ -1,74 +1,116 @@
-<div class="min-h-screen bg-[var(--background)] py-12 px-4 md:px-8">
-  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+@if (isLoading) {
+<div class="flex flex-col justify-center items-center min-h-screen gap-4">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0A5C75]"></div>
+    <p class="text-[var(--text-secondary)] animate-pulse">Loading Package...</p>
+</div>
+}
+
+@if (!isLoading && packageData) {
+<div class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
     <div class="lg:col-span-2">
-      <span class="bg-[var(--secondary)] text-[var(--on-secondary)] px-3 py-1 rounded-full text-small mb-4 inline-block fw-semibold uppercase tracking-wider">
-        Curated Bundle
-      </span>
+        <h1 class="font-display mb-2 text-[#102A33]">{{ packageData.title }}</h1>
+        <p class="text-[var(--text-secondary)] mb-4">{{ packageData.description }}</p>
 
-      <h1 class="text-display text-[var(--text-primary)] mb-2">
-        Full Stack Web Development Bundle
-      </h1>
-      <p class="text-body text-[var(--text-tertiary)] mb-8">3 Courses included</p>
-
-      <div class="bg-[var(--surface)] border border-[var(--outline)] p-6 rounded-2xl flex items-center gap-4 mb-10 shadow-sm">
-        <img src="assets/instructor.jpg" class="w-16 h-16 rounded-full object-cover border-2 border-[var(--primary)]" alt="Instructor">
-        <div>
-          <p class="text-small text-[var(--primary)] fw-bold uppercase">Lead Instructor</p>
-          <h3 class="text-h2 text-[var(--text-primary)]">Dr. Marcus Sterling</h3>
-          <p class="text-small text-[var(--text-tertiary)]">Senior Software Architect & Academic Fellow</p>
+        <div class="flex gap-3 mb-10">
+            <span class="bg-[#F1F8E9] text-[#558B2F] px-3 py-1 rounded-full text-small">
+                ⭐ {{ packageData.avg_rating }} Course Rating
+            </span>
         </div>
-      </div>
 
-      <div class="mb-10">
-        <h2 class="text-h2 border-l-4 border-[var(--primary)] pl-4 mb-4">About this Bundle</h2>
-        <p class="text-body text-[var(--text-secondary)]">
-          A comprehensive package covering Frontend, Backend, and DevOps...
-        </p>
-      </div>
+        <h2 class="font-title mb-6 text-[#102A33]">Included Courses</h2>
 
-      <h2 class="text-h2 mb-6">Included Curriculum</h2>
-      <div class="space-y-4">
-        <div class="bg-[var(--surface)] border border-[var(--outline)] p-5 rounded-xl flex items-center justify-between hover:shadow-md transition-shadow cursor-pointer group">
-          <div class="flex items-center gap-4">
-            <div class="bg-[var(--background)] p-3 rounded-lg group-hover:bg-[var(--secondary)] transition-colors">
-               <i class="form-icon"></i>
+        <div class="space-y-4">
+            @for (course of packageData.courses; track course.slug) {
+            <div class="flex items-center justify-between p-5 border border-[var(--divider)] rounded-xl bg-white shadow-sm hover:border-[#D1DDE1] transition-all">
+                <div class="flex items-center gap-5 flex-grow">
+                    <div class="w-24 h-16 md:w-28 md:h-20 bg-gray-900 rounded-lg overflow-hidden flex-shrink-0">
+                        @if (course.image) {
+                        <img [src]="course.image" class="w-full h-full object-cover" alt="">
+                        } @else {
+                        <div class="w-full h-full flex items-center justify-center text-white text-xs font-bold bg-gray-800">
+                            {{course.title | uppercase | slice:0:3}}
+                        </div>
+                        }
+                    </div>
+
+                    <div class="flex flex-col gap-1.5 flex-grow">
+                        <p class="font-bold text-xl text-[#102A33] leading-tight">{{ course.title }}</p>
+                        <div class="flex items-center gap-1 text-[11px] text-[var(--text-tertiary)] uppercase font-medium">
+                            <span>Beginner</span>
+                            <span>•</span>
+                            <span>12 Lessons</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-5 ml-4 flex-shrink-0 text-right">
+                    <span class="font-bold text-[17px] text-[#102A33]">{{ course.price | number:'1.2-2' }} EGP</span>
+                    <button class="bg-[#0A5C75] text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-[#084C61] transition-all duration-200">
+                        Buy Now
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="bg-white p-7 rounded-2xl border border-[var(--divider)] h-fit sticky top-8 shadow-md">
+
+        <h3 class="font-semibold mb-6 text-[var(--text-primary)] text-xl">Package Overview</h3>
+
+        <div class="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-xl">
+            <div class="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center text-white">
+                U
             </div>
             <div>
-              <h4 class="text-body fw-bold">Advanced React Patterns</h4>
-              <p class="text-small text-[var(--text-tertiary)]">45 Lessons • 12 Hours</p>
+                <p class="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-widest leading-none mb-1">Instructor</p>
+                <p class="font-bold text-[var(--text-primary)] text-lg">{{ packageData.instructor_name }}</p>
             </div>
-          </div>
-          <span class="text-[var(--text-tertiary)]">→</span>
         </div>
-      </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="p-3 bg-[var(--background)] rounded-xl text-center">
+                <p class="text-small text-[var(--text-tertiary)] uppercase font-semibold">Courses</p>
+                <p class="font-bold text-[var(--text-primary)] text-2xl">{{ packageData.courses_count }}</p>
+            </div>
+            <div class="p-3 bg-[var(--background)] rounded-xl text-center">
+                <p class="text-small text-[var(--text-tertiary)] uppercase font-semibold">Rating</p>
+                <p class="font-bold text-[var(--text-primary)] text-2xl">3 <span class="text-yellow-500 text-lg">★</span></p>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <p class="text-small text-[var(--text-tertiary)] font-bold uppercase tracking-widest leading-none mb-1.5">Bundle Price</p>
+            <p class="font-title text-[var(--text-primary)] text-3xl font-bold">{{ packageData.price }} EGP</p>
+        </div>
+
+        <button
+            (click)="onBuyPackage()"
+            [disabled]="isBuying()"
+            class="w-full font-bold py-3.5 rounded-lg transition-all active:scale-[0.98]
+           disabled:opacity-60 disabled:cursor-not-allowed"
+            [ngClass]="{
+          'bg-[var(--secondary)] text-[var(--on-secondary)]': isBought(),
+          'bg-[#0A5C75] hover:bg-[#084C61] text-white': !isBought()
+        }">
+            @if (isBuying()) {
+            <span class="flex items-center justify-center gap-2">
+                <span class="w-4 h-4 border-2 border-white border-t-transparent
+                         rounded-full animate-spin"></span>
+                Processing...
+            </span>
+            } @else if (isBought()) {
+            ✅ Already Purchased
+            } @else {
+            Buy Now
+            }
+        </button>
+
+        <p class="text-small text-center mt-4 text-[var(--text-tertiary)]">
+            Secure checkout with SSL encryption
+        </p>
     </div>
 
-    <div class="lg:col-span-1">
-      <div class="sticky top-28 bg-[var(--surface)] border border-[var(--outline)] rounded-2xl overflow-hidden shadow-lg transform transition-all">
-        <div class="relative h-52 bg-[var(--primary)] flex items-center justify-center">
-          <button class="bg-white/20 hover:bg-white/30 p-4 rounded-full backdrop-blur-sm transition-all animate-float">
-            <svg class="w-8 h-8 text-white fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-          </button>
-        </div>
-
-        <div class="p-8">
-          <div class="flex items-baseline gap-2 mb-6">
-            <span class="text-display">$199.99</span>
-            <span class="text-body text-[var(--text-tertiary)] line-through">$449.99</span>
-          </div>
-
-          <ul class="space-y-4">
-            <li class="flex items-center gap-3 text-small text-[var(--text-secondary)]">
-              <span class="text-[var(--primary)]">✓</span> Certificate of Completion
-            </li>
-            <li class="flex items-center gap-3 text-small text-[var(--text-secondary)]">
-              <span class="text-[var(--primary)]">∞</span> Lifetime access to content
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-  </div>
 </div>
+}

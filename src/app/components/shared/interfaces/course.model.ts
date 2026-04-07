@@ -132,3 +132,26 @@ export interface IMyEnrollmentsResponse {
   message: string;
   data: IMyEnrollmentsData;
 }
+
+export interface IPackageDetails {
+  title: string;
+  instructor_name: string;
+  slug: string;
+  description: string;
+  price: string;
+  created_at: string;
+  courses_count: number;
+  avg_rating: number;
+  categories: string[];
+
+  courses: IBaseCourse[];
+
+  course_slugs: string[];
+}
+
+export interface IPackageDetailsResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: IPackageDetails;
+}
