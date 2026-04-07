@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { AlertService } from '../../../../shared/services/alert';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../auth/services/auth';
+import { AlertService } from '../../../../shared/services/alert';
 
 @Component({
   selector: 'app-hero',
@@ -10,40 +11,21 @@ import { Router } from '@angular/router';
   styleUrl: './hero.css',
 })
 export class Hero {
-  constructor(
-    private alertService: AlertService,
-    private router: Router
-  ) {}
+  private auth   = inject(AuthService);
+  private router = inject(Router);
+  private alert =inject(AlertService)
 
-  onViewCourses() {
-    const token = localStorage.getItem('access_token'); 
 
-    if (!token) {
-      this.alertService.requireLogin(
-        'Please login first to view all courses'
-      );
-      setTimeout(() => {
-        this.router.navigate(['/auth/login']);
-      }, 2000);
-      return;
+  onStartLearning() {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/user-dashboard']);
+    } else {
+      this.alert.requireLogin('You need to be logged in to access the dashboard.', '/user-dashboard');
     }
-
-    this.router.navigate(['/courses']);
   }
 
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('access_token');
-  }
-  
-  
-  onViewHome() {
-    const token = localStorage.getItem('access_token');
 
-    if (!token) {
-      this.alertService.requireLogin('Please login first');
-      return;
-    }
-
-    this.router.navigate(['/home']);
+  onBrowseCourses() {
+    this.router.navigate(['/explore']);
   }
 }

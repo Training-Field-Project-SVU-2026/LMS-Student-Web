@@ -1,54 +1,82 @@
-import { OnInit, inject } from "@angular/core";
-import { Router } from "@angular/router";
-import { CourseService } from "../../shared/services/course";
-import { ICourseCardData } from "../home/components/featured-courses/featured-courses";
-import { Card } from "../../components/shared/card/card";
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, of } from 'rxjs';
+import { CourseService } from '../../shared/services/course';
+import { AuthService } from '../../auth/services/auth';
+import { ICourseCardData } from '../../components/shared/interfaces/course.model';
+import { Card } from '../../components/shared/card/card';
 
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [Card],
+  imports: [Card, CommonModule],
   templateUrl: './user-dashboard.html',
   styleUrl: './user-dashboard.css',
 })
-
 export class UserDashboard implements OnInit {
   private courseService = inject(CourseService);
-  private router = inject(Router);
+  private router        = inject(Router);
+  private auth          = inject(AuthService);
+  private destroyRef    = inject(DestroyRef);
 
-
-  myCourses: ICourseCardData[] = [];
+  myCourses:     ICourseCardData[] = [];
   topRatedCourses: ICourseCardData[] = [];
+  isLoadingMore  = false;
 
-  ngOnInit() {
-    this.loadMyCourses();
-    this.loadTopRated();
+  private currentPage     = 1;
+  private readonly pageSize = 4;
+  totalPages = 1;
+
+  get hasMore(): boolean {
+    return this.currentPage <= this.totalPages;
   }
 
-
-  loadMyCourses() {
-    this.courseService.getMyCourses().subscribe({
-      next: (data) => {
-        this.myCourses = data.slice(0, 4);
-      },
-      error: (err) => {
-        console.error('Error fetching my courses', err);
-        this.myCourses = [];
-      }
+  ngOnInit() {
+    this.auth.authReady$.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.loadMyCourses();
+      this.loadTopRated();
     });
   }
 
+  private loadMyCourses() {
+    this.courseService.getMyCourses().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next:  (data) => this.myCourses = data,
+      error: ()     => this.myCourses = [],
+    });
+  }
 
-  loadTopRated() {
-    this.courseService.getTopRatedCourses().subscribe({
-      next: (data) => {
-        this.topRatedCourses = data.slice(0, 4);
+  private loadTopRated() {
+    this.courseService.getTopRatedCourses().pipe(
+      catchError(() => of([])),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (data) => this.topRatedCourses = data.slice(0, 4),
+    });
+  }
+
+  loadMoreTopRated() {
+    if (this.isLoadingMore) return;
+    this.isLoadingMore = true;
+
+    this.courseService.getAllCoursesPaged(this.currentPage, this.pageSize).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: ({ courses, totalPages }) => {
+        const existingSlugs = new Set(this.topRatedCourses.map(c => c.slug));
+        const newCourses    = courses.filter(c => !existingSlugs.has(c.slug));
+
+        this.topRatedCourses = [...this.topRatedCourses, ...newCourses];
+        this.totalPages      = totalPages;
+        this.currentPage++;
+        this.isLoadingMore   = false;
       },
-      error: (err) => {
-        console.error('Error fetching top rated', err);
-        this.topRatedCourses = [];
-      }
+      error: () => this.isLoadingMore = false,
     });
   }
 

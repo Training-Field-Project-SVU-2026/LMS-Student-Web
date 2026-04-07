@@ -29,7 +29,11 @@ export const API_ENDPOINTS = {
   enroll: (slug: string) => `${BASE_URL}api/courses/enroll/${slug}/`,
   // all courses
   allCourses: `${BASE_URL}api/courses/all/`,
+  // ── All Courses with pagination ──
+allCoursesPaged: (page: number, pageSize: number) =>
+  `${BASE_URL}api/courses/all/?page=${page}&page_size=${pageSize}`,
   // package
   package: `${BASE_URL}api/packages/all/`,
-
+  //package details
+  packageDetails: (slug: string) => `${BASE_URL}api/packages/${slug}/`,
 };
