@@ -5,7 +5,7 @@ import { CourseCard } from '../../shared/components/course-card/course-card';
 import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-my-courses',
-  imports: [CourseCard,CommonModule],
+  imports: [CourseCard, CommonModule],
   templateUrl: './my-courses.html',
   styleUrl: './my-courses.css',
 })
@@ -14,13 +14,15 @@ export class MyCourses implements OnInit {
   isLoading = true;
   error: string | null = null;
 
-  constructor(private userServices: User) {}
+  constructor(private userServices: User) { }
 
   ngOnInit(): void {
     this.userServices.getMyEnrollments().subscribe({
       next: (courses) => {
         this.courses = courses;
         this.isLoading = false;
+        //EnrolledCourse
+        console.log(courses[0].image);
       },
       error: (err) => {
         this.error = 'Failed to load courses. Please try again.';
