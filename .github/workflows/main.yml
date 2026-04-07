@@ -1,12 +1,20 @@
 name: Jira Deployment Sync
+
 on:
   push:
     branches: ["*"]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production 
+    environment: 
+      name: production
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,3 +23,28 @@ jobs:
         run: |
           echo "Processing deployment for Jira issue keys found in commits/branches."
           echo "Successfully synced with Jira!"
+
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Angular Project
+        # Replace <YOUR_REPO_NAME> with your actual GitHub repository name
+        run: npx ng build --configuration production --base-href /LMS-Student-Web/
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist/commit-ma3ana/browser' 
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
