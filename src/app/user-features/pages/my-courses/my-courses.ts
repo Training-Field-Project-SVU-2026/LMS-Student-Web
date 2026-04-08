@@ -19,19 +19,17 @@ export class MyCourses implements OnInit {
   constructor(private userServices: User) { }
 
   ngOnInit(): void {
-    this.userServices.getMyEnrollments().subscribe({
-      next: (courses) => {
-        this.courses = courses;
-        this.isLoading = false;
-        //EnrolledCourse
-        console.log(courses[0].image);
-      },
-      error: (err) => {
-        this.error = 'Failed to load courses. Please try again.';
-        this.isLoading = false;
-
-      }
-    });
+    this.userServices.getMyEnrollments();
+    this.userServices.courses$.subscribe({
+    next: (courses) => {
+      this.courses = courses;
+      this.isLoading = false;
+    },
+    error: () => {
+      this.error = 'Failed to load courses';
+      this.isLoading = false;
+    }
+  });
   }
 
 }

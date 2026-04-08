@@ -6,10 +6,9 @@ export interface ICourseCardData {
   image: string | null;
   avg_rating: number;
   students_count: number;
-  instructor_name?: string;
+  instructor_name: string;
   price: string;
 }
-
 
 export interface IBaseCourse {
   id: number;
@@ -20,9 +19,9 @@ export interface IBaseCourse {
   avg_rating?: number | null;
   students_count?: number;
   courses_count?: number;
-  instructor_name?: string;
-  price?: string;
-progress?: number;
+  instructor_name?: string | null;
+  price?: string | null;
+  progress?: number;
   status?: string;
   enrolled_at?: string
 }

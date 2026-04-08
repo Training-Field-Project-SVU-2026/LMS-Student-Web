@@ -10,7 +10,11 @@
         <div class="flex flex-wrap items-center gap-4 mt-4">
           <div class="flex items-center text-yellow-500 bg-yellow-50 px-2 py-1 rounded-lg">
             <span class="font-bold mr-1">{{ courseDetail.avg_rating || '0.0' }}</span>
-            <span class="text-sm">⭐</span>
+            <span class="text-sm"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-400"
+                fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.036 6.26h6.585c.969 0 1.371 1.24.588 1.81l-5.327 3.87 2.036 6.26c.3.921-.755 1.688-1.54 1.118L12 17.77l-5.329 3.475c-.784.57-1.838-.197-1.539-1.118l2.036-6.26-5.327-3.87c-.783-.57-.38-1.81.588-1.81h6.585l2.035-6.26z" />
+              </svg></span>
           </div>
 
           <span class="text-[var(--text-tertiary)] text-sm">
@@ -45,7 +49,8 @@
         <h2 class="text-xl font-bold text-[var(--text-primary)] mb-6">Your Instructor</h2>
         <div
           class="flex flex-col md:flex-row items-start gap-6 bg-[var(--surface)] p-6 rounded-2xl border border-[var(--outline)]">
-          <img [src]="courseDetail.instructor_image || 'assets/images/default-avatar.png'" alt="Instructor"
+          <img appImgFallback [src]="courseDetail.instructor_image" [srcFallback]="'assets/images/default-avatar.png'"
+            [errorFallback]="'assets/images/default-avatar.png'" alt="Instructor"
             class="w-24 h-24 rounded-2xl object-cover border-2 border-[var(--outline)] shadow-sm" />
           <div class="flex-1">
             <h3 class="text-xl font-bold text-[var(--text-primary)]">
@@ -63,7 +68,8 @@
       <div
         class="sticky top-8 bg-[var(--surface)] rounded-2xl border border-[var(--outline)] shadow-xl overflow-hidden">
         <div class="aspect-video relative group overflow-hidden">
-          <img [src]="courseDetail.image" alt="Course cover"
+          <img appImgFallback [src]="courseDetail.image" [srcFallback]="'/images/default_image.jpeg'"
+            [errorFallback]="'/images/error_image.png'" alt="Course cover"
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           <div
             class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center">

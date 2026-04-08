@@ -27,23 +27,23 @@ export class CourseService {
       slug: item.slug,
       title: item.title,
       description: item.description,
-      image: item.image || 'images/1_a2tAChY8UgAZvBYh5Kqwkw.jpg',
+      image: item.image || null as string | null,
       avg_rating: item.avg_rating || 0,
       students_count: item.students_count || item.courses_count || 0,
       instructor_name: item.instructor_name || 'Expert Instructor',
-      price: item.price || '0',
+      price: item.price || 'Free',
 
     };
   }
 
   // ───── Top Rated Courses ─────
-  getTopRatedCourses(): Observable<ICourseCardData[]> {
-    return this.http.get<any>(API_ENDPOINTS.coursesTopRated).pipe(
-      map(res => {
-        const items = Array.isArray(res.data) ? res.data : (res.data?.courses || []);
+  getTopRatedCourses(limit: number): Observable<ICourseCardData[]>{
+    return this.http.get<any>(API_ENDPOINTS.coursesTopRated(limit)).pipe(
+      map(res=>{
+        const items=Array.isArray(res.data) ? res.data : Array.isArray(res) ? res : [];
         return items.map((item: any) => this.mapToCourseCard(item, 'COURSE'));
       })
-    );
+    )
   }
   // ───── My Courses ─────
   getMyCourses(): Observable<ICourseCardData[]> {
@@ -108,7 +108,7 @@ getAllCoursesPaged(page: number, pageSize: number): Observable<{ courses: ICours
         return {
           ...item,
           instructor_bio: item.instructor_bio || 'Expert instructor...',
-          instructor_image: item.instructor_image || 'assets/images/default-avatar.png',
+          instructor_image: item.instructor_image ,
         } as ICourseDetailRequest;
       })
     );
@@ -139,6 +139,24 @@ getAllCoursesPaged(page: number, pageSize: number): Observable<{ courses: ICours
     .pipe(
       map(res => res.data)
     );
+}
+// ───── Packages with Pagination ─────
+getPackagesPaged(page: number, pageSize: number): Observable<{ packages: ICourseCardData[], totalPages: number }> {
+  return this.http.get<IPackagesResponse>(API_ENDPOINTS.packagePaged(page, pageSize)).pipe(
+    map(res => ({
+      packages:   (res.data?.packages || []).map(pkg => ({
+        slug:             pkg.slug,
+        title:            pkg.title,
+        description:      pkg.description,
+        image:            pkg.image || null,
+        avg_rating:       pkg.avg_rating || 0,
+        students_count:   pkg.courses_count,
+        instructor_name:  pkg.instructor_name,
+        price:            pkg.price,
+      } as ICourseCardData)),
+      totalPages: res.data?.total_pages || 1,
+    }))
+  );
 }
 
 }

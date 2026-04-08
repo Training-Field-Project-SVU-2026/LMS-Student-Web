@@ -26,14 +26,8 @@
                 class="flex items-center justify-between p-5 border border-[var(--divider)] rounded-xl bg-white shadow-sm hover:border-[#D1DDE1] transition-all">
                 <div class="flex items-center gap-5 flex-grow">
                     <div class="w-24 h-16 md:w-28 md:h-20 bg-gray-900 rounded-lg overflow-hidden flex-shrink-0">
-                        @if (course.image) {
-                        <img [src]="course.image" class="w-full h-full object-cover" alt="">
-                        } @else {
-                        <div
-                            class="w-full h-full flex items-center justify-center text-white text-xs font-bold bg-gray-800">
-                            {{course.title | uppercase | slice:0:3}}
-                        </div>
-                        }
+                        <img appImgFallback [src]="course.image" [srcFallback]="'/images/default_image.jpeg'"
+                          [errorFallback]="'/images/error_image.png'" class="w-full h-full object-cover" alt="">
                     </div>
 
                     <div class="flex flex-col gap-1.5 flex-grow">
@@ -48,11 +42,11 @@
                 </div>
 
                 <div class="flex items-center gap-5 ml-4 flex-shrink-0 text-right">
-                    <span class="font-bold text-[17px] text-[#102A33]">{{ course.price | number:'1.2-2' }} EGP</span>
                     <button
                         class="bg-[#0A5C75] text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-[#084C61] transition-all duration-200">
-                        Buy Now
+                        Start Learning
                     </button>
+              
                 </div>
             </div>
             }
@@ -70,8 +64,8 @@
             <div>
                 <p
                     class="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-widest leading-none mb-1">
-                    Instructor</p>
-                <p class="font-bold text-[var(--text-primary)] text-lg">{{ packageData.instructor_name }}</p>
+                    {{packageData.instructor_name}}</p>
+                <p class="font-bold text-[var(--text-primary)] text-lg">{{ packageCardData?.instructor_name }}</p>
             </div>
         </div>
 

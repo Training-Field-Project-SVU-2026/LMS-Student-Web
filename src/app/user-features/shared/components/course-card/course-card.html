@@ -9,12 +9,14 @@
   <!-- ── Thumbnail ── -->
   <div class="relative w-full h-44 overflow-hidden shrink-0">
 
- <img
-  [src]="course.image || 'images/default_image.jpeg'"
-  [alt]="course.title"
-  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-  (error)="updateToDefault($event)"
-/>
+  <img
+    appImgFallback
+    [src]="course.image"
+    [srcFallback]="'/images/default_image.jpeg'"
+    [errorFallback]="'/images/error_image.png'"
+    [alt]="course.title"
+    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+  />
 
     <!-- Dark gradient so text stays readable -->
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>

@@ -6,11 +6,12 @@ import { CourseService } from '../../shared/services/course';
 import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
 import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
+import { ImgFallback } from '../../shared/directives/img-fallback';
 
 @Component({
   selector: 'app-course-details',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, DatePipe],
+  imports: [CommonModule, CurrencyPipe, DatePipe, ImgFallback],
   templateUrl: './course-details.html',
   styleUrl: './course-details.css',
 })
@@ -27,6 +28,7 @@ export class CourseDetails implements OnInit {
   isLoading = true;
   isEnrolling = false;
   isEnrolled = signal(false);
+  userServices:any;
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -83,6 +85,8 @@ export class CourseDetails implements OnInit {
         this.isEnrolling = false;
         this.isEnrolled.set(true);
 
+        localStorage.removeItem('pendingCourseSlug');
+        this.userServices.getMyEnrollments();
         this.alert.enrollSuccess(
           this.courseDetail!.title,
           () => this.router.navigate(['/my-courses'])

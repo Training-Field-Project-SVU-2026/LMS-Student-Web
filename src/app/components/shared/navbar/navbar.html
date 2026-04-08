@@ -33,10 +33,10 @@
           Home
         </a>
 
-        <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold" (click)="scrollToCourses()"
+        <!-- <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold" (click)="scrollToCourses()"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           Courses
-        </a>
+        </a> -->
 
         <a routerLink="/explore" routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">
@@ -46,6 +46,11 @@
         <a routerLink="/my-courses" routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           My Courses
+        </a>
+        } @else {
+        <a routerLink="/" routerLinkActive="text-[var(--primary)] font-semibold"
+          class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
+          Courses
         </a>
         }
       </div>

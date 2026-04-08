@@ -2,9 +2,12 @@ import { Component, Input } from '@angular/core';
 import { EnrolledCourse } from '../../../models/course.model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ImgFallback } from '../../../../shared/directives/img-fallback';
+
 @Component({
   selector: 'app-user-course-card',
-  imports: [CommonModule, RouterLink, DatePipe],
+  standalone: true,
+  imports: [CommonModule, RouterLink, DatePipe, ImgFallback],
   templateUrl: './course-card.html',
   styleUrl: './course-card.css',
 })
@@ -17,7 +20,5 @@ export class CourseCard {
     completed: 'Completed'
   };
 
-  updateToDefault(event: Event) {
-    (event.target as HTMLImageElement).src = 'images/default_image.jpeg';
-  }
+  // Directive handles fallback logic automatically
 }

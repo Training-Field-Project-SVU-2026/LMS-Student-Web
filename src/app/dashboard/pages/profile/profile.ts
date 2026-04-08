@@ -12,10 +12,12 @@ import { AuthService } from '../../../auth/services/auth';
 import { Student } from '../../../models/user.models';
 import Swal from 'sweetalert2';
 
+import { ImgFallback } from '../../../shared/directives/img-fallback';
+
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, ImgFallback],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })

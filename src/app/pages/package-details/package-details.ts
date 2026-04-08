@@ -6,12 +6,14 @@ import { of, forkJoin, Observable } from 'rxjs';
 import { CourseService } from '../../shared/services/course';
 import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
-import { IPackageDetails, IEnrollResponse } from '../../components/shared/interfaces/course.model';
+import { IPackageDetails, IEnrollResponse, IPackageCardData } from '../../components/shared/interfaces/course.model';
+
+import { ImgFallback } from '../../shared/directives/img-fallback';
 
 @Component({
   selector: 'app-package-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImgFallback],
   templateUrl: './package-details.html',
   styleUrl: './package-details.css',
 })
@@ -25,9 +27,11 @@ export class PackageDetails implements OnInit {
   auth = inject(AuthService);
 
   packageData: IPackageDetails | null = null;
+  packageCardData: IPackageCardData | null = null;
   isLoading = true;
   isBuying  = signal(false);
   isBought  = signal(false);
+
 
   ngOnInit() {
     const slug = this.route.snapshot.paramMap.get('slug');
