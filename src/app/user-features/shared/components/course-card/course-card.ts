@@ -1,10 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { EnrolledCourse } from '../../../models/course.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ImgFallback } from '../../../../shared/directives/img-fallback';
+
 @Component({
   selector: 'app-user-course-card',
-  imports: [CommonModule,RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink, DatePipe, ImgFallback],
   templateUrl: './course-card.html',
   styleUrl: './course-card.css',
 })
@@ -16,4 +19,6 @@ export class CourseCard {
     in_progress: 'In Progress',
     completed: 'Completed'
   };
+
+  // Directive handles fallback logic automatically
 }

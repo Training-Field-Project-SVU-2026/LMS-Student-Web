@@ -28,18 +28,10 @@
         </div>
 
         <!-- Avatar -->
-        @if (s.image) {
-          <img [src]="s.image" [alt]="fullName"
-               class="w-9 h-9 rounded-full object-cover
-                      border-2 border-[var(--secondary)]"/>
-        } @else {
-          <div class="w-9 h-9 rounded-full bg-[var(--primary)]
-                      flex items-center justify-center
-                      text-white text-sm font-semibold
-                      border-2 border-[var(--secondary)]">
-            {{ initials }}
-          </div>
-        }
+        <img appImgFallback [src]="s.image" [srcFallback]="'/images/default-avatar.png'"
+             [errorFallback]="'/images/default-avatar.png'" [alt]="fullName"
+             class="w-9 h-9 rounded-full object-cover
+                    border-2 border-[var(--secondary)]"/>
       } @else {
         <!-- Skeleton loading -->
         <div class="h-4 w-28 bg-[var(--outline)] rounded animate-pulse hidden sm:block"></div>

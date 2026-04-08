@@ -102,4 +102,16 @@ export class NavbarComponent {
   // ── Mobile ───────────────────────────────────────────────────────────────
   toggleMobileMenu() { this.isMobileMenuOpen = !this.isMobileMenuOpen; }
   toggleProfileMenu() { this.isProfileMenuOpen = !this.isProfileMenuOpen; }
+
+  scrollToCourses() {
+    this.router.navigate(['/explore']).then(() => {
+     
+      setTimeout(() => {
+        const element = document.getElementById('all-courses');
+        if (element) {
+          element.scrollIntoView({ behavior:  'smooth' });
+        }
+      }, 100);
+    });
+  }
 }

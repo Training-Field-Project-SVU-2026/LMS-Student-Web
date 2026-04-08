@@ -6,11 +6,12 @@ import { HttpClient } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth';
+import { RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink,RouterLinkActive],
   templateUrl: './register.html',
 })
 export class Register {

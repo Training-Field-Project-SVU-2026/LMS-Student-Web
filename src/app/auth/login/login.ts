@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule,RouterLinkActive } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -9,7 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule,RouterLinkActive],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
