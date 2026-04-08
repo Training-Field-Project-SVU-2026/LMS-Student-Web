@@ -20,17 +20,17 @@
           <span class="text-[var(--text-tertiary)] text-sm">
             ({{ courseDetail.ratings_count || 0 }} reviews)
           </span>
-
+<!-- 
           <span class="text-[var(--text-tertiary)] text-sm border-l pl-4 border-[var(--outline)]">
             {{ courseDetail.student_enrollment_count || 0 }} students enrolled
-          </span>
+          </span> -->
         </div>
 
         <div class="text-[var(--text-secondary)] mt-4 text-sm flex flex-wrap items-center gap-2">
           <span>Created by</span>
-          <span class="text-[var(--primary)] font-semibold hover:underline cursor-pointer">
-            {{ courseDetail.instructor_firstname }} {{ courseDetail.instructor_lastname }}
-          </span>
+          <!-- <span class="text-[var(--primary)] font-semibold hover:underline cursor-pointer">
+            {{ courseDetail.instructor_name }}
+          </span> -->
           <span class="hidden md:inline mx-2">•</span>
           <span>Last updated {{ courseDetail.created_at | date: 'MMM yyyy' }}</span>
           <span class="mx-2">•</span>
@@ -53,9 +53,9 @@
             [errorFallback]="'assets/images/default-avatar.png'" alt="Instructor"
             class="w-24 h-24 rounded-2xl object-cover border-2 border-[var(--outline)] shadow-sm" />
           <div class="flex-1">
-            <h3 class="text-xl font-bold text-[var(--text-primary)]">
-              {{ courseDetail.instructor_firstname }} {{ courseDetail.instructor_lastname }}
-            </h3>
+            <!-- <h3 class="text-xl font-bold text-[var(--text-primary)]">
+              {{ courseDetail.instructor_name }}
+            </h3> -->
             <p class="font-body text-[var(--text-secondary)] text-sm leading-relaxed mt-3 italic">
               {{ courseDetail.instructor_bio || 'Expert instructor at our platform.' }}
             </p>
@@ -99,7 +99,7 @@
                 'bg-[var(--secondary)] text-[var(--on-secondary)]': isEnrolled(),
                 'bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white': !isEnrolled(),
               }">
-            @if (isEnrolling) {
+            @if (isEnrolling()) {
             <span class="flex items-center justify-center gap-2">
               <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               Enrolling...

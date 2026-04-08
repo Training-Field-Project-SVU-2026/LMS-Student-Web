@@ -25,37 +25,48 @@ export class CourseDetails implements OnInit {
   auth = inject(AuthService);
 
   courseDetail: ICourseDetailRequest | null = null;
+
   isLoading = true;
-  isEnrolling = false;
+  isEnrolling = signal(false);
   isEnrolled = signal(false);
-  userServices:any;
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) return;
 
     this.loadCourseData(slug);
-
-    if (this.auth.isLoggedIn()) {
-      this.checkIfEnrolled(slug);
-    }
   }
 
   private loadCourseData(slug: string) {
     this.isLoading = true;
+
     this.courseService.getCourseDetails(slug).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: (data) => { this.courseDetail = data; this.isLoading = false; },
-      error: () => { this.isLoading = false; },
+      next: (data) => {
+        this.courseDetail = data;
+        this.isLoading = false;
+
+
+        this.checkIfEnrolled(slug);
+      },
+      error: () => this.isLoading = false,
     });
   }
 
   private checkIfEnrolled(slug: string) {
+    if (!this.auth.isLoggedIn()) {
+      this.isEnrolled.set(false);
+      return;
+    }
+
     this.courseService.getMyCourses().pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: (courses) => this.isEnrolled.set(courses.some(c => c.slug === slug)),
+      next: (courses) => {
+        const enrolled = courses.some(c => c.slug === slug);
+        this.isEnrolled.set(enrolled);
+      },
       error: () => this.isEnrolled.set(false),
     });
   }
@@ -74,35 +85,37 @@ export class CourseDetails implements OnInit {
       return;
     }
 
-    if (this.isLoading || this.isEnrolling || !this.courseDetail?.slug) return;
+    if (!this.courseDetail || this.isEnrolling()) return;
 
-    this.isEnrolling = true;
+    this.isEnrolling.set(true);
 
     this.courseService.enrollInCourse(this.courseDetail.slug).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: () => {
-        this.isEnrolling = false;
+        this.isEnrolling.set(false);
         this.isEnrolled.set(true);
 
         localStorage.removeItem('pendingCourseSlug');
-        this.userServices.getMyEnrollments();
+
         this.alert.enrollSuccess(
           this.courseDetail!.title,
           () => this.router.navigate(['/my-courses'])
         );
       },
       error: (err: any) => {
-        this.isEnrolling = false;
+        this.isEnrolling.set(false);
 
         const detail = (err?.error?.detail || err?.error?.message || '').toLowerCase();
 
         if (err.status === 400 && detail.includes('already')) {
           this.isEnrolled.set(true);
-          this.alert.alreadyEnrolled(
-            this.courseDetail?.title ?? '',
-            () => this.router.navigate(['/my-courses'])
-          );
+          return;
+        }
+
+        if (err.status === 401) {
+          this.auth.logout();
+          this.alert.requireLogin('Session expired. Please login again.');
           return;
         }
 
