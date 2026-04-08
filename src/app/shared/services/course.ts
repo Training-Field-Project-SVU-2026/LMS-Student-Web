@@ -5,12 +5,12 @@ import { API_ENDPOINTS } from '../../core/api-endpoints';
 import {
   IBaseCourse,
   ICourseCardData,
-  IAllCoursesResponse,
   ICourseDetailRequest,
   ICourseDetailResponse,
   IPackagesResponse,
   IEnrollResponse,
   IMyEnrollmentsResponse,
+  IPackageDetails,
   IPackageDetailsResponse,
 } from '../../components/shared/interfaces/course.model';
 
@@ -24,14 +24,15 @@ export class CourseService {
     type: 'COURSE' | 'PACKAGE'
   ): ICourseCardData {
     return {
-      slug: item.slug,
-      title: item.title,
-      description: item.description,
-      image: item.image || 'images/1_a2tAChY8UgAZvBYh5Kqwkw.jpg',
-      avg_rating: item.avg_rating || 0,
-      students_count: item.students_count || item.courses_count || 0,
-      instructor_name: item.instructor_name || 'Expert Instructor',
-      price: item.price || '0',
+      slug:            item.slug,
+    title:           item.title,
+    description:     item.description,
+    image:           item.image || 'images/1_a2tAChY8UgAZvBYh5Kqwkw.jpg',
+    avg_rating:      item.avg_rating ?? 0,
+    students_count:  item.students_count || item.courses_count || 0,
+    instructor_name: item.instructor_name || 'Expert Instructor',
+    price:           item.price || '0',
+    is_enrolled:     item.is_enrolled ?? false,
 
     };
   }
@@ -101,19 +102,20 @@ getAllCoursesPaged(page: number, pageSize: number): Observable<{ courses: ICours
 }
 
   // ───── Course Details ─────
-  getCourseDetails(slug: string): Observable<ICourseDetailRequest> {
-    return this.http.get<ICourseDetailResponse>(API_ENDPOINTS.courseDetails(slug)).pipe(
-      map(res => {
-        const item = res.data;
-        return {
-          ...item,
-          instructor_bio: item.instructor_bio || 'Expert instructor...',
-          instructor_image: item.instructor_image || 'assets/images/default-avatar.png',
-        } as ICourseDetailRequest;
-      })
-    );
-  }
-
+ getCourseDetails(slug: string): Observable<ICourseDetailRequest> {
+  return this.http.get<ICourseDetailResponse>(API_ENDPOINTS.courseDetails(slug)).pipe(
+    map(res => {
+      const item = res.data;
+      return {
+        ...item,
+        avg_rating:       item.avg_rating ?? 0,
+        instructor_bio:   item.instructor_bio   || 'Expert instructor...',
+        instructor_image: item.instructor_image ,
+        instructor_links: item.instructor_links || [],
+      } as ICourseDetailRequest;
+    })
+  );
+}
   // ───── Packages ─────
   getPackages(): Observable<ICourseCardData[]> {
     return this.http.get<IPackagesResponse>(API_ENDPOINTS.package).pipe(
@@ -133,11 +135,42 @@ getAllCoursesPaged(page: number, pageSize: number): Observable<{ courses: ICours
       })
     );
   }
-  getPackageDetails(slug: string) {
+ getPackageDetails(slug: string, packageInstructorName?: string): Observable<IPackageDetails> {
   return this.http
     .get<IPackageDetailsResponse>(API_ENDPOINTS.packageDetails(slug))
     .pipe(
-      map(res => res.data)
+      map(res => {
+        const data = res.data;
+        const courses = Array.isArray(data.courses)
+          ? data.courses.map(course => ({
+              title: course.title,
+              slug: course.slug,
+              image: course.image || null,
+              avg_rating: course.avg_rating ?? 0,
+              ratings_count: course.ratings_count ?? 0,
+              students_count: course.students_count ?? 0,
+              is_enrolled: course.is_enrolled ?? null,
+              instructor_name: course.instructor_name || 'Expert Instructor',
+            }))
+          : [];
+
+        return {
+          title: data.title,
+          slug: data.slug,
+          description: data.description,
+          price: data.price ?? '0',
+          avg_rating: data.avg_rating ?? 0,
+          ratings_count: data.ratings_count ?? 0,
+          students_count: data.students_count ?? 0,
+          courses_count: data.courses_count ?? 0,
+          is_enrolled: data.is_enrolled ?? null,
+          instructor_name: packageInstructorName || data.instructor_name || courses[0]?.instructor_name || 'Expert Instructor',
+          courses,
+          course_slugs: courses.map(c => c.slug),
+          categories: data.categories || [],
+          created_at: data.created_at,
+        } as IPackageDetails;
+      })
     );
 }
 // ───── Packages with Pagination ─────

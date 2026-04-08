@@ -8,10 +8,10 @@ export interface ICourseCardData {
   students_count: number;
   instructor_name: string;
   price: string;
+  is_enrolled?: boolean;
 }
 
 export interface IBaseCourse {
-  id: number;
   slug: string;
   title: string;
   description: string;
@@ -23,9 +23,14 @@ export interface IBaseCourse {
   price?: string | null;
   progress?: number;
   status?: string;
-  enrolled_at?: string
+  enrolled_at?: string;
+  is_enrolled?: boolean;
+  category?: string;
+  level?: string;
+  is_active?: boolean;
+  created_at?: string;
+  ratings_count?: number;
 }
-
 // Top Rated Response
 export interface ITopRatedResponse {
   success: boolean;
@@ -49,8 +54,8 @@ export interface IInstructorLink {
   url: string;
 }
 
+
 export interface ICourseDetailRequest {
-  id: number;
   title: string;
   slug: string;
   description: string;
@@ -60,14 +65,15 @@ export interface ICourseDetailRequest {
   image: string | null;
   created_at: string;
   is_active: boolean;
-  instructor_firstname: string;
-  instructor_lastname: string;
+  instructor_name: string;
   instructor_image: string | null;
   instructor_bio: string;
   instructor_links: IInstructorLink[];
-  avg_rating: number;
+  avg_rating: number | null;
   ratings_count: number;
-  student_enrollment_count: number;
+  is_enrolled: boolean;
+
+
 }
 
 export interface ICourseDetailResponse {
@@ -86,7 +92,8 @@ export interface IPackageCardData {
   courses_count: number;
   avg_rating: number;
   image?: string | null;
-
+  categories?: string[];
+  course_slugs?: string[];
 }
 
 //response
@@ -132,20 +139,32 @@ export interface IMyEnrollmentsResponse {
   data: IMyEnrollmentsData;
 }
 
+export interface IPackageDetailsCourse {
+  title: string;
+  slug: string;
+  image?: string | null;
+  avg_rating: number;
+  ratings_count: number;
+  students_count: number;
+  is_enrolled?: boolean | null;
+  instructor_name: string;
+}
+
 export interface IPackageDetails {
   title: string;
-  instructor_name: string;
   slug: string;
   description: string;
-  price: string;
-  created_at: string;
-  courses_count: number;
+  price: string | number | null;
   avg_rating: number;
-  categories: string[];
-
-  courses: IBaseCourse[];
-
-  course_slugs: string[];
+  ratings_count: number;
+  students_count: number;
+  courses_count: number;
+  is_enrolled?: boolean | null;
+  instructor_name?: string | null;
+  courses: IPackageDetailsCourse[];
+  course_slugs?: string[];
+  categories?: string[];
+  created_at?: string;
 }
 
 export interface IPackageDetailsResponse {
