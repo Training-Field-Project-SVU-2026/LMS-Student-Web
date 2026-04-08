@@ -35,7 +35,7 @@ export class CourseSection implements OnInit {
     this.courseService.getPackages().pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next:  (data) => this.learningTracks = data.slice(0, 6),
+      next:  (data) => this.learningTracks = data.slice(0, 4),
       error: (err)  => console.error('Tracks Error:', err),
     });
 
@@ -48,7 +48,7 @@ export class CourseSection implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: ({ courses, totalPages }) => {
-        this.manyCourses  = [...this.manyCourses, ...courses]; // append
+        this.manyCourses  = [...this.manyCourses, ...courses];
         this.totalPages   = totalPages;
         this.isLoadingMore = false;
       },

@@ -18,7 +18,6 @@
         </div>
 
         <span class="text-xl font-semibold tracking-wide">
-          <!-- <span class="text-[var(--primary)]">&lt;/&gt;</span> -->
           <span class="text-[var(--primary)] ml-1">Commit</span>
           <span class="text-[var(--secondary)]">Ma3ana</span>
         </span>
@@ -34,7 +33,7 @@
           Home
         </a>
 
-        <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold"
+        <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold" (click)="scrollToCourses()"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           Courses
         </a>
