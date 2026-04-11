@@ -5,16 +5,19 @@
 
   <!-- Tabs -->
   <div class="flex bg-[var(--outline)] rounded-xl p-1 mb-6">
-    <button routerLink="/auth/login" class="flex-1 py-2.5 rounded-[10px] text-sm font-medium text-[var(--text-secondary)]
-             hover:opacity-70 transition-opacity duration-200 cursor-pointer bg-transparent border-none">
+    <button routerLink="/auth/login"
+      routerLinkActive="!bg-[var(--tab-active-bg)] !shadow-sm !font-semibold !text-[var(--text-primary)]"
+      [routerLinkActiveOptions]="{exact: true}" class="flex-1 py-2.5 rounded-[10px] text-sm font-medium text-[var(--text-secondary)]
+           hover:opacity-70 transition-all duration-200 cursor-pointer bg-transparent border-none">
       Login
     </button>
-    <button routerLink="/auth/register" class="flex-1 py-2.5 rounded-[10px] text-sm font-semibold bg-[var(--tab-active-bg)]
-             shadow-sm text-[var(--text-primary)] border-none cursor-pointer">
+    <button routerLink="/auth/register"
+      routerLinkActive="!bg-[var(--tab-active-bg)] !shadow-sm !font-semibold !text-[var(--text-primary)]"
+      [routerLinkActiveOptions]="{exact: true}" class="flex-1 py-2.5 rounded-[10px] text-sm font-medium text-[var(--text-secondary)]
+           hover:opacity-70 transition-all duration-200 cursor-pointer bg-transparent border-none">
       Register
     </button>
   </div>
-
   <!-- Form -->
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 

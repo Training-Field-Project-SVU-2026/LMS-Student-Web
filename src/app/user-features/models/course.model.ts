@@ -20,3 +20,14 @@ export interface EnrollmentResponse {
   message: string;
   data: EnrollmentData;
 }
+export interface IRateCourseRequest {
+  rate: number; 
+}
+export interface IRateCourseResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: {
+    rate: number;
+  };
+}

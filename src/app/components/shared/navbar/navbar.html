@@ -5,14 +5,23 @@
     <div class="flex items-center gap-8">
 
       <!-- Logo -->
-      <a routerLink="/home" class="flex items-center gap-3">
+      <a routerLink="/home" class="flex items-center gap-3 group">
+
         <div class="w-10 h-10 rounded-2xl flex items-center justify-center
-                    font-bold text-lg bg-[var(--primary)] text-[var(--on-primary)]">
-          SU
+              bg-[var(--primary)] text-white shadow-md group-hover:scale-105 transition">
+
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
+
         </div>
-        <span class="text-xl font-semibold text-[var(--primary)]">
-          Skill<span class="text-[var(--secondary)]">Up</span>
+
+        <span class="text-xl font-semibold tracking-wide">
+          <span class="text-[var(--primary)] ml-1">Commit</span>
+          <span class="text-[var(--secondary)]">Ma3ana</span>
         </span>
+
       </a>
 
       <!-- Desktop Links -->
@@ -24,10 +33,10 @@
           Home
         </a>
 
-        <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold"
+        <!-- <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold" (click)="scrollToCourses()"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           Courses
-        </a>
+        </a> -->
 
         <a routerLink="/explore" routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">
@@ -37,6 +46,11 @@
         <a routerLink="/my-courses" routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
           My Courses
+        </a>
+        } @else {
+        <a routerLink="/" routerLinkActive="text-[var(--primary)] font-semibold"
+          class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
+          Courses
         </a>
         }
       </div>

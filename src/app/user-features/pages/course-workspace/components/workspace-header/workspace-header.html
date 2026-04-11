@@ -1,0 +1,109 @@
+<div class="bg-[var(--surface)] border-b border-[var(--divider)]">
+  <div class="flex items-start gap-5 px-6 py-5">
+
+    <!-- ── Thumbnail ── -->
+    <div class="relative w-40 h-24 rounded-xl overflow-hidden flex-shrink-0">
+
+      <!-- لو في image من الـ API -->
+      <img
+        *ngIf="course.image; else gradientThumb"
+        [src]="course.image"
+        [alt]="course.title"
+        class="w-full h-full object-cover"
+      />
+
+      <!-- fallback gradient -->
+      <ng-template #gradientThumb>
+        <div class="w-full h-full bg-gradient-to-br from-[#0A5C75] to-[#0d9abf]"></div>
+      </ng-template>
+
+      <!-- Play button -->
+      <button
+        class="absolute inset-0 flex items-center justify-center"
+        aria-label="Play preview">
+        <div class="w-9 h-9 rounded-full border-2 border-white/50
+                    bg-white/20 flex items-center justify-center">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="white">
+            <path d="M5 3.5l8 4.5-8 4.5V3.5z"/>
+          </svg>
+        </div>
+      </button>
+    </div>
+
+    <!-- ── Course Info ── -->
+    <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+
+      <!-- Category Badge -->
+      <span *ngIf="course.category"
+        class="w-fit font-caption px-3 py-0.5 rounded-full
+               bg-[var(--primary)]/10 text-[var(--primary)]">
+        {{ course.category }}
+      </span>
+
+      <!-- Title -->
+      <h1 class="font-title text-[var(--text-primary)] truncate">
+        {{ course.title }}
+      </h1>
+
+      <!-- Meta Row -->
+      <div class="flex items-center flex-wrap gap-x-3 gap-y-1
+                  font-caption text-[var(--text-tertiary)]">
+
+        <!-- Instructor -->
+        <span class="flex items-center gap-1">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M2 13c0-3.314 2.686-5 6-5s6 1.686 6 5"
+                  stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          {{ course.instructor_name }}
+        </span>
+
+        <!-- lessons_count — بييجي لو موجود -->
+        <ng-container *ngIf="course.lessons_count">
+          <span class="opacity-30">•</span>
+          <span class="flex items-center gap-1">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M8 5v3.5l2 1.5" stroke="currentColor"
+                    stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            {{ course.lessons_count }} lessons
+            <ng-container *ngIf="course.duration">· {{ course.duration }}</ng-container>
+          </span>
+        </ng-container>
+
+        <!-- Rating -->
+        <ng-container *ngIf="course.avg_rating">
+          <span class="opacity-30">•</span>
+          <span class="flex items-center gap-1">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5 8 2z"
+                    stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+            {{ course.avg_rating }} rating
+          </span>
+        </ng-container>
+
+      </div>
+
+      <!-- Progress Bar — بيظهر بس لو is_enrolled -->
+      <div *ngIf="course.is_enrolled && course.progress !== undefined"
+           class="flex items-center gap-3 mt-1">
+        <span class="font-caption text-[var(--text-tertiary)] whitespace-nowrap">
+          Your progress
+        </span>
+        <div class="flex-1 h-1 rounded-full bg-[var(--outline)] overflow-hidden">
+          <div
+            class="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
+            [style.width.%]="course.progress">
+          </div>
+        </div>
+        <span class="font-caption text-[var(--primary)] whitespace-nowrap">
+          {{ course.progress }}% complete
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>

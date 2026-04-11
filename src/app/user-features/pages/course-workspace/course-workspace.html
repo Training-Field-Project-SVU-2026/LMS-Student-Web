@@ -1,0 +1,29 @@
+<ng-container *ngIf="isLoading">
+    <div class="flex items-center justify-center h-40
+              text-[var(--text-tertiary)] font-caption">
+        <svg class="animate-spin w-5 h-5 mr-2 text-[var(--primary)]" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32"
+                stroke-dashoffset="12" />
+        </svg>
+        Loading course...
+    </div>
+</ng-container>
+
+<ng-container *ngIf="!isLoading && course">
+    <app-workspace-header [course]="course" />
+    <app-workspace-tabs />
+    <div class="p-6">
+        <router-outlet />
+    </div>
+</ng-container>
+
+<ng-container *ngIf="!isLoading && !course">
+    <div class="flex flex-col items-center justify-center h-60 gap-3
+              text-[var(--text-tertiary)]">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
+            <path d="M12 8v4m0 4h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <p class="font-caption">Course not found.</p>
+    </div>
+</ng-container>

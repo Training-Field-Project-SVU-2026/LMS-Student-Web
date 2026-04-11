@@ -1,14 +1,16 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { SideBarProfile } from '../side-bar-profile/side-bar-profile';
 import { Student } from '../../models/user.models';
 import { ThemeService } from '../../core/theme';
 import { AuthService } from '../../auth/services/auth';
+import { ImgFallback } from '../../shared/directives/img-fallback';
 
 @Component({
-  selector: 'app-layout',
+  selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet, SideBarProfile],
+  imports: [RouterOutlet, SideBarProfile, RouterLink, CommonModule, ImgFallback],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
