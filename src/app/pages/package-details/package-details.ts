@@ -7,13 +7,12 @@ import { CourseService } from '../../shared/services/course';
 import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
 import { IPackageDetails, IEnrollResponse, IPackageCardData } from '../../components/shared/interfaces/course.model';
-
 import { ImgFallback } from '../../shared/directives/img-fallback';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-package-details',
   standalone: true,
-  imports: [CommonModule, ImgFallback],
+  imports: [CommonModule, ImgFallback, RouterLink],
   templateUrl: './package-details.html',
   styleUrl: './package-details.css',
 })

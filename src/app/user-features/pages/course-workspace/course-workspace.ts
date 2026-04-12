@@ -22,12 +22,12 @@ export class CourseWorkspace implements OnInit, OnDestroy {
   isLoading = true;
 
   private slug!: string;
-  private destroy$ = new Subject<void>();  
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private courseWorkspaceService: CourseWorkspaceService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.slug = this.route.snapshot.paramMap.get('slug')!;
@@ -39,7 +39,7 @@ export class CourseWorkspace implements OnInit, OnDestroy {
 
     this.courseWorkspaceService
       .getCourseWorkspaceData(this.slug)
-      .pipe(takeUntil(this.destroy$))   
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           this.course = data;

@@ -20,7 +20,7 @@
           <span class="text-[var(--text-tertiary)] text-sm">
             ({{ courseDetail.ratings_count || 0 }} reviews)
           </span>
-<!-- 
+          <!-- 
           <span class="text-[var(--text-tertiary)] text-sm border-l pl-4 border-[var(--outline)]">
             {{ courseDetail.student_enrollment_count || 0 }} students enrolled
           </span> -->
@@ -62,6 +62,85 @@
           </div>
         </div>
       </section>
+    
+    
+    
+    <!-- Rating Section -->
+@if (isEnrolled()) {
+<section class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-6 shadow-sm">
+
+  <p class="text-xs font-semibold uppercase tracking-widest text-[var(--text-tertiary)] mb-1">
+    Your Feedback
+  </p>
+  <h2 class="text-xl font-bold text-[var(--text-primary)] mb-5">Rate this course</h2>
+
+  @if (ratingSubmitted()) {
+    <!-- Success State -->
+    <div class="flex flex-col items-center gap-3 py-4 text-center">
+      <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <p class="text-[var(--text-primary)] font-semibold">Thanks for your rating!</p>
+      <p class="text-[var(--text-tertiary)] text-sm">You can update your rating anytime.</p>
+      <button
+        (click)="ratingSubmitted.set(false)"
+        class="text-sm text-[var(--primary)] hover:underline mt-1">
+        Edit rating
+      </button>
+    </div>
+
+  } @else {
+    <!-- Stars -->
+    <div class="flex items-center gap-2 mb-3">
+      @for (star of [1,2,3,4,5]; track star) {
+        <button
+          (mouseenter)="onHoverStar(star)"
+          (mouseleave)="onLeaveStar()"
+          (click)="onSelectStar(star)"
+          class="transition-transform duration-150 hover:scale-110 focus:outline-none">
+          <svg
+            class="w-9 h-9 transition-colors duration-150"
+            [class]="(hoveredRating() || selectedRating()) >= star
+              ? 'text-yellow-400'
+              : 'text-[var(--outline)]'"
+            fill="currentColor"
+            viewBox="0 0 24 24">
+            <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.036 6.26h6.585c.969 0 
+              1.371 1.24.588 1.81l-5.327 3.87 2.036 6.26c.3.921-.755 1.688-1.54 
+              1.118L12 17.77l-5.329 3.475c-.784.57-1.838-.197-1.539-1.118l2.036-6.26
+              -5.327-3.87c-.783-.57-.38-1.81.588-1.81h6.585l2.035-6.26z"/>
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Label -->
+    <p class="text-sm text-[var(--text-tertiary)] mb-5 min-h-[20px]">
+      {{ getRatingLabel(hoveredRating() || selectedRating()) }}
+    </p>
+
+    <!-- Submit Button -->
+    <button
+      (click)="submitRating()"
+      [disabled]="!selectedRating() || isSubmittingRating()"
+      class="w-full py-3 rounded-xl font-semibold text-sm transition-all active:scale-95
+             disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+             bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white shadow-md">
+      @if (isSubmittingRating()) {
+        <span class="flex items-center justify-center gap-2">
+          <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          Submitting...
+        </span>
+      } @else {
+        Submit Rating
+      }
+    </button>
+  }
+
+</section>
+}
     </div>
 
     <div class="lg:col-span-1">
@@ -105,7 +184,7 @@
               Enrolling...
             </span>
             } @else if (isEnrolled()) {
-            Already Enrolled
+            Go to Course
             } @else if (!auth.isLoggedIn()) {
             Login to Enroll
             } @else {
@@ -123,17 +202,35 @@
             </p>
 
             <div class="flex items-center gap-3">
-              <span class="w-5 text-center">📈</span>
+              <span class="w-5 h-5 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.25 18L9 11.25l4.306 4.307a.515.515 0 00.707 0L21.75 6M9 11.25l-6.75 6.75M9 11.25l6.75 6.75M21.75 6H16.5M21.75 6v5.25" />
+                </svg>
+              </span>
               <span>Level: <strong>{{ courseDetail.level }}</strong></span>
             </div>
 
             <div class="flex items-center gap-3">
-              <span class="w-5 text-center">⏰</span>
+              <span class="w-5 h-5 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </span>
               <span>Full lifetime access</span>
             </div>
 
             <div class="flex items-center gap-3">
-              <span class="w-5 text-center">📱</span>
+              <span class="w-5 h-5 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                </svg>
+              </span>
               <span>Access on mobile and TV</span>
             </div>
 
@@ -143,6 +240,10 @@
           </div>
         </div>
       </div>
+    
+    
+    
+    
     </div>
   </div>
 </div>

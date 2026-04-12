@@ -11,14 +11,14 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class CourseWorkspaceService {
-  constructor(private userService: User, private courseService: CourseService) {}
+  constructor(private userService: User, private courseService: CourseService) { }
   getCourseWorkspaceData(slug: string): Observable<ICourseWorkspaceHeader> {
 
     this.userService.getMyEnrollments();
 
     return combineLatest([
-      this.courseService.getCourseDetails(slug),  
-      this.userService.courses$,                   
+      this.courseService.getCourseDetails(slug),
+      this.userService.courses$,
     ]).pipe(
       map(([courseDetail, enrolledCourses]) => {
 
@@ -26,9 +26,10 @@ export class CourseWorkspaceService {
 
         return {
           ...courseDetail,
-          progress:      enrolled?.progress     ?? 0,
+          progress: enrolled?.progress ?? 0,
         } as ICourseWorkspaceHeader;
       })
     );
   }
+
 }

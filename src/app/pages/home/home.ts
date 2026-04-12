@@ -11,5 +11,5 @@ import { Cta } from './components/cta/cta';
   standalone: true,
 })
 export class Home {
-
+ 
 }

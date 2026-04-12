@@ -7,7 +7,10 @@ import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
 import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
 import { ImgFallback } from '../../shared/directives/img-fallback';
+import { User } from '../../user-features/services/user';
 
+import { CourseRatingResponse } from '../../user-features/models/course.model';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-course-details',
   standalone: true,
@@ -21,7 +24,7 @@ export class CourseDetails implements OnInit {
   private courseService = inject(CourseService);
   private alert = inject(AlertService);
   private destroyRef = inject(DestroyRef);
-
+  private userService = inject(User);
   auth = inject(AuthService);
 
   courseDetail: ICourseDetailRequest | null = null;
@@ -80,7 +83,7 @@ export class CourseDetails implements OnInit {
     if (this.isEnrolled()) {
       this.alert.alreadyEnrolled(
         this.courseDetail?.title ?? '',
-        () => this.router.navigate(['/my-courses'])
+        () => this.router.navigate(['/workspace', this.courseDetail?.slug])
       );
       return;
     }
@@ -125,6 +128,84 @@ export class CourseDetails implements OnInit {
         }
 
         this.alert.enrollError(detail);
+      },
+    });
+  }
+
+  handleCourseAction() {
+    if (!this.auth.isLoggedIn()) {
+      this.alert.requireLoginToEnroll(this.courseDetail?.slug ?? '');
+      return;
+    }
+
+    if (this.isEnrolled()) {
+      this.router.navigate(['/CourseWorkspace', this.courseDetail?.slug]);
+    } else {
+      this.onEnroll();
+    }
+  }
+
+
+
+  // Signals
+  selectedRating = signal<number>(0);
+  hoveredRating = signal<number>(0);
+  isSubmittingRating = signal<boolean>(false);
+  ratingSubmitted = signal<boolean>(false);
+
+  onHoverStar(star: number) {
+    this.hoveredRating.set(star);
+  }
+
+  onLeaveStar() {
+    this.hoveredRating.set(0);
+  }
+
+  onSelectStar(star: number) {
+    this.selectedRating.set(star);
+  }
+
+  getRatingLabel(rating: number): string {
+    const labels: Record<number, string> = {
+      1: 'Poor',
+      2: 'Fair',
+      3: 'Good',
+      4: 'Very Good',
+      5: 'Excellent',
+    };
+    return labels[rating] ?? 'Select a star to leave your rating';
+  }
+  submitRating() {
+    if (!this.selectedRating() || this.isSubmittingRating() || !this.courseDetail) return;
+
+    this.isSubmittingRating.set(true);
+
+    this.userService.rateCourse(this.courseDetail.slug, this.selectedRating()).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.ratingSubmitted.set(true);
+          this.selectedRating.set(res.data.rate);
+          console.log(this.courseDetail?.slug);
+          Swal.fire({
+            icon: 'success',
+            title: 'Rating Submitted!',
+            text: `You rated this course ${res.data.rate} star${res.data.rate > 1 ? 's' : ''}`,
+            timer: 2500,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        }
+        this.isSubmittingRating.set(false);
+      },
+      error: () => {
+        this.isSubmittingRating.set(false);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: 'Something went wrong. Please try again.',
+          confirmButtonText: 'Try Again',
+        });
       },
     });
   }
