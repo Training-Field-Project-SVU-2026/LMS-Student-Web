@@ -1,0 +1,100 @@
+<div class="min-h-screen bg-[var(--background)]">
+
+  <!-- Header -->
+  <div class="sticky top-0 z-10 bg-[var(--background)] border-b border-[var(--outline)] px-6 py-4">
+
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+
+      <button class="text-sm text-[var(--text-secondary)] hover:text-[var(--primary)]">
+        ← Exit Exam
+      </button>
+
+      <div class="text-center">
+        <h2 class="font-semibold text-[var(--text-primary)]">
+          Computer Science & Ethics
+        </h2>
+        <p class="text-xs text-[var(--text-tertiary)]">
+          Chapter 1: Data Structures
+        </p>
+      </div>
+
+      <div class="text-sm text-[var(--primary)] font-medium">
+        ⏱ 14:20
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Content -->
+  <div class="max-w-3xl mx-auto p-6 flex flex-col gap-6">
+
+    <!-- @for (q of questions; track q.id; let i = $index) { -->
+
+      <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-6 shadow-sm">
+
+        <!-- Question Number -->
+        <!-- <p class="text-xs text-[var(--text-tertiary)] mb-2">
+          Question {{ i + 1 }}
+        </p> -->
+
+        <!-- Question -->
+        <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-5 leading-relaxed">
+          <!-- {{ q.text }} -->
+        </h3>
+
+        <!-- Answers -->
+        <div class="flex flex-col gap-3">
+
+          <!-- @for (opt of q.options; track opt) { -->
+
+            <!-- <label
+              class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200"
+              [ngClass]="{
+                'border-[var(--primary)] bg-[var(--primary)]/10',
+                'border-[var(--outline)] hover:border-[var(--primary)]'
+              }"
+            > -->
+
+              <!-- Radio -->
+              <!-- <input
+                type="radio"
+                [name]="'q' + q.id"
+                [value]="opt"
+                [(ngModel)]="answers[q.id]"
+                class="accent-[var(--primary)]"
+              /> -->
+
+              <!-- Text -->
+              <span class="text-[var(--text-primary)]">
+                <!-- {{ opt }} -->
+              </span>
+
+            <!-- </label> -->
+
+          <!-- } -->
+
+        </div>
+
+      </div>
+
+    <!-- } -->
+
+  </div>
+
+  <!-- Sticky Submit -->
+  <div class="sticky bottom-0 bg-[var(--surface)] border-t border-[var(--outline)] p-4">
+
+    <div class="max-w-3xl mx-auto flex justify-center">
+
+      <button
+        class="px-8 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold shadow hover:bg-[var(--primary-hover)] transition"
+      >
+        Submit Exam
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

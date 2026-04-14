@@ -1,10 +1,12 @@
 import { Component, inject, OnInit, DestroyRef, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, of, switchMap } from 'rxjs';
 import { CourseService } from '../../shared/services/course';
 import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
+import { User } from '../../user-features/services/user';
 import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
 import { ImgFallback } from '../../shared/directives/img-fallback';
 
@@ -16,59 +18,42 @@ import { ImgFallback } from '../../shared/directives/img-fallback';
   styleUrl: './course-details.css',
 })
 export class CourseDetails implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private route         = inject(ActivatedRoute);
+  private router        = inject(Router);
   private courseService = inject(CourseService);
-  private alert = inject(AlertService);
-  private destroyRef = inject(DestroyRef);
+  private alert         = inject(AlertService);
+  private userService   = inject(User);
+  private destroyRef    = inject(DestroyRef);
 
   auth = inject(AuthService);
 
   courseDetail: ICourseDetailRequest | null = null;
-
-  isLoading = true;
+  isLoading   = true;
   isEnrolling = signal(false);
-  isEnrolled = signal(false);
+  isEnrolled  = signal(false);
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) return;
-
     this.loadCourseData(slug);
   }
 
   private loadCourseData(slug: string) {
     this.isLoading = true;
-
     this.courseService.getCourseDetails(slug).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (data) => {
         this.courseDetail = data;
-        this.isLoading = false;
-
-
-        this.checkIfEnrolled(slug);
+        this.isLoading    = false;
+        this.isEnrolled.set(data.is_enrolled ?? false);
       },
       error: () => this.isLoading = false,
     });
   }
 
-  private checkIfEnrolled(slug: string) {
-    if (!this.auth.isLoggedIn()) {
-      this.isEnrolled.set(false);
-      return;
-    }
-
-    this.courseService.getMyCourses().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (courses) => {
-        const enrolled = courses.some(c => c.slug === slug);
-        this.isEnrolled.set(enrolled);
-      },
-      error: () => this.isEnrolled.set(false),
-    });
+  goToWorkspace() {
+    this.router.navigate(['/course-workspace', this.courseDetail?.slug]);
   }
 
   onEnroll() {
@@ -78,10 +63,7 @@ export class CourseDetails implements OnInit {
     }
 
     if (this.isEnrolled()) {
-      this.alert.alreadyEnrolled(
-        this.courseDetail?.title ?? '',
-        () => this.router.navigate(['/my-courses'])
-      );
+      this.goToWorkspace();
       return;
     }
 
@@ -89,29 +71,31 @@ export class CourseDetails implements OnInit {
 
     this.isEnrolling.set(true);
 
-    this.courseService.enrollInCourse(this.courseDetail.slug).pipe(
+    const token$: Observable<unknown> = this.auth.getToken()
+      ? of(null)
+      : this.auth.refreshAccessToken();
+
+    token$.pipe(
+      switchMap(() =>
+        this.courseService.enrollInCourse(this.courseDetail!.slug)
+      ),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: () => {
         this.isEnrolling.set(false);
         this.isEnrolled.set(true);
-
         localStorage.removeItem('pendingCourseSlug');
+        this.userService.getMyEnrollments();
 
         this.alert.enrollSuccess(
           this.courseDetail!.title,
-          () => this.router.navigate(['/my-courses'])
+          () => this.goToWorkspace()
         );
       },
       error: (err: any) => {
         this.isEnrolling.set(false);
 
-        const detail = (err?.error?.detail || err?.error?.message || '').toLowerCase();
-
-        if (err.status === 400 && detail.includes('already')) {
-          this.isEnrolled.set(true);
-          return;
-        }
+        const detail = err?.error?.detail || err?.error?.message || '';
 
         if (err.status === 401) {
           this.auth.logout();
@@ -119,8 +103,9 @@ export class CourseDetails implements OnInit {
           return;
         }
 
-        if (err.status === 401) {
-          this.alert.requireLoginToEnroll(this.courseDetail?.slug ?? '');
+        if (err.status === 400 && detail.toLowerCase().includes('already')) {
+          this.isEnrolled.set(true);
+          this.goToWorkspace();
           return;
         }
 

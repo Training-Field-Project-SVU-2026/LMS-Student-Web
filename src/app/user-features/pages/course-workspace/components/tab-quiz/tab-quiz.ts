@@ -7,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrl: './tab-quiz.css',
 })
 export class TabQuiz {
-
+currentStep:'intro' | 'question' | 'result' = 'intro';
+goToStep(step:'intro' | 'question' | 'result') {
+  this.currentStep =step;
+}
 }

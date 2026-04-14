@@ -98,10 +98,23 @@ export const routes: Routes = [
   ]
 },
 {
+  path: 'course-workspace/:slug',
+  component: PrivateLayout,
+  canActivate: [authGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./user-features/pages/course-workspace/course-workspace').then(m => m.CourseWorkspace)
+    }
+  ]
+},
+{
   path: 'dashboard',
   loadChildren: () =>
     import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
 },
+
 {
   path: 'explore',
   component: PrivateLayout,

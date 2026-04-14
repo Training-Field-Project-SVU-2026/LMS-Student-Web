@@ -1,0 +1,110 @@
+<div class="min-h-screen bg-[var(--background)] flex items-center justify-center p-6">
+
+  <div class="w-full max-w-5xl bg-[var(--surface)] rounded-3xl shadow-lg border border-[var(--outline)] overflow-hidden grid md:grid-cols-2">
+
+    <!-- LEFT SIDE -->
+    <div class="p-8 flex flex-col items-center justify-center text-center bg-gradient-to-b from-green-50 to-transparent">
+
+      <p class="text-xs text-[var(--text-tertiary)] mb-2">
+        RESULT SUMMARY
+      </p>
+
+      <h2 class="text-2xl font-bold text-[var(--text-primary)] mb-2">
+        Exam Complete
+      </h2>
+
+      <p class="text-sm text-[var(--text-secondary)] mb-6">
+        Computer Ethics • Chap 2
+      </p>
+
+      <!-- Circle Score -->
+      <div class="relative w-40 h-40 flex items-center justify-center mb-4">
+
+        <div class="absolute inset-0 rounded-full border-[10px] border-green-300"></div>
+
+        <div class="text-center">
+          <p class="text-3xl font-bold text-[var(--text-primary)]">
+            45<span class="text-lg text-[var(--text-secondary)]">/60</span>
+          </p>
+          <p class="text-xs text-[var(--text-tertiary)]">SCORE</p>
+        </div>
+
+      </div>
+
+      <!-- Badge -->
+      <div class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium mb-3">
+        • Keep going!
+      </div>
+
+      <h3 class="font-semibold text-[var(--text-primary)] mb-1">
+        Good effort!
+      </h3>
+
+      <p class="text-sm text-[var(--text-secondary)] max-w-xs">
+        You're getting closer to mastering this module. Review the incorrect answers to improve.
+      </p>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="p-8 flex flex-col gap-5">
+
+      <h3 class="font-semibold text-[var(--text-primary)]">
+        Performance Details
+      </h3>
+
+      <!-- Cards -->
+      <div class="grid grid-cols-2 gap-4">
+
+        <!-- This Attempt -->
+        <div class="bg-blue-50 rounded-2xl p-4">
+          <p class="text-xs text-[var(--text-tertiary)] mb-1">
+            THIS ATTEMPT
+          </p>
+          <p class="text-xl font-bold text-[var(--text-primary)]">
+            45 <span class="text-sm text-[var(--text-secondary)]">/ 60 points</span>
+          </p>
+          <p class="text-xs text-[var(--primary)] mt-1">
+            ● 75% accuracy rate
+          </p>
+        </div>
+
+        <!-- Best -->
+        <div class="bg-green-50 rounded-2xl p-4">
+          <p class="text-xs text-[var(--text-tertiary)] mb-1">
+            PERSONAL BEST
+          </p>
+          <p class="text-xl font-bold text-[var(--text-primary)]">
+            50 <span class="text-sm text-[var(--text-secondary)]">/ 60 points</span>
+          </p>
+          <p class="text-xs text-green-600 mt-1">
+            ✔ Saved
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Tip -->
+      <div class="bg-[var(--primary)]/10 rounded-2xl p-4 text-sm text-[var(--text-secondary)]">
+        <span class="font-semibold text-[var(--primary)]">Study Tip:</span>
+        Focus on the sections related to 'Stack Data Structures' as you missed 3 questions there.
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-4 mt-4">
+
+        <button class="flex-1 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold hover:bg-[var(--primary-hover)] transition">
+          ⟳ Try Again
+        </button>
+
+        <button class="text-sm text-[var(--text-secondary)] hover:text-[var(--primary)]">
+          Back to Exam Center
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

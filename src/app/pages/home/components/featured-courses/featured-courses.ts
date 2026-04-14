@@ -23,7 +23,7 @@ export class FeaturedCourses implements OnInit {
   courses: ICourseCardData[] = [];
 
   ngOnInit() {
-    this.courseService.getTopRatedCourses(4).pipe(
+    this.courseService.getTopRatedCourses(8).pipe(
       catchError(() => of([])),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
