@@ -50,6 +50,9 @@ export class CourseDetails implements OnInit {
         this.courseDetail = data;
         this.isLoading = false;
 
+        // Set shared selected course
+        this.userService.setSelectedCourse(data);
+
 
         this.checkIfEnrolled(slug);
       },
@@ -130,6 +133,13 @@ export class CourseDetails implements OnInit {
         this.alert.enrollError(detail);
       },
     });
+  }
+
+  exportCourseImage() {
+    if (this.courseDetail?.image) {
+      const filename = `${this.courseDetail.title.replace(/\s+/g, '-').toLowerCase()}-cover.jpg`;
+      this.userService.downloadImage(this.courseDetail.image, filename);
+    }
   }
 
   handleCourseAction() {

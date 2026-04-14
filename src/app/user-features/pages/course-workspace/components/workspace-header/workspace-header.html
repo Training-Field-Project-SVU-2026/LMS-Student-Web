@@ -3,15 +3,31 @@
 
     <!-- Thumbnail -->
     <div class="relative w-40 h-24 rounded-xl overflow-hidden flex-shrink-0
-                bg-gradient-to-br from-[#0A5C75] to-[#0d9abf]">
-      <img *ngIf="course.image" [src]="course.image" [alt]="course.title" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="w-9 h-9 rounded-full border-2 border-white/60
-                    bg-white/20 flex items-center justify-center">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="white">
+                bg-gradient-to-br from-[#0A5C75] to-[#0d9abf] group/thumb">
+      @if (selectedCourse()) {
+      <img appImgFallback [src]="selectedCourse()?.image" class="w-full h-full object-cover" />
+      } @else {
+      <img appImgFallback [src]="course.image" class="w-full h-full object-cover" />
+      }
+
+      <!-- Overlay icons -->
+      <div
+        class="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/40 transition-all flex items-center justify-center gap-2">
+        <div class="w-8 h-8 rounded-full border border-white/40
+                    bg-white/10 flex items-center justify-center">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="white">
             <path d="M5 3.5l8 4.5-8 4.5V3.5z" />
           </svg>
         </div>
+
+        <button (click)="$event.stopPropagation(); exportCourseImage()" class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center
+                       text-white opacity-0 group-hover/thumb:opacity-100 transition-all hover:bg-white/40"
+          title="Export Image">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+              d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -24,6 +40,8 @@
         {{ course.category }}
       </span>
       }
+
+
 
       <h1 class="text-lg font-semibold text-[var(--text-primary)]
                  truncate leading-snug">
