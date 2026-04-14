@@ -140,9 +140,10 @@ export class CourseDetails implements OnInit {
 
     if (this.isEnrolled()) {
       this.router.navigate(['/CourseWorkspace', this.courseDetail?.slug]);
-    } else {
-      this.onEnroll();
+      return;
     }
+
+    this.onEnroll();
   }
 
 

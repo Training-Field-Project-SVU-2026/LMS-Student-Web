@@ -98,16 +98,43 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'CourseWorkspace/:slug',
-    component: PrivateLayout,
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('./user-features/pages/course-workspace/course-workspace').then(m => m.CourseWorkspace)
-      }
-    ]
-  },
+  path: 'CourseWorkspace/:slug',
+  component: PrivateLayout,
+  canActivate: [authGuard],
+  children: [
+    {
+      path: '',
+      loadComponent: () =>
+        import('./user-features/pages/course-workspace/course-workspace')
+          .then(m => m.CourseWorkspace),
+      children: [
+        {
+          path: '',
+          redirectTo: 'materials',
+          pathMatch: 'full'
+        },
+        {
+          path: 'materials',
+          loadComponent: () =>
+            import('./user-features/pages/course-workspace/components/tab-materials/tab-materials')
+              .then(m => m.TabMaterials),
+        },
+        {
+          path: 'videos',
+          loadComponent: () =>
+            import('./user-features/pages/course-workspace/components/tab-videos/tab-videos')
+              .then(m => m.TabVideos),
+        },
+        {
+          path: 'quiz',
+          loadComponent: () =>
+            import('./user-features/pages/course-workspace/components/tab-quiz/tab-quiz')
+              .then(m => m.TabQuiz),
+        },
+      ]
+    }
+  ]
+},
   {
     path: 'dashboard',
     loadChildren: () =>

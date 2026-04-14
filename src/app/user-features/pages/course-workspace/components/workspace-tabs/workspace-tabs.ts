@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-workspace-tabs',
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './workspace-tabs.html',
   styleUrl: './workspace-tabs.css',
 })

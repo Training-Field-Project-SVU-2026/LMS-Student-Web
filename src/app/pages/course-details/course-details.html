@@ -172,7 +172,7 @@
             </span>
           </div>
 
-          <button (click)="onEnroll()" [disabled]="isLoading || isEnrolling"
+          <button (click)="handleCourseAction()" [disabled]="isLoading || isEnrolling()"
             class="w-full font-bold py-4 rounded-xl transition-all mb-4 shadow-lg active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
             [ngClass]="{
                 'bg-[var(--secondary)] text-[var(--on-secondary)]': isEnrolled(),

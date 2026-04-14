@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { ICourseWorkspaceHeader } from '../models/courseWorkspace.model';
+import { ICourseWorkspaceHeader, IMaterialsResponse } from '../models/courseWorkspace.model';
 import { Observable } from 'rxjs';
 import { CourseService } from '../../shared/services/course';
 import { User } from '../services/user';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class CourseWorkspaceService {
-  constructor(private userService: User, private courseService: CourseService) { }
+  constructor(private userService: User, private courseService: CourseService, private http: HttpClient) { }
   getCourseWorkspaceData(slug: string): Observable<ICourseWorkspaceHeader> {
 
     this.userService.getMyEnrollments();
@@ -31,5 +33,14 @@ export class CourseWorkspaceService {
       })
     );
   }
+
+
+  materials(courseSlug: string): Observable<IMaterialsResponse> {
+    return this.http.get<IMaterialsResponse>(
+      `${environment.baseUrl}api/materials/?course=${courseSlug}`
+    );
+  }
+
+
 
 }
