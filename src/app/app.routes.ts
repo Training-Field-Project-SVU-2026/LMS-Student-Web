@@ -15,7 +15,7 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./pages/home/home').then(m => m.Home),
         canActivate: [() => {
-          const auth   = inject(AuthService);
+          const auth = inject(AuthService);
           const router = inject(Router);
 
           return auth.isLoggedIn() ? router.createUrlTree(['/user-dashboard']) : true;
@@ -74,69 +74,95 @@ export const routes: Routes = [
 
   // Private — User dashboard
   {
-  path: 'user-dashboard',
-  component: PrivateLayout,
-  canActivate: [authGuard],
-  children: [
-    {
-      path: '',
-      loadComponent: () =>
-        import('./pages/user-dashboard/user-dashboard').then(m => m.UserDashboard)
-    }
-  ]
-},
-{
-  path: 'my-courses',
-  component: PrivateLayout,
-  canActivate: [authGuard],
-  children: [
-    {
-      path: '',
-      loadComponent: () =>
-        import('./user-features/pages/my-courses/my-courses').then(m => m.MyCourses)
-    }
-  ]
-},
-{
-  path: 'course-workspace/:slug',
-  component: PrivateLayout,
-  canActivate: [authGuard],
-  children: [
-    {
-      path: '',
-      loadComponent: () =>
-        import('./user-features/pages/course-workspace/course-workspace').then(m => m.CourseWorkspace)
-    }
-  ]
-},
-{
-  path: 'dashboard',
-  loadChildren: () =>
-    import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
-},
+    path: 'user-dashboard',
+    component: PrivateLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/user-dashboard/user-dashboard').then(m => m.UserDashboard)
+      }
+    ]
+  },
+  {
+    path: 'my-courses',
+    component: PrivateLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./user-features/pages/my-courses/my-courses').then(m => m.MyCourses)
+      }
+    ]
+  },
+  {
+    path: 'CourseWorkspace/:slug',
+    component: PrivateLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./user-features/pages/course-workspace/course-workspace')
+            .then(m => m.CourseWorkspace),
+        children: [
 
-{
-  path: 'explore',
-  component: PrivateLayout,
-  canActivate: [authGuard],
-  children: [
-    {
-      path: '',
-      loadComponent: () =>
-        import('./pages/explore/explore').then(m => m.Explore)
-    },
-    {
-      path: 'packages/:slug',
-      loadComponent: () =>
-        import('./pages/package-details/package-details').then(m => m.PackageDetails)
-    }
-  ]
-},
-{
-  path: 'home',
-  loadComponent: () =>
-    import('./pages/home/home').then(m => m.Home)
-},
+          {
+            path: '',
+            redirectTo: 'materials',
+            pathMatch: 'full'
+          },
+          {
+            path: 'materials',
+            loadComponent: () =>
+              import('./user-features/pages/course-workspace/components/tab-materials/tab-materials')
+                .then(m => m.TabMaterials),
+          },
+          {
+            path: 'videos',
+            loadComponent: () =>
+              import('./user-features/pages/course-workspace/components/tab-videos/tab-videos')
+                .then(m => m.TabVideos),
+          },
+          {
+            path: 'quiz',
+            loadComponent: () =>
+              import('./user-features/pages/course-workspace/components/tab-quiz/tab-quiz')
+                .then(m => m.TabQuiz),
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: 'dashboard',
+    loadChildren: () =>
+      import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
+  },
+  {
+    path: 'explore',
+    component: PrivateLayout,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/explore/explore').then(m => m.Explore)
+      },
+      {
+        path: 'packages/:slug',
+        loadComponent: () =>
+          import('./pages/package-details/package-details').then(m => m.PackageDetails)
+      }
+    ]
+  },
+  {
+    path: 'home',
+    loadComponent: () =>
+      import('./pages/home/home').then(m => m.Home)
+  },
 
 
   // Catch all

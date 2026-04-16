@@ -10,6 +10,8 @@ import { User } from '../../user-features/services/user';
 import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
 import { ImgFallback } from '../../shared/directives/img-fallback';
 
+import { CourseRatingResponse } from '../../user-features/models/course.model';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-course-details',
   standalone: true,
@@ -24,7 +26,6 @@ export class CourseDetails implements OnInit {
   private alert         = inject(AlertService);
   private userService   = inject(User);
   private destroyRef    = inject(DestroyRef);
-
   auth = inject(AuthService);
 
   courseDetail: ICourseDetailRequest | null = null;
@@ -53,7 +54,7 @@ export class CourseDetails implements OnInit {
   }
 
   goToWorkspace() {
-    this.router.navigate(['/course-workspace', this.courseDetail?.slug]);
+    this.router.navigate(['/CourseWorkspace', this.courseDetail?.slug]);
   }
 
   onEnroll() {
@@ -110,6 +111,85 @@ export class CourseDetails implements OnInit {
         }
 
         this.alert.enrollError(detail);
+      },
+    });
+  }
+
+ handleCourseAction() {
+  if (!this.auth.isLoggedIn()) {
+    this.alert.requireLoginToEnroll(this.courseDetail?.slug ?? '');
+    return;
+  }
+
+  if (this.isEnrolled()) {
+    this.goToWorkspace();
+    return;
+  }
+
+  this.onEnroll();
+}
+
+
+
+  // Signals
+  selectedRating = signal<number>(0);
+  hoveredRating = signal<number>(0);
+  isSubmittingRating = signal<boolean>(false);
+  ratingSubmitted = signal<boolean>(false);
+
+  onHoverStar(star: number) {
+    this.hoveredRating.set(star);
+  }
+
+  onLeaveStar() {
+    this.hoveredRating.set(0);
+  }
+
+  onSelectStar(star: number) {
+    this.selectedRating.set(star);
+  }
+
+  getRatingLabel(rating: number): string {
+    const labels: Record<number, string> = {
+      1: 'Poor',
+      2: 'Fair',
+      3: 'Good',
+      4: 'Very Good',
+      5: 'Excellent',
+    };
+    return labels[rating] ?? 'Select a star to leave your rating';
+  }
+  submitRating() {
+    if (!this.selectedRating() || this.isSubmittingRating() || !this.courseDetail) return;
+
+    this.isSubmittingRating.set(true);
+
+    this.userService.rateCourse(this.courseDetail.slug, this.selectedRating()).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.ratingSubmitted.set(true);
+          this.selectedRating.set(res.data.rate);
+          console.log(this.courseDetail?.slug);
+          Swal.fire({
+            icon: 'success',
+            title: 'Rating Submitted!',
+            text: `You rated this course ${res.data.rate} star${res.data.rate > 1 ? 's' : ''}`,
+            timer: 2500,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        }
+        this.isSubmittingRating.set(false);
+      },
+      error: () => {
+        this.isSubmittingRating.set(false);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: 'Something went wrong. Please try again.',
+          confirmButtonText: 'Try Again',
+        });
       },
     });
   }

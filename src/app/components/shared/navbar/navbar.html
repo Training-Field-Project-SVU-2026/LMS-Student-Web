@@ -10,14 +10,20 @@
         <div class="w-10 h-10 rounded-2xl flex items-center justify-center
               bg-[var(--primary)] text-white shadow-md group-hover:scale-105 transition">
 
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <polyline points="16 18 22 12 16 6" />
-            <polyline points="8 6 2 12 8 18" />
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10">
+            <rect width="40" height="40" rx="12" fill="var(--primary)" />
+            <circle cx="14" cy="14" r="4" fill="white" opacity="0.75" />
+            <path d="M6 28c0-4.418 3.582-7 8-7" stroke="white" stroke-width="2.5" stroke-linecap="round"
+              opacity="0.75" />
+            <circle cx="26" cy="14" r="4" fill="white" />
+            <path d="M34 28c0-4.418-3.582-7-8-7" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M17 22 Q20 19 23 22" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" />
           </svg>
 
         </div>
 
         <span class="text-xl font-semibold tracking-wide">
+
           <span class="text-[var(--primary)] ml-1">Commit</span>
           <span class="text-[var(--secondary)]">Ma3ana</span>
         </span>
@@ -33,10 +39,6 @@
           Home
         </a>
 
-        <!-- <a routerLink="/courses" routerLinkActive="text-[var(--primary)] font-semibold" (click)="scrollToCourses()"
-          class="text-[var(--text-secondary)] hover:text-[var(--primary)]">
-          Courses
-        </a> -->
 
         <a routerLink="/explore" routerLinkActive="text-[var(--primary)] font-semibold"
           class="text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors">

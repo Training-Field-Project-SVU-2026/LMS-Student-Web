@@ -1,172 +1,114 @@
-<div class="p-6 md:p-8 max-w-6xl mx-auto">
-
-  <!-- Header -->
-  <div class="flex items-start justify-between mb-6">
-
-    <div>
-      <h1 class="font-title text-[var(--text-primary)]">
-        Computer and Ethics
-      </h1>
-      <p class="text-[var(--text-secondary)] mt-1">
-        Track your progress and complete your certification.
-      </p>
-    </div>
-
-    <div class="text-sm text-[var(--text-tertiary)]">
-      Current Module:
-      <span class="ml-2 px-3 py-1 rounded-full bg-[var(--primary)] text-white text-xs">
-        Exams
-      </span>
-    </div>
-
+@if (isLoading()) {
+  <div class="flex justify-center items-center min-h-[400px]">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--primary)]"></div>
   </div>
+}
 
-  <!-- Stats Card -->
-  <div class="bg-[var(--primary)] text-white rounded-2xl p-6 flex items-center justify-between shadow-md mb-6">
+@if (!isLoading()) {
+  <div class="p-6 md:p-8 max-w-6xl mx-auto">
 
-    <div>
-      <p class="text-sm opacity-80">Average Score</p>
-      <h2 class="text-3xl font-bold mt-1">84%</h2>
-    </div>
-
-    <div class="bg-white/10 px-4 py-2 rounded-xl text-sm">
-      Passed Exams <span class="font-bold ml-1">12</span>
-    </div>
-
-  </div>
-
-  <!-- Tabs -->
-  <div class="flex gap-3 mb-6">
-
-    <button class="px-4 py-2 rounded-full bg-[var(--primary)] text-white text-sm">
-      All Exams
-    </button>
-
-    <button class="px-4 py-2 rounded-full border border-[var(--outline)] text-[var(--text-secondary)] text-sm">
-      Completed
-    </button>
-
-    <button class="px-4 py-2 rounded-full border border-[var(--outline)] text-[var(--text-secondary)] text-sm">
-      Pending
-    </button>
-
-  </div>
-
-  <!-- Grid -->
-  <div class="grid md:grid-cols-2 gap-4">
-
-    <!-- Card -->
-    <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
-
+    <!-- Header -->
+    <div class="flex items-start justify-between mb-6">
       <div>
-        <h3 class="font-semibold text-[var(--text-primary)]">
-          Chapter 1 Quiz
-        </h3>
-
-        <p class="text-xs text-[var(--text-tertiary)] mt-1">
-          Best Score
-        </p>
-
-        <p class="text-[var(--primary)] font-semibold mt-1">
-          58 / 60
-        </p>
+        <h1 class="font-title text-[var(--text-primary)]">{{ courseName() }}</h1>
+        <p class="text-[var(--text-secondary)] mt-1">Track your progress and complete your certification.</p>
       </div>
+      <div class="text-sm text-[var(--text-tertiary)]">
+        Current Module:
+        <span class="ml-2 px-3 py-1 rounded-full bg-[var(--primary)] text-white text-xs">Exams</span>
+      </div>
+    </div>
 
-      <button class="px-4 py-2 rounded-lg border border-[var(--primary)] text-[var(--primary)] text-sm font-medium hover:bg-[var(--primary)] hover:text-white transition">
+    <!-- Stats Card -->
+    <div class="bg-[var(--primary)] text-white rounded-2xl p-6 flex items-center justify-between shadow-md mb-6">
+      <div>
+        <p class="text-sm opacity-80">Average Score</p>
+        <h2 class="text-3xl font-bold mt-1">{{ avgScore() }}%</h2>
+      </div>
+      <div class="bg-white/10 px-4 py-2 rounded-xl text-sm">
+        Passed Exams <span class="font-bold ml-1">{{ passedCount() }}</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-3 mb-6">
+      <button (click)="setTab('all')"
+        [class]="activeTab() === 'all'
+          ? 'px-4 py-2 rounded-full bg-[var(--primary)] text-white text-sm'
+          : 'px-4 py-2 rounded-full border border-[var(--outline)] text-[var(--text-secondary)] text-sm'">
+        All Exams
+      </button>
+      <button (click)="setTab('completed')"
+        [class]="activeTab() === 'completed'
+          ? 'px-4 py-2 rounded-full bg-[var(--primary)] text-white text-sm'
+          : 'px-4 py-2 rounded-full border border-[var(--outline)] text-[var(--text-secondary)] text-sm'">
+        Completed
+      </button>
+      <button (click)="setTab('not_started')"
+        [class]="activeTab() === 'not_started'
+          ? 'px-4 py-2 rounded-full bg-[var(--primary)] text-white text-sm'
+          : 'px-4 py-2 rounded-full border border-[var(--outline)] text-[var(--text-secondary)] text-sm'">
+        Pending
+      </button>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid md:grid-cols-2 gap-4">
+
+     @for (quiz of filteredQuizzes(); track quiz.slug) {
+
+  @if (quiz.quiz_status === 'completed' || quiz.quiz_status === 'passed') {
+    <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
+      <div>
+        <h3 class="font-semibold text-[var(--text-primary)]">{{ quiz.quiz_name }}</h3>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Best Score</p>
+        <p class="text-[var(--primary)] font-semibold mt-1">{{ quiz.best_score }} / {{ quiz.total_mark }}</p>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Attempts: {{ quiz.attempts_used }} / {{ quiz.max_attempts }}</p>
+      </div>
+      <button (click)="goToQuiz(quiz)"
+        class="px-4 py-2 rounded-lg border border-[var(--primary)] text-[var(--primary)] text-sm font-medium hover:bg-[var(--primary)] hover:text-white transition">
         Retake
       </button>
-
     </div>
+  }
 
-    <!-- Not Started -->
+  @else if (quiz.quiz_status === 'failed') {
     <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
-
       <div>
-        <h3 class="font-semibold text-[var(--text-primary)]">
-          Data Structures Quiz 1
-        </h3>
-
-        <p class="text-xs text-[var(--text-tertiary)] mt-1">
-          Status
-        </p>
-
-        <p class="text-[var(--text-secondary)] mt-1">
-          Not Started
-        </p>
+        <h3 class="font-semibold text-[var(--text-primary)]">{{ quiz.quiz_name }}</h3>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Last Score</p>
+        <p class="text-[var(--error)] font-semibold mt-1">{{ quiz.best_score }} / {{ quiz.total_mark }}</p>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Attempts: {{ quiz.attempts_used }} / {{ quiz.max_attempts }}</p>
       </div>
-
-      <button class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-medium hover:bg-[var(--primary-hover)]">
-        Start →
-      </button>
-
-    </div>
-
-    <!-- Failed -->
-    <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
-
-      <div>
-        <h3 class="font-semibold text-[var(--text-primary)]">
-          SEO Fundamentals
-        </h3>
-
-        <p class="text-xs text-[var(--text-tertiary)] mt-1">
-          Last Score
-        </p>
-
-        <p class="text-[var(--error)] font-semibold mt-1">
-          22 / 60
-        </p>
-      </div>
-
-      <button class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm">
+      <button (click)="goToQuiz(quiz)"
+        class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm">
         Retry Now
       </button>
-
     </div>
+  }
 
-    <!-- In Progress -->
-    <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 shadow-sm">
-
-      <div class="flex items-center justify-between mb-2">
-        <h3 class="font-semibold text-[var(--text-primary)]">
-          Accessibility Standards
-        </h3>
-
-        <button class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm">
-          Resume
-        </button>
-      </div>
-
-      <p class="text-xs text-[var(--text-tertiary)]">
-        In Progress (50%)
-      </p>
-
-      <!-- Progress -->
-      <div class="w-full h-1.5 bg-[var(--outline)] rounded-full mt-3 overflow-hidden">
-        <div class="h-full bg-yellow-400 w-1/2"></div>
-      </div>
-
-    </div>
-
-    <!-- Locked -->
-    <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between opacity-60">
-
+  @else if (quiz.quiz_status === 'not_started') {
+    <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
       <div>
-        <h3 class="font-semibold text-[var(--text-secondary)]">
-          Advanced React Hooks
-        </h3>
-
-        <p class="text-xs text-[var(--text-tertiary)] mt-1">
-          Complete Chapter 1
-        </p>
+        <h3 class="font-semibold text-[var(--text-primary)]">{{ quiz.quiz_name }}</h3>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Status</p>
+        <p class="text-[var(--text-secondary)] mt-1">Not Started</p>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Attempts: {{ quiz.attempts_used }} / {{ quiz.max_attempts }}</p>
       </div>
-
-      <button class="px-4 py-2 rounded-lg bg-[var(--outline)] text-[var(--text-secondary)] text-sm">
-        Locked
+      <button (click)="goToQuiz(quiz)"
+        class="px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-medium hover:bg-[var(--primary-hover)]">
+        Start →
       </button>
-
     </div>
+  }
 
+}
+
+@if (filteredQuizzes().length === 0) {
+  <div class="col-span-2 text-center py-16 text-[var(--text-tertiary)]">
+    <p class="text-lg">No quizzes found</p>
   </div>
-
-</div>
+}
+    </div>
+  </div>
+}

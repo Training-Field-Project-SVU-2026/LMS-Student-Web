@@ -1,0 +1,93 @@
+@switch (type) {
+
+  @case ('courses-grid') {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      @for (item of items; track $index) {
+        <div class="bg-[var(--surface)] rounded-2xl border border-[var(--outline)] overflow-hidden animate-pulse">
+          <div class="aspect-video bg-[var(--outline)]"></div>
+          <div class="p-4 space-y-3">
+            <div class="h-4 bg-[var(--outline)] rounded-lg w-3/4"></div>
+            <div class="h-3 bg-[var(--outline)] rounded-lg w-1/2"></div>
+            <div class="h-3 bg-[var(--outline)] rounded-lg w-1/4"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @case ('course-detail') {
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 py-12 px-4 animate-pulse">
+      
+      <!-- Left -->
+      <div class="lg:col-span-2 space-y-8">
+        <div class="space-y-3">
+          <div class="h-8 bg-[var(--outline)] rounded-lg w-3/4"></div>
+          <div class="h-4 bg-[var(--outline)] rounded-lg w-1/2"></div>
+          <div class="h-4 bg-[var(--outline)] rounded-lg w-1/3"></div>
+        </div>
+
+        <div class="bg-[var(--surface)] p-8 rounded-2xl border border-[var(--outline)] space-y-3">
+          <div class="h-5 bg-[var(--outline)] rounded-lg w-1/4"></div>
+          <div class="h-3 bg-[var(--outline)] rounded-lg w-full"></div>
+          <div class="h-3 bg-[var(--outline)] rounded-lg w-full"></div>
+          <div class="h-3 bg-[var(--outline)] rounded-lg w-3/4"></div>
+        </div>
+
+        <div class="bg-[var(--surface)] p-6 rounded-2xl border border-[var(--outline)] flex gap-6">
+          <div class="w-24 h-24 rounded-2xl bg-[var(--outline)] shrink-0"></div>
+          <div class="flex-1 space-y-3 pt-2">
+            <div class="h-4 bg-[var(--outline)] rounded-lg w-1/3"></div>
+            <div class="h-3 bg-[var(--outline)] rounded-lg w-full"></div>
+            <div class="h-3 bg-[var(--outline)] rounded-lg w-2/3"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div class="lg:col-span-1">
+        <div class="bg-[var(--surface)] rounded-2xl border border-[var(--outline)] overflow-hidden">
+          <div class="aspect-video bg-[var(--outline)]"></div>
+          <div class="p-6 space-y-4">
+            <div class="h-8 bg-[var(--outline)] rounded-lg w-1/3"></div>
+            <div class="h-12 bg-[var(--outline)] rounded-xl w-full"></div>
+            <div class="space-y-3 pt-2">
+              <div class="h-3 bg-[var(--outline)] rounded-lg w-full"></div>
+              <div class="h-3 bg-[var(--outline)] rounded-lg w-3/4"></div>
+              <div class="h-3 bg-[var(--outline)] rounded-lg w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  }
+
+  @case ('profile') {
+    <div class="flex flex-col gap-5 animate-pulse">
+      <div class="bg-[var(--surface)] rounded-2xl border border-[var(--outline)] p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-[var(--outline)]"></div>
+            <div class="space-y-2">
+              <div class="h-3 bg-[var(--outline)] rounded w-16"></div>
+              <div class="h-4 bg-[var(--outline)] rounded w-32"></div>
+            </div>
+          </div>
+          <div class="h-9 w-28 bg-[var(--outline)] rounded-xl"></div>
+        </div>
+        <div class="space-y-4">
+          <div class="h-3 bg-[var(--outline)] rounded w-24"></div>
+          <div class="h-4 bg-[var(--outline)] rounded w-48"></div>
+          <div class="h-3 bg-[var(--outline)] rounded w-24"></div>
+          <div class="h-6 bg-[var(--outline)] rounded-full w-20"></div>
+        </div>
+      </div>
+
+      <div class="bg-[var(--surface)] rounded-2xl border border-[var(--outline)] p-6">
+        <div class="h-4 bg-[var(--outline)] rounded w-24 mb-4"></div>
+        <div class="h-14 bg-[var(--outline)] rounded-xl w-full"></div>
+      </div>
+    </div>
+  }
+
+}

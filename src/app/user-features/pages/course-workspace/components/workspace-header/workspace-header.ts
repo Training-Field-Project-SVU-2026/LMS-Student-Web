@@ -9,6 +9,6 @@ import { ICourseWorkspaceHeader } from '../../../../models/courseWorkspace.model
   styleUrl: './workspace-header.css',
 })
 export class WorkspaceHeader {
- @Input({ required: true }) course!: ICourseWorkspaceHeader;
- 
+  @Input({ required: true }) course!: ICourseWorkspaceHeader;
+
 }
