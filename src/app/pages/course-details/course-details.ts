@@ -50,6 +50,9 @@ export class CourseDetails implements OnInit {
         this.courseDetail = data;
         this.isLoading = false;
 
+        // Set shared selected course
+        this.userService.setSelectedCourse(data);
+
 
         this.checkIfEnrolled(slug);
       },
@@ -132,6 +135,13 @@ export class CourseDetails implements OnInit {
     });
   }
 
+  exportCourseImage() {
+    if (this.courseDetail?.image) {
+      const filename = `${this.courseDetail.title.replace(/\s+/g, '-').toLowerCase()}-cover.jpg`;
+      this.userService.downloadImage(this.courseDetail.image, filename);
+    }
+  }
+
   handleCourseAction() {
     if (!this.auth.isLoggedIn()) {
       this.alert.requireLoginToEnroll(this.courseDetail?.slug ?? '');
@@ -140,9 +150,10 @@ export class CourseDetails implements OnInit {
 
     if (this.isEnrolled()) {
       this.router.navigate(['/CourseWorkspace', this.courseDetail?.slug]);
-    } else {
-      this.onEnroll();
+      return;
     }
+
+    this.onEnroll();
   }
 
 

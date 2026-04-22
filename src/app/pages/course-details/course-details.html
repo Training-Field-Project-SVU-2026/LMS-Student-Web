@@ -151,13 +151,22 @@
             [errorFallback]="'/images/error_image.png'" alt="Course cover"
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           <div
-            class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center">
-            <span class="text-white bg-[var(--primary)] p-3 rounded-full">
+            class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all flex items-center justify-center gap-4">
+            <span class="text-white bg-[var(--primary)] p-3 rounded-full cursor-pointer hover:scale-110 transition-transform">
               <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
             </span>
-            >
+
+            <button (click)="$event.stopPropagation(); exportCourseImage()"
+              class="text-white bg-white/20 backdrop-blur-md p-3 rounded-full hover:bg-white/40 transition-all hover:scale-110"
+              title="Export Image">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -172,7 +181,7 @@
             </span>
           </div>
 
-          <button (click)="onEnroll()" [disabled]="isLoading || isEnrolling"
+          <button (click)="handleCourseAction()" [disabled]="isLoading || isEnrolling()"
             class="w-full font-bold py-4 rounded-xl transition-all mb-4 shadow-lg active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
             [ngClass]="{
                 'bg-[var(--secondary)] text-[var(--on-secondary)]': isEnrolled(),

@@ -1,48 +1,56 @@
-<div class="bg-[var(--surface)] border-b border-[var(--divider)]">
-  <div class="flex items-start gap-5 px-6 py-5">
+<div class="bg-[var(--surface)] border-b border-[var(--outline)]">
+  <div class="px-6 py-5 flex items-start gap-4">
 
-    <!-- ── Thumbnail ── -->
-    <div class="relative w-40 h-24 rounded-xl overflow-hidden flex-shrink-0">
+    <!-- Thumbnail -->
+    <div class="relative w-40 h-24 rounded-xl overflow-hidden flex-shrink-0
+                bg-gradient-to-br from-[#0A5C75] to-[#0d9abf] group/thumb">
+      @if (selectedCourse()) {
+      <img appImgFallback [src]="selectedCourse()?.image" class="w-full h-full object-cover" />
+      } @else {
+      <img appImgFallback [src]="course.image" class="w-full h-full object-cover" />
+      }
 
-      <!-- لو في image من الـ API -->
-      <img *ngIf="course.image; else gradientThumb" [src]="course.image" [alt]="course.title"
-        class="w-full h-full object-cover" />
-
-      <!-- fallback gradient -->
-      <ng-template #gradientThumb>
-        <div class="w-full h-full bg-gradient-to-br from-[#0A5C75] to-[#0d9abf]"></div>
-      </ng-template>
-
-      <!-- Play button -->
-      <button class="absolute inset-0 flex items-center justify-center" aria-label="Play preview">
-        <div class="w-9 h-9 rounded-full border-2 border-white/50
-                    bg-white/20 flex items-center justify-center">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="white">
+      <!-- Overlay icons -->
+      <div
+        class="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/40 transition-all flex items-center justify-center gap-2">
+        <div class="w-8 h-8 rounded-full border border-white/40
+                    bg-white/10 flex items-center justify-center">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="white">
             <path d="M5 3.5l8 4.5-8 4.5V3.5z" />
           </svg>
         </div>
-      </button>
+
+        <button (click)="$event.stopPropagation(); exportCourseImage()" class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center
+                       text-white opacity-0 group-hover/thumb:opacity-100 transition-all hover:bg-white/40"
+          title="Export Image">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+              d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <!-- ── Course Info ── -->
+    <!-- data Course-->
     <div class="flex flex-col gap-1.5 flex-1 min-w-0">
 
-      <!-- Category Badge -->
-      <span *ngIf="course.category" class="w-fit font-caption px-3 py-0.5 rounded-full
-               bg-[var(--primary)]/10 text-[var(--primary)]">
+      @if(course.category){
+      <span class="w-fit text-xs font-semibold px-3 py-0.5 rounded-full
+                   bg-blue-50 text-blue-600">
         {{ course.category }}
       </span>
+      }
 
-      <!-- Title -->
-      <h1 class="font-title text-[var(--text-primary)] truncate">
+
+
+      <h1 class="text-lg font-semibold text-[var(--text-primary)]
+                 truncate leading-snug">
         {{ course.title }}
       </h1>
 
-      <!-- Meta Row -->
       <div class="flex items-center flex-wrap gap-x-3 gap-y-1
-                  font-caption text-[var(--text-tertiary)]">
+                  text-sm text-[var(--text-tertiary)]">
 
-        <!-- Instructor -->
         <span class="flex items-center gap-1">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.4" />
@@ -52,47 +60,35 @@
           {{ course.instructor_name }}
         </span>
 
-        <!-- lessons_count — بييجي لو موجود -->
-        <ng-container *ngIf="course.lessons_count">
-          <span class="opacity-30">•</span>
-          <span class="flex items-center gap-1">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4" />
-              <path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-            </svg>
-            {{ course.lessons_count }} lessons
-            <ng-container *ngIf="course.duration">· {{ course.duration }}</ng-container>
-          </span>
-        </ng-container>
-
-        <!-- Rating -->
         <ng-container *ngIf="course.avg_rating">
           <span class="opacity-30">•</span>
           <span class="flex items-center gap-1">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-              <path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5 8 2z" stroke="currentColor"
-                stroke-width="1.4" stroke-linejoin="round" />
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#facc15">
+              <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.036 6.26h6.585
+                c.969 0 1.371 1.24.588 1.81l-5.327 3.87 2.036 6.26c.3.921-.755
+                1.688-1.54 1.118L12 17.77l-5.329 3.475c-.784.57-1.838-.197
+                -1.539-1.118l2.036-6.26-5.327-3.87c-.783-.57-.38-1.81.588
+                -1.81h6.585z" />
             </svg>
-            {{ course.avg_rating }} rating
+            {{ course.avg_rating }}
           </span>
         </ng-container>
 
       </div>
 
-      <!-- Progress Bar — بيظهر بس لو is_enrolled -->
-      <div *ngIf="course.is_enrolled && course.progress !== undefined" class="flex items-center gap-3 mt-1">
-        <span class="font-caption text-[var(--text-tertiary)] whitespace-nowrap">
-          Your progress
-        </span>
-        <div class="flex-1 h-1 rounded-full bg-[var(--outline)] overflow-hidden">
-          <div class="h-full rounded-full bg-[var(--primary)] transition-all duration-500"
+      <!-- Progress -->
+      @if(course.progress !== undefined){
+      <div class="flex items-center gap-3 mt-1 max-w-sm">
+        <div class="flex-1 h-1.5 rounded-full bg-[var(--outline)] overflow-hidden">
+          <div class="h-full rounded-full bg-[var(--primary)] transition-all duration-700"
             [style.width.%]="course.progress">
           </div>
         </div>
-        <span class="font-caption text-[var(--primary)] whitespace-nowrap">
+        <span class="text-xs font-semibold text-[var(--primary)] whitespace-nowrap">
           {{ course.progress }}% complete
         </span>
       </div>
+      }
 
     </div>
   </div>
