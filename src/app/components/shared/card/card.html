@@ -1,30 +1,34 @@
-<div [routerLink]="['/course', courseData.slug]" class="group flex flex-col h-full bg-[var(--surface)] border border-[var(--outline)]
-         rounded-[20px] overflow-hidden cursor-pointer
-         transition-all duration-300 hover:-translate-y-[5px] hover:border-[var(--outline-hover)]">
+<div
+  [routerLink]="['/course', courseData.slug]"
+  class="group flex flex-col h-full bg-[var(--surface)] border border-[var(--outline)]
+         rounded-2xl overflow-hidden cursor-pointer
+         transition-all duration-300 hover:-translate-y-[6px] hover:shadow-lg hover:border-[var(--outline-hover)]"
+>
 
   <!-- Thumbnail -->
-  <div class="relative h-[148px] shrink-0 overflow-hidden bg-[#0E1416]">
-    <img appImgFallback [src]="courseData.image" [srcFallback]="'/images/default_image.jpeg'"
-      [errorFallback]="'/images/error_image.png'" alt="{{ courseData.title }}"
-      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.07]" />
+  <div class="relative h-[180px] md:h-[200px] shrink-0 overflow-hidden bg-[#0E1416]">
+    <img
+      appImgFallback
+      [src]="courseData.image"
+      [srcFallback]="'/images/default_image.jpeg'"
+      [errorFallback]="'/images/error_image.png'"
+      alt="{{ courseData.title }}"
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.08]"
+    />
 
     @if (courseData.price) {
-    <span class="absolute top-[10px] left-[10px]
-                   bg-black/60 backdrop-blur-sm
-                   border border-white/10 rounded-full
-                   px-[10px] py-[3px] text-[10px] font-medium
-                   text-white/85 tracking-wide">
-      {{ courseData.price }}
-    </span>
+      <span class="absolute top-3 left-3 bg-black/60 backdrop-blur-sm
+                   border border-white/10 rounded-full px-3 py-1 text-xs font-medium text-white">
+        {{ courseData.price }}
+      </span>
     }
   </div>
 
   <!-- Body -->
-  <div class="flex flex-col flex-1 gap-[10px] p-[14px]">
+  <div class="flex flex-col flex-1 gap-3 p-5">
 
-    <h3 class="font-serif text-[14px] font-semibold leading-snug
-               text-[var(--text-primary)] flex-1
-               line-clamp-2">
+    <h3 class="font-serif text-[15px] md:text-[16px] font-semibold leading-snug
+               text-[var(--text-primary)] flex-1 line-clamp-2">
       {{ courseData.title }}
     </h3>
 
@@ -33,28 +37,20 @@
     <!-- Footer -->
     <div class="flex items-center justify-between">
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-4">
 
         <!-- Rating -->
-        <div class="flex items-center gap-[4px]">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="#F0B429">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        <div class="flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#F0B429">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg>
-          <span class="text-[11px] font-semibold text-[var(--text-primary)]">
+          <span class="text-sm font-semibold text-[var(--text-primary)]">
             {{ courseData.avg_rating }}
           </span>
         </div>
 
         <!-- Students -->
-        <div class="flex items-center gap-[4px] text-[11px] text-[var(--text-tertiary)]">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
+        <div class="flex items-center gap-1 text-sm text-[var(--text-tertiary)]">
           <span>
             {{ (courseData.students_count ? (courseData.students_count / 1000).toFixed(1) : '0') }}k
           </span>
@@ -62,15 +58,14 @@
 
       </div>
 
-      <!-- Arrow button -->
-      <div class="w-[30px] h-[30px] rounded-full flex items-center justify-center
-                  border border-[var(--outline)] shrink-0
+      <!-- Arrow -->
+      <div class="w-9 h-9 rounded-full flex items-center justify-center
+                  border border-[var(--outline)]
                   transition-all duration-200
                   group-hover:bg-[var(--primary)] group-hover:border-[var(--primary)]">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-          stroke-linecap="round" stroke-linejoin="round"
-          class="text-[var(--text-tertiary)] group-hover:text-white transition-colors duration-200">
-          <path d="M5 12h14M12 5l7 7-7 7" />
+        <svg width="14" height="14" viewBox="0 0 24 24"
+          class="text-[var(--text-tertiary)] group-hover:text-white transition">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/>
         </svg>
       </div>
 

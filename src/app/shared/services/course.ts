@@ -16,6 +16,9 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class CourseService {
+  getMyEnrollments() {
+    throw new Error('Method not implemented.');
+  }
   private http = inject(HttpClient);
 
 
