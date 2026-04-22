@@ -6,7 +6,7 @@ import { of, forkJoin, Observable, switchMap } from 'rxjs';
 import { CourseService } from '../../shared/services/course';
 import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
-import { IPackageDetails, IEnrollResponse, IPackageCardData } from '../../components/shared/interfaces/course.model';
+import { IPackageDetails,  IPackageCardData } from '../../components/shared/interfaces/course.model';
 import { ImgFallback } from '../../shared/directives/img-fallback';
 import { RouterLink } from '@angular/router';
 @Component({
@@ -50,79 +50,78 @@ export class PackageDetails implements OnInit {
   }
 
 
-  private checkIfBought() {
-    const courseSlugs = this.packageData?.course_slugs || [];
-    if (!this.auth.isLoggedIn() || !courseSlugs.length) return;
+ private checkIfBought() {
+  const courses = this.packageData?.courses || [];
+  if (!this.auth.isLoggedIn() || !courses.length) return;
+  const allBought = courses.every(c => c.is_enrolled === true);
+  this.isBought.set(allBought);
+}
 
-    this.courseService.getMyCourses().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (myCourses) => {
-        const mySlugs = myCourses.map(c => c.slug);
-        const allBought = courseSlugs.every(s => mySlugs.includes(s));
-        this.isBought.set(allBought);
-      },
-      error: () => this.isBought.set(false),
-    });
+ onBuyPackage() {
+  if (!this.auth.isLoggedIn()) {
+    this.alert.requireLoginToBuyPackage(this.packageData?.slug ?? '');
+    return;
   }
 
-  onBuyPackage() {
-    if (!this.auth.isLoggedIn()) {
-      this.alert.requireLoginToBuyPackage(this.packageData?.slug ?? '');
-      return;
-    }
+  if (this.isBought()) {
+    this.alert.alreadyEnrolled(
+      this.packageData?.title ?? '',
+      () => this.router.navigate(['/my-courses'])
+    );
+    return;
+  }
 
-    if (this.isBought()) {
-      this.alert.alreadyEnrolled(
-        this.packageData?.title ?? '',
-        () => this.router.navigate(['/my-courses'])
-      );
-      return;
-    }
+  if (!this.packageData || this.isBuying()) return;
 
-    if (!this.packageData || this.isBuying()) return;
+  this.alert.confirmBuyPackage(this.packageData.title, () => {
+    this.isBuying.set(true);
 
-    this.alert.confirmBuyPackage(this.packageData.title, () => {
-      this.isBuying.set(true);
+    const token$: Observable<unknown> = this.auth.getToken()
+      ? of(null)
+      : this.auth.refreshAccessToken();
 
-      const token$: Observable<unknown> = this.auth.getToken()
-        ? of(null)
-        : this.auth.refreshAccessToken();
+    token$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
 
-      token$.pipe(
-        takeUntilDestroyed(this.destroyRef)
-      ).subscribe({
-        next: () => {
-          const requests: Observable<IEnrollResponse>[] =
-            this.packageData!.courses.map(course =>
-              this.courseService.enrollInCourse(course.slug)
-            );
 
-          forkJoin(requests).pipe(
-            takeUntilDestroyed(this.destroyRef)
-          ).subscribe({
-            next: () => {
-              this.isBuying.set(false);
-              this.isBought.set(true);
-              localStorage.removeItem('pendingPackageSlug');
+        const notEnrolled = this.packageData!.courses.filter(
+          course => !course.is_enrolled
+        );
 
-              this.alert.packageBuySuccess(
-                this.packageData!.title,
-                () => this.router.navigate(['/user-dashboard'])
-              );
-            },
-            error: (err) => {
-              this.isBuying.set(false);
-              const msg = err?.error?.detail || err?.error?.message || '';
-              this.alert.enrollError(msg);
-            },
-          });
-        },
-        error: () => {
+        if (notEnrolled.length === 0) {
           this.isBuying.set(false);
-          this.alert.enrollError('Session expired. Please login again.');
-        },
-      });
+          this.isBought.set(true);
+          return;
+        }
+
+        const requests = notEnrolled.map(course =>
+          this.courseService.enrollInCourse(course.slug)
+        );
+
+        forkJoin(requests).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
+          next: () => {
+            this.isBuying.set(false);
+            this.isBought.set(true);
+            localStorage.removeItem('pendingPackageSlug');
+            this.alert.packageBuySuccess(
+              this.packageData!.title,
+              () => this.router.navigate(['/user-dashboard'])
+            );
+          },
+          error: (err) => {
+            this.isBuying.set(false);
+            const msg = err?.error?.detail || err?.error?.message || '';
+            this.alert.enrollError(msg);
+          },
+        });
+      },
+      error: () => {
+        this.isBuying.set(false);
+        this.alert.enrollError('Session expired. Please login again.');
+      },
     });
-  }
+  });
+}
 }

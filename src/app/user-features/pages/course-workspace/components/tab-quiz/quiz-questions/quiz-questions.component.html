@@ -1,0 +1,114 @@
+@if (isLoading()) {
+  <div class="flex justify-center items-center min-h-screen">
+    <div class="animate-spin h-10 w-10 border-4 border-teal-500 border-t-transparent rounded-full"></div>
+  </div>
+}
+
+@if (!isLoading()) {
+
+  <div class="min-h-screen bg-gray-100 py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <button (click)="goBack()" class="text-sm text-gray-500 hover:text-teal-600">
+          ← Exit
+        </button>
+
+        <div class="text-center">
+          <h2 class="font-semibold text-lg">Quiz</h2>
+          <p class="text-xs text-gray-400">
+            {{ answeredCount() }} / {{ questions().length }}
+          </p>
+        </div>
+
+        <div class="text-sm bg-teal-100 text-teal-700 px-3 py-1 rounded-full">
+          {{ progress() }}%
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="w-full bg-gray-200 h-2 rounded-full mb-6">
+        <div class="bg-teal-600 h-2 rounded-full transition-all"
+             [style.width.%]="progress()">
+        </div>
+      </div>
+
+      <!-- Questions -->
+      <div class="bg-white rounded-2xl shadow p-6 max-h-[600px] overflow-y-auto space-y-8">
+
+        @for (q of questions(); track q.slug; let i = $index) {
+
+          <div [id]="q.slug"
+               class="transition"
+               [class.opacity-50]="!isQuestionAnswered(q.slug)">
+
+            <h3 class="mb-3 font-medium text-gray-800">
+              {{ i + 1 }}. {{ q.question_name }}
+            </h3>
+
+            @if (q.question_type === 'multiple') {
+              <p class="text-xs text-gray-400 mb-2">Select more than one answer</p>
+            }
+
+            <div class="space-y-3">
+
+              @for (c of q.choices; track c.slug) {
+
+                <div (click)="selectChoice(q.slug, c.slug, q.question_type)"
+                     class="p-3 border rounded-xl cursor-pointer transition flex gap-3 items-center"
+                     [class.bg-teal-50]="isSelected(q.slug, c.slug)"
+                     [class.border-teal-600]="isSelected(q.slug, c.slug)">
+
+                  <!-- indicator -->
+                  <div class="w-5 h-5 flex items-center justify-center border rounded-full"
+                       [class.bg-teal-600]="isSelected(q.slug, c.slug)">
+                    @if (isSelected(q.slug, c.slug)) {
+                      <span class="text-white text-xs">✓</span>
+                    }
+                  </div>
+
+                  <span class="text-sm">{{ c.choice_name }}</span>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+          @if (i < questions().length - 1) {
+            <hr class="border-gray-100">
+          }
+
+        }
+
+      </div>
+
+      <!-- Submit -->
+      <div class="mt-6 text-center">
+
+        <button (click)="onSubmit()"
+                [disabled]="isSubmitting()"
+                class="px-8 py-3 rounded-xl font-bold transition
+                       bg-teal-600 text-white hover:bg-teal-700
+                       disabled:opacity-50">
+
+          @if (isSubmitting()) {
+            <span class="flex items-center gap-2 justify-center">
+              <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Submitting...
+            </span>
+          } @else {
+            Submit Exam
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+}

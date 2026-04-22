@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICourseWorkspaceHeader, IMaterialsResponse } from '../models/courseWorkspace.model';
+import { ICourseWorkspaceHeader, IMaterialsResponse, IQuestion, IQuestionsResponse, IQuizCourse, IQuizCourseResponse, IQuizResult, IQuizResultsResponse, ISubmitQuizRequest, ISubmitQuizResponse } from '../models/courseWorkspace.model';
 import { Observable } from 'rxjs';
 import { CourseService } from '../../shared/services/course';
 import { User } from '../services/user';
@@ -7,8 +7,13 @@ import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+<<<<<<< HEAD
 import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
 import { signal } from '@angular/core';
+=======
+import { API_ENDPOINTS } from '../../core/api-endpoints';
+
+>>>>>>> 3caeacfff563ff1ae678ef4d8f53ed1b96403e6d
 
 @Injectable({
   providedIn: 'root',
@@ -50,5 +55,25 @@ export class CourseWorkspaceService {
   }
 
 
-
+getQuizzes(courseSlug:string): Observable<IQuizCourse[]>{
+  return this.http.get<IQuizCourseResponse>(API_ENDPOINTS.quiz(courseSlug)).pipe(
+    map(res => res.data.quizzes)
+  );
+}
+getQuizQuestions(quizSlug: string): Observable<IQuestion[]> {
+  return this.http.get<IQuestionsResponse>(API_ENDPOINTS.quizQuestions(quizSlug)).pipe(
+    map(res => res.data.questions ?? res.data.quizzes ?? [])
+  );
+}
+submitQuiz(quizSlug: string, body: ISubmitQuizRequest) {
+  return this.http.post<ISubmitQuizResponse>(
+    API_ENDPOINTS.submitQuizAnswers(quizSlug),
+    body
+  );
+}
+// getLatestQuizResult(quizSlug: string): Observable<IQuizResult[]> {
+//   return this.http.get<IQuizResultsResponse>(API_ENDPOINTS.quizResults(slug)).pipe(
+//     map(res => res.data)
+//   );
+// }
 }
