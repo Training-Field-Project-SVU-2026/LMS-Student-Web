@@ -7,13 +7,9 @@ import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-<<<<<<< HEAD
 import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
 import { signal } from '@angular/core';
-=======
 import { API_ENDPOINTS } from '../../core/api-endpoints';
-
->>>>>>> 3caeacfff563ff1ae678ef4d8f53ed1b96403e6d
 
 @Injectable({
   providedIn: 'root',
