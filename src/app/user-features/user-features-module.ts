@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router';
     CourseCard
   ]
 })
-export class UserFeaturesModule { 
+export class UserFeaturesModule {
+
 
 }

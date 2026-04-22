@@ -10,22 +10,36 @@
       </div>
 
       <a class="text-[var(--primary)] font-bold border-b-2 border-[var(--primary)]
-                hover:opacity-80 transition cursor-pointer"
-         (click)="onViewAllCourses()">
+                hover:opacity-80 transition cursor-pointer" (click)="onViewAllCourses()">
         Go to Explore →
       </a>
     </div>
 
     <!-- Grid -->
+    @if (isLoading()) {
+    <app-skeleton type="courses-grid" [count]="4" />
+    } @else {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
       @for (course of courses; track course.slug) {
-        <div (click)="onCourseClick(course.slug)" class="cursor-pointer h-full">
-          <app-card [courseData]="course"></app-card>
-        </div>
+      <div (click)="onCourseClick(course.slug)" class="cursor-pointer h-full">
+        <app-card [courseData]="course"></app-card>
+      </div>
       } @empty {
-        <div class="col-span-full text-center py-10 text-[var(--text-secondary)]">
-          No courses found at the moment.
-        </div>
+      <div class="col-span-full text-center py-10 text-[var(--text-secondary)]">
+        No courses found at the moment.
+      </div>
+      }
+    </div>
+    }
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      @for (course of courses; track course.slug) {
+      <div (click)="onCourseClick(course.slug)" class="cursor-pointer h-full">
+        <app-card [courseData]="course"></app-card>
+      </div>
+      } @empty {
+      <div class="col-span-full text-center py-10 text-[var(--text-secondary)]">
+        No courses found at the moment.
+      </div>
       }
     </div>
 

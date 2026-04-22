@@ -31,9 +31,10 @@ export class Settings {
   // ─── PUT /students/:slug/ ─────────────────────────────────────────────────
   updateProfile(slug: string, data: StudentUpdateRequest): Observable<Student> {
     return this.http.put<ApiResponse<Student>>(API_ENDPOINTS.studentBySlug(slug), data).pipe(
-      map(res => res.data ?? (res as any))
+      map(res => (res && res.data) ? res.data : (res as any))
     );
   }
+
 
   // ─── POST /auth/change-password/ ─────────────────────────────────────────
   changePassword(data: ChangePasswordRequest): Observable<ChangePasswordResponse> {
