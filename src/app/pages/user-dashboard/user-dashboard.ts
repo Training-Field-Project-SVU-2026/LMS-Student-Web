@@ -21,15 +21,17 @@ import { CourseCard } from "../../user-features/shared/components/course-card/co
 export class UserDashboard implements OnInit {
 
   private userServices = inject(User);
-  private router = inject(Router);
   private auth = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private courseService = inject(CourseService);
 
 
+  constructor(public router: Router) { }
+
+
   dashboardCourses: EnrolledCourse[] = [];
   topRatedCourses: ICourseCardData[] = [];
-latestCourse?: EnrolledCourse;
+  latestCourse?: EnrolledCourse;
   ngOnInit() {
     this.auth.authReady$.pipe(
       takeUntilDestroyed(this.destroyRef)

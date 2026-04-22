@@ -57,8 +57,11 @@ export class Register {
         this.loading.set(false);
         Swal.fire({
           title: 'Account Created!',
-          text: 'Please check your email to verify your account.',
+          text: 'Please check your email to verify your account. Redirecting to verification page...',
           icon: 'success',
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: false,
         }).then(() => this.router.navigate(['/auth/verify-email']));
       },
       error: () => {

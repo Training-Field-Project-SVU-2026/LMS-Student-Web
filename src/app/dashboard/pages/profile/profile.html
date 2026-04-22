@@ -32,9 +32,8 @@
       <div class="flex items-center gap-4">
 
         @if (p.image) {
-        <img appImgFallback [src]="p.image" [srcFallback]="'/images/default-avatar.png'"
-          [errorFallback]="'/images/default-avatar.png'" [alt]="fullName || 'Student'"
-          class="w-14 h-14 rounded-full object-cover border-4 border-[#A8DF8E]" />
+        <img appImgFallback [src]="'public/images/user-default.jpg'" [errorFallback]="'/assets/images/user-default.jpg'"
+          [alt]="fullName || 'Student'" class="w-14 h-14 rounded-full object-cover border-4 border-[#A8DF8E]" />
         } @else {
         <div class="w-14 h-14 rounded-full bg-[var(--primary)] text-white flex items-center justify-center 
                       text-lg font-bold border-4 border-[#A8DF8E] shadow-sm select-none">

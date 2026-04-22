@@ -90,7 +90,7 @@
         } @empty {
           <div class="col-span-full text-center py-20 text-[var(--text-tertiary)]">
             <p class="text-lg mb-4">You haven't enrolled in any courses yet.</p>
-            <a routerLink="/explore" class="text-[var(--primary)] font-semibold hover:underline">
+            <a (click)="this.router.navigate(['/explore'])" class="text-[var(--primary)] font-semibold hover:underline cursor-pointer">
               Explore courses →
             </a>
           </div>

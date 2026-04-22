@@ -3,6 +3,7 @@ import { User } from '../../services/user';
 import { EnrolledCourse } from '../../models/course.model';
 import { CourseCard } from '../../shared/components/course-card/course-card';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-my-courses',
   imports: [CourseCard, CommonModule],
@@ -16,7 +17,7 @@ export class MyCourses implements OnInit {
   inProgressCount: number = 0;
   completedCount: number = 0;
 
-  constructor(private userServices: User) { }
+  constructor(private userServices: User, public router: Router) { }
 
   ngOnInit(): void {
     this.userServices.getMyEnrollments();
