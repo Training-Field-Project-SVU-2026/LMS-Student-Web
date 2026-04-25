@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICourseWorkspaceHeader, IMaterialsResponse } from '../models/courseWorkspace.model';
+import { ICourseWorkspaceHeader, IMaterialsResponse, VideosResponse } from '../models/courseWorkspace.model';
 import { Observable } from 'rxjs';
 import { CourseService } from '../../shared/services/course';
 import { User } from '../services/user';
@@ -48,6 +48,15 @@ export class CourseWorkspaceService {
       `${environment.baseUrl}api/materials/?course=${courseSlug}`
     );
   }
+
+
+
+
+getVideos(courseSlug: string): Observable<VideosResponse> {
+  return this.http.get<VideosResponse>(
+    `${environment.baseUrl}api/courses/${courseSlug}/videos/`
+  );
+}
 
 
 

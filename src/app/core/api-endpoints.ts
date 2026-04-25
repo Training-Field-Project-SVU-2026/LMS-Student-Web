@@ -46,4 +46,10 @@ allCoursesPaged: (page: number, pageSize: number) =>
 
   // ── Materials ──────────────────────────────────────────
   materials: (courseSlug: string) => `${BASE_URL}api/materials/${courseSlug}/`,
+
+
+  //--videos
+
+  videoWorkspace: (courseSlug: string) => `${BASE_URL}api/courses/${courseSlug}/videos/`,
+  
 };

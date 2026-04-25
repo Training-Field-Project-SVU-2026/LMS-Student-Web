@@ -25,3 +25,21 @@ export interface IMaterial {
   Material_Name: string;
   file: string;
 }
+
+
+export interface Video {
+  slug: string;
+  is_completed: boolean;
+  title: string;
+  video_url: string;    
+  video_upload: string | null; 
+  order: number;
+  duration: string;      
+}
+
+export interface VideosResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: Video[];
+}
