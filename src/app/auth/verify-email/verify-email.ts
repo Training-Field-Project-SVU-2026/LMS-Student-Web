@@ -128,9 +128,9 @@ export class VerifyEmail {
       }
     }, 1000);
   }
-
   resendOtp() {
     const email = sessionStorage.getItem('verify_email');
+
     if (!email) {
       Swal.fire({
         icon: 'error',
@@ -141,7 +141,7 @@ export class VerifyEmail {
       return;
     }
 
-    this.authService.forgotPassword(email).subscribe({
+    this.authService.resendOtp({ email }).subscribe({
       next: () => {
         Swal.fire({
           icon: 'success',
@@ -159,7 +159,6 @@ export class VerifyEmail {
       }
     });
   }
-
   onSubmit() {
 
     if (this.otpForm.invalid) {
@@ -176,7 +175,7 @@ export class VerifyEmail {
     const otp = Object.values(this.otpForm.value).join('');
     const email = sessionStorage.getItem('verify_email') ?? '';
 
-    this.authService.verifyEmail({ email,otp }).subscribe({
+    this.authService.verifyEmail({ email, otp }).subscribe({
 
       next: (res: any) => {
 
@@ -192,7 +191,7 @@ export class VerifyEmail {
         this.router.navigate(['/auth/login']);
       },
 
-      error: (err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
 
         this.isLoading = false;
 

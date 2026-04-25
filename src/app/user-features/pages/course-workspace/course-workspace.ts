@@ -8,11 +8,12 @@ import { WorkspaceHeader } from './components/workspace-header/workspace-header'
 import { WorkspaceTabs } from './components/workspace-tabs/workspace-tabs';
 import { CourseWorkspaceService } from '../../services/course-workspace';
 import { ICourseWorkspaceHeader } from '../../models/courseWorkspace.model';
+import { TabVideos } from "./components/tab-videos/tab-videos";
 
 @Component({
   selector: 'app-course-workspace',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, WorkspaceHeader, WorkspaceTabs],
+  imports: [CommonModule, RouterOutlet, WorkspaceHeader, WorkspaceTabs, TabVideos],
   templateUrl: './course-workspace.html',
   styleUrl: './course-workspace.css',
 })
@@ -22,12 +23,12 @@ export class CourseWorkspace implements OnInit, OnDestroy {
   isLoading = true;
 
   private slug!: string;
-  private destroy$ = new Subject<void>();  
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private courseWorkspaceService: CourseWorkspaceService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.slug = this.route.snapshot.paramMap.get('slug')!;
@@ -39,7 +40,7 @@ export class CourseWorkspace implements OnInit, OnDestroy {
 
     this.courseWorkspaceService
       .getCourseWorkspaceData(this.slug)
-      .pipe(takeUntil(this.destroy$))   
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
           this.course = data;

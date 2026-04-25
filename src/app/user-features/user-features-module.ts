@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseCard } from './shared/components/course-card/course-card';
 import { RouterLink } from '@angular/router';
-
+import { TabMaterials } from './pages/course-workspace/components/tab-materials/tab-materials';
 
 
 @NgModule({
@@ -10,13 +10,15 @@ import { RouterLink } from '@angular/router';
   imports: [
     CommonModule,
     CourseCard,
-    RouterLink
+    RouterLink,
+    TabMaterials
   ],
   exports: [
-    CourseCard
+    CourseCard,
+    TabMaterials,
   ]
 })
-export class UserFeaturesModule { 
-  
+export class UserFeaturesModule {
+
 
 }

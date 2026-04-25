@@ -1,11 +1,102 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
+import { CommonModule, NgIf, NgFor } from '@angular/common';
+import { Video } from '../../../../models/courseWorkspace.model';
+import { CourseWorkspaceService } from '../../../../services/course-workspace'
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-tab-videos',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './tab-videos.html',
   styleUrl: './tab-videos.css',
 })
-export class TabVideos {
+export class TabVideos implements OnInit {
+  @Input() courseSlug!: string;
 
+  videos = signal<Video[]>([]);
+  selectedVideo = signal<Video | null>(null);
+  isLoading = signal(true);
+  error = signal(false);
+
+  watchProgress = signal<Record<string, number>>({});
+
+  constructor(private sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    private workspaceService: CourseWorkspaceService,
+
+  ) { }
+
+  ngOnInit() {
+    const slug = this.route.parent?.snapshot.paramMap.get('slug');
+
+    if (!slug) {
+      this.error.set(true);
+      this.isLoading.set(false);
+      return;
+    }
+
+    this.workspaceService.getVideos(slug).subscribe({
+      next: (res) => {
+        const sorted = [...res.data].sort((a, b) => a.order - b.order);
+        this.videos.set(sorted);
+        this.selectedVideo.set(sorted[0] ?? null);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.error.set(true);
+        this.isLoading.set(false);
+      },
+    });
+  }
+  select(video: Video) {
+    this.selectedVideo.set(video);
+  }
+
+  getType(video: Video): 'youtube' | 'upload' | 'none' {
+    if (video.video_url?.trim()) return 'youtube';
+    if (video.video_upload) return 'upload';
+    return 'none';
+  }
+
+  toSeconds(duration: string): number {
+    const [h, m, s] = duration.split(':').map(Number);
+    return h * 3600 + m * 60 + s;
+  }
+
+  getProgress(video: Video): number {
+    const watched = this.watchProgress()[video.slug] ?? 0;
+    const total = this.toSeconds(video.duration);
+    if (!total) return 0;
+    return Math.min(Math.round((watched / total) * 100), 100);
+  }
+
+  onTimeUpdate(event: Event, slug: string) {
+    const el = event.target as HTMLVideoElement;
+    this.watchProgress.update(p => ({ ...p, [slug]: el.currentTime }));
+  }
+
+  getYoutubeEmbed(url: string): SafeResourceUrl {
+    let id = '';
+    try {
+      const u = new URL(url);
+      if (u.hostname.includes('youtu.be')) {
+        id = u.pathname.slice(1);
+      } else if (u.pathname.includes('/shorts/')) {
+        id = u.pathname.split('/shorts/')[1];
+      } else {
+        id = u.searchParams.get('v') ?? '';
+      }
+    } catch { }
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${id}?rel=0`
+    );
+  }
+
+  formatDuration(duration: string): string {
+    const [h, m, s] = duration.split(':').map(Number);
+    if (h > 0) return `${h}h ${m}m`;
+    if (m > 0) return `${m}m ${s}s`;
+    return `${s}s`;
+  }
 }

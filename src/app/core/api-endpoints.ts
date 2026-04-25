@@ -40,4 +40,16 @@ allCoursesPaged: (page: number, pageSize: number) =>
 
   //package details
   packageDetails: (slug: string) => `${BASE_URL}api/packages/${slug}/`,
+
+  //course workspace
+  courseWorkspace: (slug: string) => `${BASE_URL}api/courses/${slug}/workspace/`,
+
+  // ── Materials ──────────────────────────────────────────
+  materials: (courseSlug: string) => `${BASE_URL}api/materials/${courseSlug}/`,
+
+
+  //--videos
+
+  videoWorkspace: (courseSlug: string) => `${BASE_URL}api/courses/${courseSlug}/videos/`,
+  
 };

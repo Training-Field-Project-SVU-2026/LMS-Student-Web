@@ -25,13 +25,12 @@ export class Profile implements OnInit {
 
   private destroyRef = inject(DestroyRef);
 
-  profile     = signal<Student | null>(null);
-  isEditing   = signal(false);
+  profile = signal<Student | null>(null);
+  isEditing = signal(false);
   saveSuccess = signal(false);
-  loading     = signal(false);
-  fetching    = signal(true);
+  loading = signal(false);
+  fetching = signal(true);
 
-  // ✅ Assigned in constructor — after FormBuilder is injected
   editForm!: FormGroup;
 
   constructor(
@@ -49,7 +48,6 @@ export class Profile implements OnInit {
   private loadProfile(): void {
     this.fetching.set(true);
 
-    // ✅ Use cached signal first (populated at app boot after token refresh)
     const cached = this.auth.currentUser();
     if (cached) {
       this.profile.set(cached);
@@ -58,7 +56,6 @@ export class Profile implements OnInit {
       return;
     }
 
-    // ✅ Fallback: fetch from API (e.g. hard refresh before boot completes)
     this.auth.fetchCurrentUser().pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
@@ -81,8 +78,7 @@ export class Profile implements OnInit {
   private patchForm(s: Student): void {
     this.editForm.patchValue({
       first_name: s.first_name ?? '',
-      last_name:  s.last_name  ?? '',
-      email:      s.email      ?? '',
+      last_name: s.last_name ?? '',
     });
   }
 
@@ -121,8 +117,13 @@ export class Profile implements OnInit {
 
     this.settings.updateProfile(p.slug, this.editForm.value).subscribe({
       next: (updated) => {
-        this.profile.set(updated);
-        this.auth.currentUser.set(updated);
+        const current = this.profile();
+        if (current) {
+          this.profile.set({ ...current, ...updated });
+          this.auth.currentUser.set({ ...current, ...updated });
+        }
+
+
         this.isEditing.set(false);
         this.loading.set(false);
         this.saveSuccess.set(true);
@@ -156,8 +157,7 @@ export class Profile implements OnInit {
   private buildForm(): FormGroup {
     return this.fb.group({
       first_name: ['', Validators.required],
-      last_name:  ['', Validators.required],
-      email:      ['', [Validators.required, Validators.email]],
+      last_name: ['', Validators.required],
     });
   }
 }

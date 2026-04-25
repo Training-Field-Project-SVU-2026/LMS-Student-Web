@@ -73,7 +73,7 @@
 .dark {
   --primary: #1A8FAD;
   --on-primary: #FFFFFF;
-  --primary-hover: #1577910;
+  --primary-hover: #157791;
 
   --background: #121A1F;
   --on-background: #E0E7EB;
@@ -94,23 +94,14 @@
   --on-error: #FFFFFF;
 }
 
-.auth-page {
-  --background: #F3F7F8 !important;
-  --on-background: #102A33 !important;
-  --surface: #FFFFFF !important;
-  --on-surface: #102A33 !important;
-
-  --text-primary: #102A33 !important;
-  --text-secondary: #37474F !important;
-  --text-tertiary: #607D8B !important;
-}
-
 .bg-surface {
   background-color: var(--surface);
 }
+
 svg {
   flex-shrink: 0;
 }
+
 svg:hover {
   transform: scale(1.1);
   transition: 0.2s;
