@@ -34,7 +34,7 @@ export interface IQuizCourse {
   course_name:string;
   attempts_used:number;
   best_score:number;
-  quiz_status:'not_started' | 'in_progress' | 'completed' | 'failed' | 'passed';
+  quiz_status:'not_started' | 'in_progress' | 'completed' | 'failed' | 'passed'| 'can_retry';
 }
 
 export interface IQuizCourseResponse {

@@ -65,14 +65,38 @@
         <p class="text-[var(--primary)] font-semibold mt-1">{{ quiz.best_score }} / {{ quiz.total_mark }}</p>
         <p class="text-xs text-[var(--text-tertiary)] mt-1">Attempts: {{ quiz.attempts_used }} / {{ quiz.max_attempts }}</p>
       </div>
-      <button (click)="goToQuiz(quiz)"
-        class="px-4 py-2 rounded-lg border border-[var(--primary)] text-[var(--primary)] text-sm font-medium hover:bg-[var(--primary)] hover:text-white transition">
-        Retake
-      </button>
+      @if(quiz.attempts_used < quiz.max_attempts) {
+        <button (click)="goToQuiz(quiz)"
+          class="px-4 py-2 rounded-lg border border-[var(--primary)] text-[var(--primary)] text-sm font-medium hover:bg-[var(--primary)] hover:text-white transition">
+          Retake
+        </button>
+      } @else {
+        <button
+          class="px-4 py-2 rounded-lg border border-[var(--outline)] text-[var(--text-tertiary)] text-sm">
+          Attempt Limit Reached
+        </button>
+      }
     </div>
   }
 
   @else if (quiz.quiz_status === 'failed') {
+    <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
+      <div>
+        <h3 class="font-semibold text-[var(--text-primary)]">{{ quiz.quiz_name }}</h3>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Last Score</p>
+        <p class="text-[var(--error)] font-semibold mt-1">{{ quiz.best_score }} / {{ quiz.total_mark }}</p>
+        <p class="text-xs text-[var(--text-tertiary)] mt-1">Attempts: {{ quiz.attempts_used }} / {{ quiz.max_attempts }}</p>
+      </div>
+       @if(quiz.attempts_used >= quiz.max_attempts) {
+        <button
+          class="px-4 py-2 rounded-lg border border-[var(--error)] text-[var(--error)] text-sm">
+          Attempt Limit Reached
+        </button>
+      } 
+    </div>
+  }
+
+    @else if (quiz.quiz_status === 'can_retry') {
     <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
       <div>
         <h3 class="font-semibold text-[var(--text-primary)]">{{ quiz.quiz_name }}</h3>
@@ -86,6 +110,7 @@
       </button>
     </div>
   }
+
 
   @else if (quiz.quiz_status === 'not_started') {
     <div class="bg-[var(--surface)] border border-[var(--outline)] rounded-2xl p-5 flex items-center justify-between shadow-sm">
