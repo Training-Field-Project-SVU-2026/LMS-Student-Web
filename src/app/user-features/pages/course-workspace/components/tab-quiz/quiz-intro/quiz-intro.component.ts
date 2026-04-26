@@ -11,7 +11,7 @@ type FilterTab = 'all' | 'completed' | 'not_started';
   styleUrls: ['./quiz-intro.component.css']
 })
 export class QuizIntro implements OnInit {
-  @Output() startQuiz = new EventEmitter<IQuizCourse>();
+@Output() startQuiz = new EventEmitter<IQuizCourse>();
 
   private route = inject(ActivatedRoute);
   private courseWorkspaceService = inject(CourseWorkspaceService);
