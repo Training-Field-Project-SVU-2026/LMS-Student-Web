@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CourseWorkspaceService } from './course-workspace';
+import { Token } from './token';
 
-describe('CourseWorkspace', () => {
-  let service: CourseWorkspaceService;
+describe('Token', () => {
+  let service: Token;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CourseWorkspaceService);
+    service = TestBed.inject(Token);
   });
 
   it('should be created', () => {

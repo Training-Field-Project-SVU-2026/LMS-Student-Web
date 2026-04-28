@@ -1,18 +1,25 @@
+// src/app/auth/interceptors/auth-interceptor.ts
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, Injector } from '@angular/core';
 import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { TokenService } from '../services/token';
+// ✅ import عادي - مش require() - الـ circular يتحل بـ injector.get() runtime
 import { AuthService } from '../services/auth';
+import { TokenRefreshResponse } from '../models/auth.models';
 
 let isRefreshing = false;
 const refreshDone$ = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(AuthService);
+  // ✅ TokenService مفيهاش HttpClient - مفيش circular
+  const tokenService = inject(TokenService);
+  // ✅ Injector بيجيب AuthService lazily وقت الـ runtime بس
+  const injector = inject(Injector);
 
   const addToken = (request: typeof req, token: string) =>
-  request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+    request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
 
-  const token = auth.getToken();
+  const token = tokenService.getAccessToken();
   const authReq = token ? addToken(req, token) : req;
 
   return next(authReq).pipe(
@@ -26,30 +33,33 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      const refreshToken = localStorage.getItem('refresh_token');
+      const refreshToken = tokenService.getRefreshToken();
       if (!refreshToken) {
         return throwError(() => error);
       }
+
+      // ✅ هنا بس بنجيب AuthService لأنه اتبنى خلاص في الـ runtime
+      const auth = injector.get(AuthService);
 
       if (!isRefreshing) {
         isRefreshing = true;
         refreshDone$.next(null);
 
         return auth.refreshAccessToken().pipe(
-          switchMap((res) => {
+          switchMap((res: TokenRefreshResponse) => {
             isRefreshing = false;
             refreshDone$.next(res.access);
             return next(addToken(req, res.access));
           }),
-          catchError((refreshError) => {
+          catchError((refreshError: HttpErrorResponse) => {
             isRefreshing = false;
             refreshDone$.next(null);
             console.error('[Interceptor] Token refresh failed:', refreshError);
+            auth.logout();
             return throwError(() => refreshError);
           })
         );
       } else {
-
         return refreshDone$.pipe(
           filter((t): t is string => t !== null),
           take(1),

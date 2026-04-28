@@ -1,10 +1,10 @@
-import { ICourseDetailRequest } from 
+import { ICourseDetailRequest } from
   '../../components/shared/interfaces/course.model';
 
 export interface ICourseWorkspaceHeader extends ICourseDetailRequest {
-  progress?:      number;
+  progress?: number;
   lessons_count?: number;
-  duration?:      string;
+  duration?: string;
 }
 
 export interface IMaterialsResponse {
@@ -31,10 +31,10 @@ export interface Video {
   slug: string;
   is_completed: boolean;
   title: string;
-  video_url: string;    
-  video_upload: string | null; 
+  video_url: string | null;
+  video_upload: string | null;
   order: number;
-  duration: string;      
+  duration: string | null;
 }
 
 export interface VideosResponse {

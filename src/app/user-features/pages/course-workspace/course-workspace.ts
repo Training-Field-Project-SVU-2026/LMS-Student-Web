@@ -13,7 +13,7 @@ import { TabVideos } from "./components/tab-videos/tab-videos";
 @Component({
   selector: 'app-course-workspace',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, WorkspaceHeader, WorkspaceTabs, TabVideos],
+  imports: [CommonModule, RouterOutlet, WorkspaceHeader, WorkspaceTabs],
   templateUrl: './course-workspace.html',
   styleUrl: './course-workspace.css',
 })

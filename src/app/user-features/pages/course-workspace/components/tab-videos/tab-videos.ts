@@ -59,7 +59,17 @@ export class TabVideos implements OnInit {
     return 'none';
   }
 
-  toSeconds(duration: string): number {
+
+  formatDuration(duration: string | null): string {
+    if (!duration) return '—';
+    const [h, m, s] = duration.split(':').map(Number);
+    if (h > 0) return `${h}h ${m}m`;
+    if (m > 0) return `${m}m ${s}s`;
+    return `${s}s`;
+  }
+
+  toSeconds(duration: string | null): number {
+    if (!duration) return 0;
     const [h, m, s] = duration.split(':').map(Number);
     return h * 3600 + m * 60 + s;
   }
@@ -76,7 +86,9 @@ export class TabVideos implements OnInit {
     this.watchProgress.update(p => ({ ...p, [slug]: el.currentTime }));
   }
 
-  getYoutubeEmbed(url: string): SafeResourceUrl {
+  getYoutubeEmbed(url: string | null): SafeResourceUrl {
+    if (!url) return this.sanitizer.bypassSecurityTrustResourceUrl('');
+
     let id = '';
     try {
       const u = new URL(url);
@@ -88,15 +100,11 @@ export class TabVideos implements OnInit {
         id = u.searchParams.get('v') ?? '';
       }
     } catch { }
+
     return this.sanitizer.bypassSecurityTrustResourceUrl(
       `https://www.youtube.com/embed/${id}?rel=0`
     );
   }
 
-  formatDuration(duration: string): string {
-    const [h, m, s] = duration.split(':').map(Number);
-    if (h > 0) return `${h}h ${m}m`;
-    if (m > 0) return `${m}m ${s}s`;
-    return `${s}s`;
-  }
+
 }
