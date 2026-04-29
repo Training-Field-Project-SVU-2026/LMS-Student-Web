@@ -46,8 +46,10 @@ export class CourseDetails implements OnInit {
     ).subscribe({
       next: (data) => {
         this.courseDetail = data;
-        this.isLoading    = false;
+        this.isLoading = false;
+        this.userService.setSelectedCourse(data);
         this.isEnrolled.set(data.is_enrolled ?? false);
+
       },
       error: () => this.isLoading = false,
     });
@@ -115,19 +117,26 @@ export class CourseDetails implements OnInit {
     });
   }
 
- handleCourseAction() {
-  if (!this.auth.isLoggedIn()) {
-    this.alert.requireLoginToEnroll(this.courseDetail?.slug ?? '');
-    return;
+  exportCourseImage() {
+    if (this.courseDetail?.image) {
+      const filename = `${this.courseDetail.title.replace(/\s+/g, '-').toLowerCase()}-cover.jpg`;
+      this.userService.downloadImage(this.courseDetail.image, filename);
+    }
   }
 
-  if (this.isEnrolled()) {
-    this.goToWorkspace();
-    return;
-  }
+  handleCourseAction() {
+    if (!this.auth.isLoggedIn()) {
+      this.alert.requireLoginToEnroll(this.courseDetail?.slug ?? '');
+      return;
+    }
 
-  this.onEnroll();
-}
+    if (this.isEnrolled()) {
+      this.router.navigate(['/CourseWorkspace', this.courseDetail?.slug]);
+      return;
+    }
+  
+    this.onEnroll();
+  }
 
 
 

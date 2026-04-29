@@ -7,14 +7,22 @@ import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
+import { signal } from '@angular/core';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class CourseWorkspaceService {
   constructor(private userService: User, private courseService: CourseService, private http: HttpClient) { }
+
+
+  selectedCourse = signal<ICourseDetailRequest | null>(null);
+
+  setSelectedCourse(course: ICourseDetailRequest) {
+    this.selectedCourse.set(course);
+  }
   getCourseWorkspaceData(slug: string): Observable<ICourseWorkspaceHeader> {
 
     this.userService.getMyEnrollments();
@@ -43,15 +51,21 @@ export class CourseWorkspaceService {
   }
 
 
-getQuizzes(courseSlug:string): Observable<IQuizCourse[]>{
-  return this.http.get<IQuizCourseResponse>(API_ENDPOINTS.quiz(courseSlug)).pipe(
-    map(res => res.data.quizzes)
-  );
+getQuizzes(courseSlug: string, page: number = 1, pageSize: number = 10): Observable<IQuizCourseResponse> {
+  return this.http.get<IQuizCourseResponse>(API_ENDPOINTS.quiz(courseSlug), {
+    params: {
+      page: page.toString(),
+      page_size: pageSize.toString()
+    }
+  });
 }
-getQuizQuestions(quizSlug: string): Observable<IQuestion[]> {
-  return this.http.get<IQuestionsResponse>(API_ENDPOINTS.quizQuestions(quizSlug)).pipe(
-    map(res => res.data.questions ?? res.data.quizzes ?? [])
-  );
+getQuizQuestions(quizSlug: string, page: number = 1, pageSize: number = 10): Observable<IQuestionsResponse> {
+  return this.http.get<IQuestionsResponse>(API_ENDPOINTS.quizQuestions(quizSlug), {
+    params: {
+      page: page.toString(),
+      page_size: pageSize.toString()
+    }
+  })
 }
 submitQuiz(quizSlug: string, body: ISubmitQuizRequest) {
   return this.http.post<ISubmitQuizResponse>(
@@ -59,9 +73,5 @@ submitQuiz(quizSlug: string, body: ISubmitQuizRequest) {
     body
   );
 }
-// getLatestQuizResult(quizSlug: string): Observable<IQuizResult[]> {
-//   return this.http.get<IQuizResultsResponse>(API_ENDPOINTS.quizResults(slug)).pipe(
-//     map(res => res.data)
-//   );
-// }
+
 }

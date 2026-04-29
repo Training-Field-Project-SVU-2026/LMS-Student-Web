@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ISubmitQuizData } from '../../../../../models/courseWorkspace.model';
 
+
 @Component({
   selector: 'app-quiz-result',
+  imports: [],
   templateUrl: './quiz-result.component.html',
   styleUrls: ['./quiz-result.component.css']
 })

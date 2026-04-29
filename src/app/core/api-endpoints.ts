@@ -52,6 +52,5 @@ allCoursesPaged: (page: number, pageSize: number) =>
   quizQuestions:(quiz_slug:string) => `${BASE_URL}api/quizzes/${quiz_slug}/questions/`,
   // ── Submit Quiz Answers ───────────────────────────────────────────
   submitQuizAnswers: (quiz_slug: string) => `${BASE_URL}api/quizzes/${quiz_slug}/submit/`,
-  // ── Quiz Results ───────────────────────────────────────────
-  quizResults: (slug: string) => `${BASE_URL}api/quizzes/${slug}/my-results/`,
+
 };
