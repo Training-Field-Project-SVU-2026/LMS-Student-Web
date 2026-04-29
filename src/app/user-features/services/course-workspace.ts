@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICourseWorkspaceHeader, IMaterialsResponse, VideosResponse } from '../models/courseWorkspace.model';
+import { ICourseWorkspaceHeader, IMaterialsResponse, IQuestion, IQuestionsResponse, IQuizCourse, IQuizCourseResponse, IQuizResult, IQuizResultsResponse, ISubmitQuizRequest, ISubmitQuizResponse, VideosResponse } from '../models/courseWorkspace.model';
 import { Observable } from 'rxjs';
 import { CourseService } from '../../shared/services/course';
 import { User } from '../services/user';
@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
 import { signal } from '@angular/core';
+import { API_ENDPOINTS } from '../../core/api-endpoints';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,28 @@ export class CourseWorkspaceService {
   }
 
 
+getQuizzes(courseSlug: string, page: number = 1, pageSize: number = 10): Observable<IQuizCourseResponse> {
+  return this.http.get<IQuizCourseResponse>(API_ENDPOINTS.quiz(courseSlug), {
+    params: {
+      page: page.toString(),
+      page_size: pageSize.toString()
+    }
+  });
+}
+getQuizQuestions(quizSlug: string, page: number = 1, pageSize: number = 10): Observable<IQuestionsResponse> {
+  return this.http.get<IQuestionsResponse>(API_ENDPOINTS.quizQuestions(quizSlug), {
+    params: {
+      page: page.toString(),
+      page_size: pageSize.toString()
+    }
+  })
+}
+submitQuiz(quizSlug: string, body: ISubmitQuizRequest) {
+  return this.http.post<ISubmitQuizResponse>(
+    API_ENDPOINTS.submitQuizAnswers(quizSlug),
+    body
+  );
+}
 
 
 getVideos(courseSlug: string): Observable<VideosResponse> {
