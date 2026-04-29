@@ -1,1 +1,171 @@
-<p>tab-videos works!</p>
+@if (isLoading()) {
+  <div class="videos-layout">
+    <div class="video-list">
+      <div class="list-header skeleton-line" style="width:140px; height:20px; margin-bottom:16px;"></div>
+      @for (i of [1,2,3,4]; track i) {
+        <div class="video-card-skeleton">
+          <div class="skeleton-box thumb"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton-line" style="width:70%"></div>
+            <div class="skeleton-line" style="width:40%"></div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="video-player-skeleton skeleton-box"></div>
+  </div>
+}
+
+@if (!isLoading() && error()) {
+  <div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.95 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+    </svg>
+    <p>Failed to load videos. Please try again.</p>
+  </div>
+}
+
+@if (!isLoading() && !error() && videos().length === 0) {
+  <div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h1.5C5.496 19.5 6 18.996 6 18.375m-3.75.125v-.125A1.125 1.125 0 013.375 17.25h17.25A1.125 1.125 0 0121.75 18.375v.125m-18.375 0h18.375M6 18.375V6.375A1.125 1.125 0 017.125 5.25h9.75A1.125 1.125 0 0118 6.375v12" />
+    </svg>
+    <p>No videos available yet.</p>
+  </div>
+}
+
+<!-- MAIN LAYOUT -->
+@if (!isLoading() && !error() && videos().length > 0) {
+  <div class="videos-layout">
+
+    <!-- ── LEFT: Video List ── -->
+    <aside class="video-list">
+      <div class="list-header">
+        <span class="list-title">Course Videos</span>
+        <span class="list-badge">{{ videos().length }} videos</span>
+      </div>
+
+      @for (video of videos(); track video.slug) {
+        <div
+          class="video-card"
+          [class.active]="selectedVideo()?.slug === video.slug"
+          (click)="select(video)"
+        >
+          <div class="video-thumb" [class.youtube]="getType(video) === 'youtube'" [class.upload]="getType(video) === 'upload'">
+            @if (getType(video) === 'youtube') {
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0C.488 3.45.029 5.804 0 12c.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 3.993L9 16z"/>
+              </svg>
+            }
+            @if (getType(video) === 'upload') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            }
+            <!-- None -->
+            @if (getType(video) === 'none') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            }
+
+            <!-- Active indicator dot -->
+            @if (selectedVideo()?.slug === video.slug) {
+              <span class="active-dot"></span>
+            }
+          </div>
+
+          <div class="video-info">
+            <p class="video-title">{{ video.title }}</p>
+            <div class="video-meta">
+              <span class="duration">{{ formatDuration(video.duration) }}</span>
+              <!-- <span class="type-badge" [class.yt]="getType(video) === 'youtube'" [class.up]="getType(video) === 'upload'">
+                {{ getType(video) === 'youtube' ? 'YouTube' : getType(video) === 'upload' ? 'Video' : 'N/A' }}
+              </span> -->
+            </div>
+
+            @if (getProgress(video) > 0 || video.is_completed) {
+              <div class="progress-track">
+                <div
+                  class="progress-fill"
+                  [style.width.%]="video.is_completed ? 100 : getProgress(video)"
+                ></div>
+              </div>
+            }
+            
+            @if (getProgress(video) > 0 && !video.is_completed) {
+              <span class="progress-label">
+                {{ getProgress(video) }}% watched
+              </span>
+            }
+            @if (video.is_completed) {
+              <span class="completed-label">✓ Completed</span>
+            }
+          </div>
+        </div>
+      }
+    </aside>
+
+    <!-- ── RIGHT: Player ── -->
+    @if (selectedVideo(); as v) {
+      <main class="video-player-area">
+        <div class="player-header">
+          <div class="player-order">{{ v.order }}</div>
+          <div>
+            <h2 class="player-title">{{ v.title }}</h2>
+            <span class="player-duration">{{ formatDuration(v.duration) }}</span>
+          </div>
+        </div>
+
+        <!-- YouTube -->
+        @if (getType(v) === 'youtube') {
+          <div class="player-wrapper">
+            <iframe
+              [src]="getYoutubeEmbed(v.video_url)"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        }
+        <!-- Uploaded Video -->
+        @if (getType(v) === 'upload') {
+          <div class="player-wrapper">
+            <video
+              controls
+              [src]="v.video_upload!"
+              (timeupdate)="onTimeUpdate($event, v.slug)"
+            ></video>
+          </div>
+        }
+
+        @if (getType(v) === 'none') {
+          <div class="player-wrapper no-source">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/>
+            </svg>
+            <p>No video source available</p>
+          </div>
+        }
+
+        @if (getProgress(v) > 0 || v.is_completed) {
+          <div class="player-progress-bar">
+            <div class="player-progress-info">
+              <span>Progress</span>
+              <span>{{ v.is_completed ? '100' : getProgress(v) }}%</span>
+            </div>
+            <div class="player-progress-track">
+              <div
+                class="player-progress-fill"
+                [style.width.%]="v.is_completed ? 100 : getProgress(v)"
+              ></div>
+            </div>
+          </div>
+        }
+      </main>
+    }
+
+  </div>
+}

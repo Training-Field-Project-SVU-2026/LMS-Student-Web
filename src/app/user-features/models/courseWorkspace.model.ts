@@ -2,9 +2,9 @@ import { ICourseDetailRequest } from
   '../../components/shared/interfaces/course.model';
 
 export interface ICourseWorkspaceHeader extends ICourseDetailRequest {
-  progress?:      number;
+  progress?: number;
   lessons_count?: number;
-  duration?:      string;
+  duration?: string;
 }
 
 export interface IMaterialsResponse {
@@ -121,4 +121,21 @@ export interface IQuizResultsResponse {
   status: number;
   message: string;
   data: IQuizResult[];
+}
+
+export interface Video {
+  slug: string;
+  is_completed: boolean;
+  title: string;
+  video_url: string | null;
+  video_upload: string | null;
+  order: number;
+  duration: string | null;
+}
+
+export interface VideosResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: Video[];
 }

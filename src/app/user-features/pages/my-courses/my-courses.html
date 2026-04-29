@@ -91,11 +91,10 @@
           You haven't enrolled in any courses yet. Explore our catalog to get started.
         </p>
       </div>
-      <a routerLink="/explore"
-         class="px-5 py-2 rounded-xl bg-[var(--primary)] text-white
+      <button (click)="this.router.navigate(['/explore'])" class="px-5 py-2 rounded-xl bg-[var(--primary)] text-white
                 text-sm font-semibold hover:bg-[var(--primary-hover)] transition-colors">
         Explore Courses →
-      </a>
+      </button>
     </div>
   }
 

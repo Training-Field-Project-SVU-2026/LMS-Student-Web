@@ -1,9 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, of, shareReplay, switchMap, catchError, map } from 'rxjs';
+import { Observable, tap, of, ReplaySubject, switchMap, catchError, map } from 'rxjs';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 import { Student } from '../../models/user.models';
+import { TokenService } from './token';
 import {
   LoginRequest, LoginResponse,
   ResetPasswordRequest, ResetPasswordResponse,
@@ -13,7 +14,6 @@ import {
   TokenRefreshResponse,
 } from '../models/auth.models';
 
-// Shape the backend always returns: { success, status, message, data: T }
 interface ApiResponse<T> {
   success: boolean;
   status: number;
@@ -24,28 +24,39 @@ interface ApiResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private accessToken: string | null = null;
-  private readonly REFRESH_KEY = 'refresh_token';
-  private readonly SLUG_KEY = 'user_slug';
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private tokenService = inject(TokenService);
 
-  isLoggedIn = signal<boolean>(!!localStorage.getItem(this.REFRESH_KEY));
+  isLoggedIn = signal<boolean>(false);
   currentUser = signal<Student | null>(null);
 
-  readonly authReady$: Observable<Student | null>;
+  private authReadySubject = new ReplaySubject<Student | null>(1);
+  readonly authReady$ = this.authReadySubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {
-    if (this.isLoggedIn()) {
-      this.authReady$ = this.refreshAccessToken().pipe(
+  constructor() {
+    this.initializeAuth();
+  }
+
+  private initializeAuth() {
+    if (this.tokenService.hasRefreshToken()) {
+      this.refreshAccessToken().pipe(
         switchMap(() => this.fetchCurrentUser()),
+        tap((user) => {
+          this.isLoggedIn.set(!!user);
+          this.authReadySubject.next(user);
+        }),
         catchError((err) => {
           console.warn('[Auth] Boot init failed', err);
+          this.tokenService.clearAll();
+          this.isLoggedIn.set(false);
+          this.authReadySubject.next(null);
           return of(null);
-        }),
-        shareReplay(1)
-      );
-      this.authReady$.subscribe();
+        })
+      ).subscribe();
     } else {
-      this.authReady$ = of(null).pipe(shareReplay(1));
+      this.isLoggedIn.set(false);
+      this.authReadySubject.next(null);
     }
   }
 
@@ -68,48 +79,42 @@ export class AuthService {
   login(data: LoginRequest): Observable<Student | null> {
     return this.http.post<LoginResponse>(API_ENDPOINTS.login, data).pipe(
       tap((res) => {
-        const access = res.data.tokens.access;
-        const refresh = res.data.tokens.refresh;
-
-        this.accessToken = access;
-
-        localStorage.setItem('token', access);
-        localStorage.setItem(this.REFRESH_KEY, refresh);
-        localStorage.setItem(this.SLUG_KEY, res.data.user.slug);
-
+        const { access, refresh } = res.data.tokens;
+        this.tokenService.setAccessToken(access);
+        this.tokenService.setRefreshToken(refresh);
+        this.tokenService.setSlug(res.data.user.slug);
         this.isLoggedIn.set(true);
       }),
-      switchMap(() => this.fetchCurrentUser())
+      switchMap(() => this.fetchCurrentUser()),
+      tap((user) => {
+        this.authReadySubject.next(user);
+      })
     );
   }
 
   // ─── Refresh Access Token ─────────────────────────────────────────────────
   refreshAccessToken(): Observable<TokenRefreshResponse> {
-    const refresh = localStorage.getItem(this.REFRESH_KEY) ?? '';
+    const refresh = this.tokenService.getRefreshToken() ?? '';
     return this.http.post<TokenRefreshResponse>(
       API_ENDPOINTS.refreshToken, { refresh }
     ).pipe(
       tap((res) => {
-        const access = res.access; 
-        this.accessToken = access;
-        localStorage.setItem('token', access);
-        this.isLoggedIn.set(true);
+        this.tokenService.setAccessToken(res.access);
       })
     );
   }
 
   // ─── Fetch Current User ───────────────────────────────────────────────────
   fetchCurrentUser(): Observable<Student | null> {
-    const slug = localStorage.getItem(this.SLUG_KEY);
+    const slug = this.tokenService.getSlug();
     if (!slug) {
       console.warn('[Auth] No slug in localStorage');
       return of(null);
     }
 
     return this.http.get<ApiResponse<Student>>(API_ENDPOINTS.studentBySlug(slug)).pipe(
-      map(res => {
+      map((res) => {
         const user: Student = (res as any)?.data ?? res;
-        console.log('[Auth] currentUser set to:', user);
         this.currentUser.set(user);
         return user;
       }),
@@ -133,7 +138,7 @@ export class AuthService {
 
   // ─── Logout ───────────────────────────────────────────────────────────────
   logout(): void {
-    const refresh = localStorage.getItem(this.REFRESH_KEY) ?? '';
+    const refresh = this.tokenService.getRefreshToken() ?? '';
     this.http.post(API_ENDPOINTS.logout, { refresh }).subscribe({
       next: () => this.clearSession(),
       error: () => this.clearSession(),
@@ -141,15 +146,14 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return this.accessToken || localStorage.getItem('token');
+    return this.tokenService.getAccessToken();
   }
 
   private clearSession(): void {
-    this.accessToken = null;
-    localStorage.removeItem(this.REFRESH_KEY);
-    localStorage.removeItem(this.SLUG_KEY);
+    this.tokenService.clearAll();
     this.isLoggedIn.set(false);
     this.currentUser.set(null);
+    this.authReadySubject.next(null);
     this.router.navigate(['/']);
   }
 }

@@ -53,4 +53,10 @@ allCoursesPaged: (page: number, pageSize: number) =>
   // ── Submit Quiz Answers ───────────────────────────────────────────
   submitQuizAnswers: (quiz_slug: string) => `${BASE_URL}api/quizzes/${quiz_slug}/submit/`,
 
+
+
+  //--videos
+
+  videoWorkspace: (courseSlug: string) => `${BASE_URL}api/courses/${courseSlug}/videos/`,
+
 };

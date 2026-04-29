@@ -35,9 +35,9 @@
       </div>
 
       <!-- Avatar -->
-      <img appImgFallback [src]="s.image" [srcFallback]="'/images/default-avatar.png'"
-        [errorFallback]="'/images/default-avatar.png'" [alt]="fullName" class="w-9 h-9 rounded-full object-cover
-                    border-2 border-[var(--secondary)]" />
+      <img appImgFallback [src]="s.image" [srcFallback]="''"
+        [errorFallback]="'/assets/images/user-default.jpg'" [alt]="fullName"
+        class="w-9 h-9 rounded-full object-cover border-2 border-[var(--secondary)]" />
       } @else {
       <!-- Skeleton loading -->
       <div class="h-4 w-28 bg-[var(--outline)] rounded animate-pulse hidden sm:block"></div>

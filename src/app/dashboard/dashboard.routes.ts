@@ -17,11 +17,11 @@ export const DASHBOARD_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/security/security').then(m => m.Security),
       },
-      // {
-      //   path: 'preference',
-      //   loadComponent: () =>
-      //     import('./pages/preference/preference').then(m => m.Preference),
-      // },
+      {
+        path: 'preference',
+        loadComponent: () =>
+          import('./pages/preference/preference').then(m => m.Preference),
+      },
     ],
   },
 ];
