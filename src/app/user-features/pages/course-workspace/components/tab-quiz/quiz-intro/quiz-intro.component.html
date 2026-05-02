@@ -26,14 +26,15 @@
 
 
     <div class="bg-[var(--primary)] text-white rounded-2xl p-6 flex items-center justify-between shadow-md mb-6">
-      <div>
-        <p class="text-sm opacity-80">Average Score</p>
-        <h2 class="text-3xl font-bold mt-1">{{ avgScore() }}%</h2>
-      </div>
-      <div class="bg-white/10 px-4 py-2 rounded-xl text-sm">
-        Passed Exams <span class="font-bold ml-1">{{ passedCount() }}</span>
-      </div>
-    </div>
+  <div>
+    <p class="text-sm opacity-80">Average Score</p>
+    <h2 class="text-3xl font-bold mt-1">{{ statistics()?.overall_best_score ?? '0%' }}</h2>
+  </div>
+  <div class="bg-white/10 px-4 py-2 rounded-xl text-sm">
+    passed Exams:
+  <span class="font-bold ml-1">{{ (statistics()?.completed_quizzes ?? '0 / 0').split('/')[0].trim() }}</span>
+  </div>
+</div>
 
 
     <div class="flex gap-3 mb-6">
