@@ -53,11 +53,14 @@
             [errorFallback]="'assets/images/default-avatar.png'" alt="Instructor"
             class="w-24 h-24 rounded-2xl object-cover border-2 border-[var(--outline)] shadow-sm" />
           <div class="flex-1">
-            <!-- <h3 class="text-xl font-bold text-[var(--text-primary)]">
+            <h3 class="text-xl font-bold text-[var(--text-primary)]">
               {{ courseDetail.instructor_name }}
-            </h3> -->
+            </h3>
+            <!-- <p class="font-body text-[var(--text-secondary)] text-sm leading-relaxed mt-3 italic">
+              {{ courseDetail.instructor_name }}
+            </p> -->
             <p class="font-body text-[var(--text-secondary)] text-sm leading-relaxed mt-3 italic">
-              {{ courseDetail.instructor_bio || 'Expert instructor at our platform.' }}
+              {{ courseDetail.instructor_bio }}
             </p>
           </div>
         </div>

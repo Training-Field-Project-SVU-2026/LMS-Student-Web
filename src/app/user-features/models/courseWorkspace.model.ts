@@ -24,6 +24,8 @@ export interface IMaterial {
   slug: string;
   Material_Name: string;
   file: string;
+   file_size: string;   
+  created_at: string;
 }
 
 

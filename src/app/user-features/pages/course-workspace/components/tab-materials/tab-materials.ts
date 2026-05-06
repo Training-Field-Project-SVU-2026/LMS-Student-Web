@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../../../environments/environment';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CourseWorkspaceService } from '../../../../services/course-workspace';
+import { IMaterial } from '../../../../models/courseWorkspace.model';
 
 @Component({
   selector: 'app-tab-materials',
@@ -17,7 +18,7 @@ export class TabMaterials implements OnInit {
   private destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
 
-  materials: any[] = [];
+  materials: IMaterial[] = [];
   isLoading = true;
   baseUrl = environment.baseUrl;
 

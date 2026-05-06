@@ -1,18 +1,17 @@
+// ✅ auth.guard.ts
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth';
-import { map, take } from 'rxjs';
+import { map, take, filter } from 'rxjs';
 
 export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  // ✅ لو عمل login للتو، isLoggedIn = true → ادخل على طول
-  // بدون ما ننتظر authReady$ اللي عنده null محفوظ من الـ boot
   if (auth.isLoggedIn()) return true;
 
-  // ✅ بس لو refresh → ننتظر الـ boot يخلص الأول
   return auth.authReady$.pipe(
+    filter(value => value !== undefined),
     take(1),
     map((user) => {
       if (user) return true;

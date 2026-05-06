@@ -60,51 +60,51 @@ export class TabVideos implements OnInit {
   }
 
 
-  formatDuration(duration: string | null): string {
-    if (!duration) return '—';
-    const [h, m, s] = duration.split(':').map(Number);
-    if (h > 0) return `${h}h ${m}m`;
-    if (m > 0) return `${m}m ${s}s`;
-    return `${s}s`;
-  }
+formatDuration(duration: string | null): string {
+  if (!duration) return '—';                         
+  const [h, m, s] = duration.split(':').map(Number);
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
 
-  toSeconds(duration: string | null): number {
-    if (!duration) return 0;
-    const [h, m, s] = duration.split(':').map(Number);
-    return h * 3600 + m * 60 + s;
-  }
+toSeconds(duration: string | null): number {
+  if (!duration) return 0;                          
+  const [h, m, s] = duration.split(':').map(Number);
+  return h * 3600 + m * 60 + s;
+}
 
-  getProgress(video: Video): number {
-    const watched = this.watchProgress()[video.slug] ?? 0;
-    const total = this.toSeconds(video.duration);
-    if (!total) return 0;
-    return Math.min(Math.round((watched / total) * 100), 100);
-  }
+getProgress(video: Video): number {
+  const watched = this.watchProgress()[video.slug] ?? 0;
+  const total = this.toSeconds(video.duration);
+  if (!total) return 0;
+  return Math.min(Math.round((watched / total) * 100), 100);
+}
 
   onTimeUpdate(event: Event, slug: string) {
     const el = event.target as HTMLVideoElement;
     this.watchProgress.update(p => ({ ...p, [slug]: el.currentTime }));
   }
 
-  getYoutubeEmbed(url: string | null): SafeResourceUrl {
-    if (!url) return this.sanitizer.bypassSecurityTrustResourceUrl('');
+getYoutubeEmbed(url: string | null): SafeResourceUrl {
+  if (!url) return this.sanitizer.bypassSecurityTrustResourceUrl('');
+  
+  let id = '';
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtu.be')) {
+      id = u.pathname.slice(1);
+    } else if (u.pathname.includes('/shorts/')) {
+      id = u.pathname.split('/shorts/')[1];
+    } else {
+      id = u.searchParams.get('v') ?? '';
+    }
+  } catch { }
+  
+  return this.sanitizer.bypassSecurityTrustResourceUrl(
+    `https://www.youtube.com/embed/${id}?rel=0`
+  );
+}
 
-    let id = '';
-    try {
-      const u = new URL(url);
-      if (u.hostname.includes('youtu.be')) {
-        id = u.pathname.slice(1);
-      } else if (u.pathname.includes('/shorts/')) {
-        id = u.pathname.split('/shorts/')[1];
-      } else {
-        id = u.searchParams.get('v') ?? '';
-      }
-    } catch { }
-
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${id}?rel=0`
-    );
-  }
-
-
+ 
 }

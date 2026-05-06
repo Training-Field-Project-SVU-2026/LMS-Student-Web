@@ -45,7 +45,7 @@ export class CourseWorkspaceService {
 
   materials(courseSlug: string): Observable<IMaterialsResponse> {
     return this.http.get<IMaterialsResponse>(
-      `${environment.baseUrl}api/materials/?course=${courseSlug}`
+      `${environment.baseUrl}api/courses/${courseSlug}/materials/`
     );
   }
 
