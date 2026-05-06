@@ -6,114 +6,166 @@
 
   <div class="space-y-6">
     @for (track of learningTracks; track track.slug) {
-    <div
-      class="bg-[var(--surface)] border border-[var(--outline)] rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden shadow-sm">
-
       <div
-        class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center justify-center shrink-0 border border-[var(--outline)] overflow-hidden">
+        class="bg-[var(--surface)] border border-[var(--outline)] rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start relative overflow-hidden shadow-sm"
+      >
+        <div
+          class="w-20 h-20 bg-[var(--background)] rounded-2xl flex items-center justify-center shrink-0 border border-[var(--outline)] overflow-hidden"
+        >
+          @if (track.image) {
+            <img
+              [src]="track.image"
+              alt=""
+              class="w-full h-full object-cover"
+              appImgFallback
+              [srcFallback]="'/images/default_image.jpeg'"
+              [errorFallback]="'/images/error_image.png'"
+            />
+          } @else {
+            <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
+          }
+        </div>
 
-        @if (track.image) {
-        <img [src]="track.image" alt="" class="w-full h-full object-cover" appImgFallback
-          [srcFallback]="'/images/default_image.jpeg'" [errorFallback]="'/images/error_image.png'">
-        } @else {
-        <span class="text-teal-600 text-2xl font-bold">&lt;/&gt;</span>
-        }
-      </div>
+        <div class="flex-grow">
+          <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{ track.title }}</h3>
+          <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">
+            {{ track.description }}
+          </p>
 
-      <div class="flex-grow">
-        <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">{{ track.title }}</h3>
-        <p class="text-small text-[var(--text-tertiary)] mb-4 max-w-2xl">{{ track.description }}</p>
+          <div class="flex gap-6 text-[var(--text-tertiary)] text-[12px] font-medium">
+            <span class="flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 opacity-80"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.405 9.397 5 7.75 5 5.679 5 4 6.343 4 8v10c0-1.657 1.679-3 3.75-3 1.647 0 3.082.405 4.25 1.253m0-13C13.168 5.405 14.603 5 16.25 5 18.321 5 20 6.343 20 8v10c0-1.657-1.679-3-3.75-3-1.647 0-3.082.405-4.25 1.253"
+                />
+              </svg>
+              {{ track.students_count }} Courses
+            </span>
 
-        <div class="flex gap-6 text-[var(--text-tertiary)] text-[12px] font-medium">
+            <span class="flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 text-yellow-400"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.036 6.26h6.585c.969 0 1.371 1.24.588 1.81l-5.327 3.87 2.036 6.26c.3.921-.755 1.688-1.54 1.118L12 17.77l-5.329 3.475c-.784.57-1.838-.197-1.539-1.118l2.036-6.26-5.327-3.87c-.783-.57-.38-1.81.588-1.81h6.585l2.035-6.26z"
+                />
+              </svg>
+              {{ track.avg_rating }} Rating
+            </span>
 
-          <span class="flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-80" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 6.253v13m0-13C10.832 5.405 9.397 5 7.75 5 5.679 5 4 6.343 4 8v10c0-1.657 1.679-3 3.75-3 1.647 0 3.082.405 4.25 1.253m0-13C13.168 5.405 14.603 5 16.25 5 18.321 5 20 6.343 20 8v10c0-1.657-1.679-3-3.75-3-1.647 0-3.082.405-4.25 1.253" />
-            </svg>
-            {{ track.students_count }} Courses
-          </span>
+            <span class="flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 opacity-80"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8c-1.657 0-3 .672-3 1.5S10.343 11 12 11s3-.672 3-1.5S13.657 8 12 8zm0 0v8m0-8c1.657 0 3 .672 3 1.5M12 8c-1.657 0-3 .672-3 1.5"
+                />
+              </svg>
+              {{ track.price }}
+            </span>
+          </div>
+        </div>
 
-          <span class="flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-400" fill="currentColor"
-              viewBox="0 0 24 24">
-              <path
-                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l2.036 6.26h6.585c.969 0 1.371 1.24.588 1.81l-5.327 3.87 2.036 6.26c.3.921-.755 1.688-1.54 1.118L12 17.77l-5.329 3.475c-.784.57-1.838-.197-1.539-1.118l2.036-6.26-5.327-3.87c-.783-.57-.38-1.81.588-1.81h6.585l2.035-6.26z" />
-            </svg>
-            {{ track.avg_rating }} Rating
-          </span>
-
-          <span class="flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 opacity-80" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8c-1.657 0-3 .672-3 1.5S10.343 11 12 11s3-.672 3-1.5S13.657 8 12 8zm0 0v8m0-8c1.657 0 3 .672 3 1.5M12 8c-1.657 0-3 .672-3 1.5" />
-            </svg>
-            {{ track.price }}
-          </span>
-
+        <div class="mt-auto md:mt-0">
+          <button
+            [routerLink]="['/explore', 'packages', track.slug]"
+            class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold"
+          >
+            Join now
+          </button>
         </div>
       </div>
-
-      <div class="mt-auto md:mt-0">
-        <button [routerLink]="['/explore', 'packages', track.slug]"
-          class="bg-[var(--primary)] text-[var(--on-primary)] px-10 py-3 rounded-xl font-bold">
-          Join now
-        </button>
-      </div>
-
-    </div>
     } @empty {
-    <div class="text-center p-10 bg-[var(--background)] rounded-2xl">
-      <p class="text-[var(--text-tertiary)]">No tracks available right now.</p>
-    </div>
+      <div class="text-center p-10 bg-[var(--background)] rounded-2xl">
+        <p class="text-[var(--text-tertiary)]">No tracks available right now.</p>
+      </div>
     }
   </div>
 
   @if (hasMoreTracks) {
-  <div class="flex justify-center mt-8">
-    <button (click)="loadMoreTracks()" [disabled]="isLoadingMoreTracks"
-      class="px-10 py-3 rounded-xl border-2 border-[var(--primary)] text-[var(--primary)] font-bold hover:bg-[var(--primary)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-      @if (isLoadingMoreTracks) {
-      <span class="flex items-center gap-2">
-        <span class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-        Loading...
-      </span>
-      } @else {
-      View more tracks →
-      }
-    </button>
-  </div>
+    <div class="flex justify-center mt-8">
+      <button
+        (click)="loadMoreTracks()"
+        [disabled]="isLoadingMoreTracks"
+        class="px-10 py-3 rounded-xl border-2 border-[var(--primary)] text-[var(--primary)] font-bold hover:bg-[var(--primary)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        @if (isLoadingMoreTracks) {
+          <span class="flex items-center gap-2">
+            <span
+              class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
+            ></span>
+            Loading...
+          </span>
+        } @else {
+          View more tracks →
+        }
+      </button>
+    </div>
   }
 
   @if (!hasMoreTracks && learningTracks.length > 4) {
-  <p class="text-center mt-6 text-sm text-[var(--text-tertiary)]">
-    You've seen all {{ learningTracks.length }} tracks
-  </p>
+    <p class="text-center mt-6 text-sm text-[var(--text-tertiary)]">
+      You've seen all {{ learningTracks.length }} tracks
+    </p>
   }
 </div>
 
 <!-- ── Many Courses ─────────────────────────────────────────────────────── -->
 <div class="mt-16">
   <div class="flex items-center gap-2 mb-6">
-    <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-      stroke-linecap="round" stroke-linejoin="round" class="text-[var(--text-primary)]">
+    <svg
+      width="25"
+      height="25"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="text-[var(--text-primary)]"
+    >
       <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
       <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
     </svg>
     <h2 class="text-h2 text-[var(--text-primary)]">Explore Many Courses</h2>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="#all-courses">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    id="#all-courses"
+  >
     @for (course of manyCourses; track course.slug) {
-    <a [routerLink]="['/course', course.slug]" class="block cursor-pointer transition-transform hover:scale-[1.02]">
-      <app-card [courseData]="course"></app-card>
-    </a>
+      <div
+        (click)="onCourseClick(course.slug)"
+        class="block cursor-pointer transition-transform hover:scale-[1.02]"
+      >
+        <app-card [courseData]="course"></app-card>
+      </div>
     } @empty {
-    @for (i of [1,2,3,4]; track i) {
-    <div class="h-64 bg-[var(--surface)] animate-pulse rounded-2xl border border-[var(--outline)]"></div>
-    }
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div
+          class="h-64 bg-[var(--surface)] animate-pulse rounded-2xl border border-[var(--outline)]"
+        ></div>
+      }
     }
   </div>
 
@@ -134,8 +186,8 @@
   }
 
   @if (!hasMoreCourses && manyCourses.length > 0) {
-  <p class="text-center mt-8 text-sm text-[var(--text-tertiary)]">
-    You've seen all {{ manyCourses.length }} courses
-  </p>
+    <p class="text-center mt-8 text-sm text-[var(--text-tertiary)]">
+      You've seen all {{ manyCourses.length }} courses
+    </p>
   }
 </div>
