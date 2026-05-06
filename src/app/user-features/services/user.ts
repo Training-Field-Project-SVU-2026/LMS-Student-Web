@@ -22,25 +22,24 @@ export class User {
   }
   private coursesSubject = new BehaviorSubject<EnrolledCourse[]>([]);
   courses$ = this.coursesSubject.asObservable();
-  getMyEnrollments(): void {
-    this.http.get<EnrollmentResponse>(`${this.baseUrl}api/courses/myEnrollments/`)
-      .pipe(
-        map(res => {
-          let courses = res.data.courses;
-
-          courses.sort((a, b) => {
-            const dateA = new Date(a.enrolled_at).getTime();
-            const dateB = new Date(b.enrolled_at).getTime();
-            return dateB - dateA;
-          });
-
-          return courses;
-        })
-      )
-      .subscribe(courses => {
-        this.coursesSubject.next(courses);
-      });
-  }
+ getMyEnrollments(page: number = 1, pageSize: number = 12): Observable<EnrollmentResponse> {
+  return this.http.get<EnrollmentResponse>(
+    `${this.baseUrl}api/courses/myEnrollments/`,
+    {
+      params: {
+        page: page.toString(),
+        page_size: pageSize.toString()
+      }
+    }
+  ).pipe(
+    map(res => {
+      res.data.courses.sort((a, b) =>
+        new Date(b.enrolled_at).getTime() - new Date(a.enrolled_at).getTime()
+      );
+      return res;
+    })
+  );
+}
 
 
   rateCourse(slug: string, rate: number): Observable<CourseRatingResponse> {

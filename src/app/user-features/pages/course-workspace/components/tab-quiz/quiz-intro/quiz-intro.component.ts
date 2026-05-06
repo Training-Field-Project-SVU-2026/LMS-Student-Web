@@ -5,7 +5,7 @@ import {
 
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IQuizCourse } from '../../../../../models/courseWorkspace.model';
+import { IQuizCourse, IQuizStatistics } from '../../../../../models/courseWorkspace.model';
 import { CourseWorkspaceService } from '../../../../../services/course-workspace';
 import { NgClass } from '@angular/common';
 
@@ -31,11 +31,12 @@ export class QuizIntro implements OnInit {
 
   activeTab = signal<FilterTab>('all');
   courseName = signal('');
+  statistics = signal<IQuizStatistics | null>(null);
 
   currentPage = signal(1);
   pageSize = 10;
   hasMore = signal(true);
-
+  private courseSlug = '';
 
   filteredQuizzes = computed(() => {
     const all = this.quizzes();
@@ -50,48 +51,44 @@ export class QuizIntro implements OnInit {
     return all;
   });
 
-  avgScore = computed(() => {
-    const done = this.quizzes().filter(q =>
-      q.quiz_status === 'completed' || q.quiz_status === 'passed' || q.quiz_status === 'failed'
-    );
-    if (!done.length) return 0;
-    const sum = done.reduce((acc, q) => acc + (q.best_score / q.total_mark) * 100, 0);
-    return Math.round(sum / done.length);
-  });
-
-  passedCount = computed(() =>
-    this.quizzes().filter(q =>
-      q.quiz_status === 'completed' || q.quiz_status === 'passed'
-    ).length
-  );
-
-
   ngOnInit() {
-    const courseSlug = this.route.parent?.snapshot.paramMap.get('slug') ?? '';
-    this.loadQuizzes(courseSlug, 1);
+    this.courseSlug = this.route.parent?.snapshot.paramMap.get('slug') ?? '';
+    this.loadPage(1);
   }
 
+  private loadPage(page: number) {
+    const isFirst = page === 1;
 
-  private courseSlug = '';
-
-  loadQuizzes(courseSlug: string, page: number) {
-    if (this.isLoadingMore()) return;
-
-    if (courseSlug) this.courseSlug = courseSlug;
-
-    this.isLoadingMore.set(true);
+    if (isFirst) {
+      this.isLoading.set(true);
+    } else {
+      if (this.isLoadingMore()) return;
+      this.isLoadingMore.set(true);
+    }
 
     this.courseWorkspaceService.getQuizzes(this.courseSlug, page, this.pageSize)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (res: any) => {
+        next: (res) => {
           const newQuizzes = res.data.quizzes || [];
-          this.quizzes.update(old => [...old, ...(newQuizzes || [])]);
+
+          if (isFirst) {
+            this.quizzes.set(newQuizzes);
+          } else {
+            this.quizzes.update(old => {
+              const combined = [...old, ...newQuizzes];
+              return combined.filter(
+                (q, i, self) => i === self.findIndex(x => x.slug === q.slug)
+              );
+            });
+          }
+
+          this.statistics.set(res.data.statistics);
           this.hasMore.set(page < res.data.total_pages);
           this.currentPage.set(page);
 
-          if (!this.courseName()) {
-            this.courseName.set(newQuizzes[0]?.course_name ?? '');
+          if (!this.courseName() && newQuizzes.length) {
+            this.courseName.set(newQuizzes[0].course_name);
           }
 
           this.isLoading.set(false);
@@ -106,26 +103,24 @@ export class QuizIntro implements OnInit {
 
   loadMore() {
     if (!this.hasMore() || this.isLoadingMore()) return;
-    this.loadQuizzes('', this.currentPage() + 1);
+    this.loadPage(this.currentPage() + 1);
   }
 
-@HostListener('window:scroll')
-onScroll() {
-  if (this.isLoadingMore() || !this.hasMore()) return;
+  @HostListener('window:scroll')
+  onScroll() {
+    if (this.isLoadingMore() || !this.hasMore()) return;
 
-  const scrollPosition = window.innerHeight + window.scrollY;
-  const threshold = document.body.offsetHeight - 600;
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.body.offsetHeight - 300;
 
-  if (scrollPosition >= threshold) {
-    this.loadMore();
+    if (scrollPosition >= threshold) {
+      this.loadMore();
+    }
   }
-}
-
 
   setTab(tab: FilterTab) {
     this.activeTab.set(tab);
   }
-
 
   goToQuiz(quiz: IQuizCourse) {
     this.startQuiz.emit(quiz);

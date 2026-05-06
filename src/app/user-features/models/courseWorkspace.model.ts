@@ -30,11 +30,16 @@ export interface IQuizCourse {
   slug: string;
   quiz_name: string;
   total_mark:number;
+  passing_percentage: number;
   max_attempts:number;
   course_name:string;
   attempts_used:number;
-  best_score:number;
+  best_score:number | null;
   quiz_status:'not_started' | 'in_progress' | 'completed' | 'failed' | 'passed'| 'can_retry';
+}
+export interface IQuizStatistics {
+  overall_best_score: string;
+  completed_quizzes: string;
 }
 
 export interface IQuizCourseResponse {
@@ -46,6 +51,7 @@ export interface IQuizCourseResponse {
     current_page: number;
     total_quizzes: number;
     quizzes: IQuizCourse[];
+    statistics: IQuizStatistics;
   }
 }
 

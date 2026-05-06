@@ -3,6 +3,7 @@ export interface EnrolledCourse {
   slug: string;
   image: string | null;
   progress: number;
+    instructor_name: string;
   status: 'not_started' | 'in_progress' | 'completed';
   enrolled_at: string;
 }
