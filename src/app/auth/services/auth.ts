@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, of, ReplaySubject, switchMap, catchError, map } from 'rxjs';
+import { Observable, tap, of, switchMap, catchError, map, BehaviorSubject } from 'rxjs';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 import { Student } from '../../models/user.models';
 import { TokenService } from './token';
@@ -31,33 +31,37 @@ export class AuthService {
   isLoggedIn = signal<boolean>(false);
   currentUser = signal<Student | null>(null);
 
-  private authReadySubject = new ReplaySubject<Student | null>(1);
+  private authReadySubject = new BehaviorSubject<Student | null | undefined>(undefined);
   readonly authReady$ = this.authReadySubject.asObservable();
 
   constructor() {
     this.initializeAuth();
   }
 
-  private initializeAuth() {
-    if (this.tokenService.hasRefreshToken()) {
-      this.refreshAccessToken().pipe(
-        switchMap(() => this.fetchCurrentUser()),
-        tap((user) => {
-          this.isLoggedIn.set(!!user);
-          this.authReadySubject.next(user);
-        }),
-        catchError((err) => {
-          console.warn('[Auth] Boot init failed', err);
-          this.tokenService.clearAll();
-          this.isLoggedIn.set(false);
-          this.authReadySubject.next(null);
-          return of(null);
-        })
-      ).subscribe();
-    } else {
+  // ─── Initialize Auth ──────────────────────────────────────────────────────
+  private initializeAuth(): void {
+    if (!this.tokenService.hasRefreshToken()) {
       this.isLoggedIn.set(false);
       this.authReadySubject.next(null);
+      return;
     }
+
+    this.refreshAccessToken().pipe(
+      switchMap(() => this.fetchCurrentUser()),
+      tap((user) => {
+        this.isLoggedIn.set(!!user);
+        this.authReadySubject.next(user);
+      }),
+      catchError((err) => {
+        const status = err?.status;
+        if (status === 401 || status === 403) {
+          this.tokenService.clearAll();
+        }
+        this.isLoggedIn.set(false);
+        this.authReadySubject.next(null);
+        return of(null);
+      })
+    ).subscribe();
   }
 
   // ─── Register ─────────────────────────────────────────────────────────────
@@ -79,10 +83,11 @@ export class AuthService {
   login(data: LoginRequest): Observable<Student | null> {
     return this.http.post<LoginResponse>(API_ENDPOINTS.login, data).pipe(
       tap((res) => {
-        const { access, refresh } = res.data.tokens;
-        this.tokenService.setAccessToken(access);
-        this.tokenService.setRefreshToken(refresh);
-        this.tokenService.setSlug(res.data.user.slug);
+        const { tokens, user } = res.data;
+
+        this.tokenService.setAccessToken(tokens.access);
+        this.tokenService.setRefreshToken(tokens.refresh);
+        this.tokenService.setSlug(user.slug);
         this.isLoggedIn.set(true);
       }),
       switchMap(() => this.fetchCurrentUser()),
@@ -107,21 +112,13 @@ export class AuthService {
   // ─── Fetch Current User ───────────────────────────────────────────────────
   fetchCurrentUser(): Observable<Student | null> {
     const slug = this.tokenService.getSlug();
-    if (!slug) {
-      console.warn('[Auth] No slug in localStorage');
-      return of(null);
-    }
+    if (!slug) return of(null);
 
     return this.http.get<ApiResponse<Student>>(API_ENDPOINTS.studentBySlug(slug)).pipe(
       map((res) => {
         const user: Student = (res as any)?.data ?? res;
         this.currentUser.set(user);
         return user;
-      }),
-      catchError((err) => {
-        console.error('[Auth] fetchCurrentUser failed:', err);
-        this.currentUser.set(null);
-        return of(null);
       })
     );
   }
@@ -149,6 +146,7 @@ export class AuthService {
     return this.tokenService.getAccessToken();
   }
 
+  // ─── Clear Session ────────────────────────────
   private clearSession(): void {
     this.tokenService.clearAll();
     this.isLoggedIn.set(false);

@@ -170,24 +170,19 @@
   </div>
 
   @if (hasMoreCourses) {
-    <div class="flex justify-center mt-10">
-      <button
-        (click)="loadMoreCourses()"
-        [disabled]="isLoadingMoreCourses"
-        class="px-10 py-3 rounded-xl border-2 border-[var(--primary)] text-[var(--primary)] font-bold hover:bg-[var(--primary)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        @if (isLoadingMoreCourses) {
-          <span class="flex items-center gap-2">
-            <span
-              class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
-            ></span>
-            Loading...
-          </span>
-        } @else {
-          View all courses →
-        }
-      </button>
-    </div>
+  <div class="flex justify-center mt-10">
+    <button (click)="loadMoreCourses()" [disabled]="isLoadingMoreCourses"
+      class="px-10 py-3 rounded-xl border-2 border-[var(--primary)] text-[var(--primary)] font-bold hover:bg-[var(--primary)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+      @if (isLoadingMoreCourses) {
+      <span class="flex items-center gap-2">
+        <span class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
+        Loading...
+      </span>
+      } @else {
+      View more courses →
+      }
+    </button>
+  </div>
   }
 
   @if (!hasMoreCourses && manyCourses.length > 0) {
