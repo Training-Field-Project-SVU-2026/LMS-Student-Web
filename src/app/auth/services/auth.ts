@@ -11,7 +11,7 @@ import {
   RegisterRequest, RegisterResponse,
   VerifyEmailRequest, VerifyEmailResponse,
   ResendOtpRequest, ResendOtpResponse,
-  TokenRefreshResponse,
+  TokenRefreshResponse, CheckTokenResponse,
 } from '../models/auth.models';
 
 interface ApiResponse<T> {
@@ -40,14 +40,29 @@ export class AuthService {
 
   // ─── Initialize Auth ──────────────────────────────────────────────────────
   private initializeAuth(): void {
-    if (!this.tokenService.hasRefreshToken()) {
+    const accessToken = this.tokenService.getAccessToken();
+    const refreshToken = this.tokenService.getRefreshToken();
+
+    if (!refreshToken) {
       this.isLoggedIn.set(false);
       this.authReadySubject.next(null);
       return;
     }
 
-    this.refreshAccessToken().pipe(
-      switchMap(() => this.fetchCurrentUser()),
+    const authFlow$ = accessToken
+      ? this.checkTokenValidity().pipe(
+          switchMap((isValid) => {
+            if (isValid) return this.fetchCurrentUser();
+            return this.refreshAccessToken().pipe(
+              switchMap(() => this.fetchCurrentUser())
+            );
+          })
+        )
+      : this.refreshAccessToken().pipe(
+          switchMap(() => this.fetchCurrentUser())
+        );
+
+    authFlow$.pipe(
       tap((user) => {
         this.isLoggedIn.set(!!user);
         this.authReadySubject.next(user);
@@ -62,6 +77,14 @@ export class AuthService {
         return of(null);
       })
     ).subscribe();
+  }
+
+  // ─── Check Token Validity ─────────────────────────────────────────────────
+  checkTokenValidity(): Observable<boolean> {
+    return this.http.get<CheckTokenResponse>(API_ENDPOINTS.checkToken).pipe(
+      map(res => res.data?.valid === true),
+      catchError(() => of(false))
+    );
   }
 
   // ─── Register ─────────────────────────────────────────────────────────────
