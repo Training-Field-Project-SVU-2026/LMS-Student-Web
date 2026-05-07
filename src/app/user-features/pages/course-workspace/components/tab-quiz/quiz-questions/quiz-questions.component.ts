@@ -20,7 +20,6 @@ export class QuizQuestions implements OnInit {
   isLoading = signal(true);
   isSubmitting = signal(false);
 
-
   currentPage = signal(1);
   pageSize = 10;
   hasMore = signal(true);
@@ -28,18 +27,27 @@ export class QuizQuestions implements OnInit {
 
   answers = signal<Record<string, string[]>>({});
 
+  validQuestions = computed(() =>
+    this.questions().filter(q => q.choices?.length > 0)
+  );
+
+  isEmpty = computed(() =>
+    !this.isLoading() &&
+    this.validQuestions().length === 0
+  );
+
   answeredCount = computed(() =>
     Object.keys(this.answers()).filter(k => this.answers()[k]?.length > 0).length
   );
 
   allAnswered = computed(() =>
-    this.questions().length > 0 &&
-    this.answeredCount() === this.questions().length
+    this.validQuestions().length > 0 &&
+    this.answeredCount() === this.validQuestions().length
   );
 
   progress = computed(() =>
-    this.questions().length
-      ? Math.round((this.answeredCount() / this.questions().length) * 100)
+    this.validQuestions().length
+      ? Math.round((this.answeredCount() / this.validQuestions().length) * 100)
       : 0
   );
 
@@ -48,11 +56,8 @@ export class QuizQuestions implements OnInit {
       this.isLoading.set(false);
       return;
     }
-
-
     this.loadQuestions(1);
   }
-
 
   loadQuestions(page: number) {
     if (this.isLoadingMore()) return;
@@ -63,7 +68,7 @@ export class QuizQuestions implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res: any) => {
-         this.questions.update(old => [...old, ...(res.data.quizzes || [])]);
+          this.questions.update(old => [...old, ...(res.data.quizzes || [])]);
           this.hasMore.set(page < res.data.total_pages);
           this.isLoading.set(false);
           this.isLoadingMore.set(false);
@@ -75,25 +80,23 @@ export class QuizQuestions implements OnInit {
       });
   }
 
-
   loadMore() {
     if (!this.hasMore() || this.isLoadingMore()) return;
     this.currentPage.set(this.currentPage() + 1);
     this.loadQuestions(this.currentPage());
   }
 
+  @HostListener('window:scroll')
+  onScroll() {
+    if (this.isLoadingMore() || !this.hasMore()) return;
 
- @HostListener('window:scroll')
-onScroll() {
-  if (this.isLoadingMore() || !this.hasMore()) return;
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.body.offsetHeight - 600;
 
-  const scrollPosition = window.innerHeight + window.scrollY;
-  const threshold = document.body.offsetHeight - 600;
-
-  if (scrollPosition >= threshold) {
-    this.loadMore();
+    if (scrollPosition >= threshold) {
+      this.loadMore();
+    }
   }
-}
 
   selectChoice(questionSlug: string, choiceSlug: string, type: 'single' | 'multiple') {
     const current = { ...this.answers() };
@@ -116,24 +119,18 @@ onScroll() {
     return (this.answers()[questionSlug]?.length ?? 0) > 0;
   }
 
-
   onSubmit() {
-   if (!this.allAnswered()) {
-  const first = this.questions().find(q => !this.isQuestionAnswered(q.slug));
+    if (!this.allAnswered()) {
+      const first = this.validQuestions().find(q => !this.isQuestionAnswered(q.slug));
 
-  if (first) {
-    const el = document.getElementById(first.slug);
-
-    if (el) {
-      el.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center'
-      });
+      if (first) {
+        const el = document.getElementById(first.slug);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      return;
     }
-  }
-
-  return;
-}
 
     if (this.isSubmitting()) return;
 

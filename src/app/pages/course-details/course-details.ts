@@ -90,10 +90,14 @@ export class CourseDetails implements OnInit {
         localStorage.removeItem('pendingCourseSlug');
         this.userService.getMyEnrollments();
 
-        this.alert.enrollSuccess(
-          this.courseDetail!.title,
-          () => this.goToWorkspace()
-        );
+       Swal.fire({
+  icon: 'success',
+  title: 'Enrolled Successfully!',
+  text: `You are now enrolled in ${this.courseDetail!.title}`,
+  timer: 2500,
+  timerProgressBar: true,
+  showConfirmButton: false,
+});
       },
       error: (err: any) => {
         this.isEnrolling.set(false);
@@ -134,7 +138,7 @@ export class CourseDetails implements OnInit {
       this.router.navigate(['/CourseWorkspace', this.courseDetail?.slug]);
       return;
     }
-  
+
     this.onEnroll();
   }
 

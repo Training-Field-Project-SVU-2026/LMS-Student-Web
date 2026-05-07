@@ -122,11 +122,7 @@
     </div>
   }
 
-  @if (!hasMoreTracks && learningTracks.length > 4) {
-    <p class="text-center mt-6 text-sm text-[var(--text-tertiary)]">
-      You've seen all {{ learningTracks.length }} tracks
-    </p>
-  }
+ 
 </div>
 
 <!-- ── Many Courses ─────────────────────────────────────────────────────── -->
@@ -185,9 +181,5 @@
   </div>
   }
 
-  @if (!hasMoreCourses && manyCourses.length > 0) {
-    <p class="text-center mt-8 text-sm text-[var(--text-tertiary)]">
-      You've seen all {{ manyCourses.length }} courses
-    </p>
-  }
+
 </div>

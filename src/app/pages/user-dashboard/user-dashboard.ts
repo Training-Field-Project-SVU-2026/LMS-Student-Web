@@ -41,19 +41,17 @@ export class UserDashboard implements OnInit {
     });
   }
 
-  private loadDashboardCourses() {
-    this.userServices.getMyEnrollments();
-
-    this.userServices.courses$.pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (courses) => {
-        this.dashboardCourses = courses.slice(0, 4);
-        this.latestCourse = courses[0];
-      },
-      error: () => this.dashboardCourses = [],
-    });
-  }
+private loadDashboardCourses() {
+  this.userServices.getMyEnrollments(1, 4).pipe(
+    takeUntilDestroyed(this.destroyRef)
+  ).subscribe({
+    next: (res) => {
+      this.dashboardCourses = res.data.courses;
+      this.latestCourse = res.data.courses[0];
+    },
+    error: () => this.dashboardCourses = []
+  });
+}
   private loadTopRated() {
     this.courseService.getTopRatedCourses(4).pipe(
       catchError(() => of([])),
