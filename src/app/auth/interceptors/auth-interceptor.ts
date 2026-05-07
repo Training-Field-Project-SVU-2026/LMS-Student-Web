@@ -26,6 +26,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         req.url.includes('/auth/login') ||
         req.url.includes('/auth/token/refresh') ||
         req.url.includes('/auth/register') ||
+        req.url.includes('/auth/check-token') ||
         req.url.includes('/auth/logout');
 
       if (error.status !== 401 || isAuthEndpoint) {

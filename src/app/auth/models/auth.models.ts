@@ -82,3 +82,15 @@ export interface TokenRefreshResponse {
   refresh: string;
   access: string;
 }
+export interface CheckTokenResponse {
+  "success": boolean,
+  "status": number,
+  "message": "string",
+  "data": {
+    "valid": boolean,
+    "is_active": boolean,
+    "role": string,
+    "is_verified": boolean
+  }
+}
+

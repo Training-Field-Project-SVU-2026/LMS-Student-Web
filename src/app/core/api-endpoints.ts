@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   resetPassword: `${BASE_URL}api/auth/reset-password/`,
   resendOtp: `${BASE_URL}api/auth/resend-otp/`,
   refreshToken: `${BASE_URL}api/auth/token/refresh/`,
+  checkToken: `${BASE_URL}api/auth/check-token/`,
 
   // ── Students ──────────────────────────────────────────
   students:      `${BASE_URL}api/students/`,
