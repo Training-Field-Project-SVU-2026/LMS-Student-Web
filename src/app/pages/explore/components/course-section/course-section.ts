@@ -27,9 +27,9 @@ export class CourseSection implements OnInit {
   private tracksPageSize = 4;
   tracksTotalPages       = 1;
 
-  get hasMoreTracks(): boolean {
-    return this.tracksPage <= this.tracksTotalPages;
-  }
+ get hasMoreTracks(): boolean {
+  return this.tracksPage < this.tracksTotalPages;
+}
 
   // ── Courses ──
   manyCourses:            ICourseCardData[] = [];
@@ -38,9 +38,10 @@ export class CourseSection implements OnInit {
   private coursesPageSize = 8;
   coursesTotalPages       = 1;
 
-  get hasMoreCourses(): boolean {
-    return this.coursesPage <= this.coursesTotalPages;
-  }
+get hasMoreCourses(): boolean {
+  return this.coursesPage < this.coursesTotalPages; 
+}
+
 
   ngOnInit() {
     this.loadTracks();
