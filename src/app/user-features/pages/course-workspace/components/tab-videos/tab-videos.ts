@@ -20,7 +20,7 @@ export class TabVideos implements OnInit {
   error = signal(false);
 
   watchProgress = signal<Record<string, number>>({});
-
+  videoErrors = signal<Record<string, string | null>>({});
   constructor(private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private workspaceService: CourseWorkspaceService,
@@ -49,8 +49,29 @@ export class TabVideos implements OnInit {
       },
     });
   }
+
+  onVideoError(event: Event, slug: string) {
+    const video = event.target as HTMLVideoElement;
+    const err = video.error;
+
+    const messages: Record<number, string> = {
+      1: 'Playback was aborted.',
+      2: 'A network error occurred while loading the video.',
+      3: 'The video could not be decoded.',
+      4: 'This video format is not supported or the source is unavailable.',
+    };
+
+    const msg = err ? (messages[err.code] ?? 'An unknown error occurred.') : 'An unknown error occurred.';
+    this.videoErrors.update(e => ({ ...e, [slug]: msg }));
+  }
+
+
+  retryVideo(slug: string) {
+    this.videoErrors.update(e => ({ ...e, [slug]: null }));
+  }
   select(video: Video) {
     this.selectedVideo.set(video);
+    this.videoErrors.update(e => ({ ...e, [video.slug]: null }));
   }
 
   getType(video: Video): 'youtube' | 'upload' | 'none' {
@@ -60,51 +81,51 @@ export class TabVideos implements OnInit {
   }
 
 
-formatDuration(duration: string | null): string {
-  if (!duration) return '—';                         
-  const [h, m, s] = duration.split(':').map(Number);
-  if (h > 0) return `${h}h ${m}m`;
-  if (m > 0) return `${m}m ${s}s`;
-  return `${s}s`;
-}
+  formatDuration(duration: string | null): string {
+    if (!duration) return '—';
+    const [h, m, s] = duration.split(':').map(Number);
+    if (h > 0) return `${h}h ${m}m`;
+    if (m > 0) return `${m}m ${s}s`;
+    return `${s}s`;
+  }
 
-toSeconds(duration: string | null): number {
-  if (!duration) return 0;                          
-  const [h, m, s] = duration.split(':').map(Number);
-  return h * 3600 + m * 60 + s;
-}
+  toSeconds(duration: string | null): number {
+    if (!duration) return 0;
+    const [h, m, s] = duration.split(':').map(Number);
+    return h * 3600 + m * 60 + s;
+  }
 
-getProgress(video: Video): number {
-  const watched = this.watchProgress()[video.slug] ?? 0;
-  const total = this.toSeconds(video.duration);
-  if (!total) return 0;
-  return Math.min(Math.round((watched / total) * 100), 100);
-}
+  getProgress(video: Video): number {
+    const watched = this.watchProgress()[video.slug] ?? 0;
+    const total = this.toSeconds(video.duration);
+    if (!total) return 0;
+    return Math.min(Math.round((watched / total) * 100), 100);
+  }
 
   onTimeUpdate(event: Event, slug: string) {
     const el = event.target as HTMLVideoElement;
     this.watchProgress.update(p => ({ ...p, [slug]: el.currentTime }));
   }
 
-getYoutubeEmbed(url: string | null): SafeResourceUrl {
-  if (!url) return this.sanitizer.bypassSecurityTrustResourceUrl('');
-  
-  let id = '';
-  try {
-    const u = new URL(url);
-    if (u.hostname.includes('youtu.be')) {
-      id = u.pathname.slice(1);
-    } else if (u.pathname.includes('/shorts/')) {
-      id = u.pathname.split('/shorts/')[1];
-    } else {
-      id = u.searchParams.get('v') ?? '';
-    }
-  } catch { }
-  
-  return this.sanitizer.bypassSecurityTrustResourceUrl(
-    `https://www.youtube.com/embed/${id}?rel=0`
-  );
-}
+  getYoutubeEmbed(url: string | null): SafeResourceUrl {
+    if (!url) return this.sanitizer.bypassSecurityTrustResourceUrl('');
 
- 
+    let id = '';
+    try {
+      const u = new URL(url);
+      if (u.hostname.includes('youtu.be')) {
+        id = u.pathname.slice(1);
+      } else if (u.pathname.includes('/shorts/')) {
+        id = u.pathname.split('/shorts/')[1];
+      } else {
+        id = u.searchParams.get('v') ?? '';
+      }
+    } catch { }
+
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube.com/embed/${id}?rel=0`
+    );
+  }
+
+
 }

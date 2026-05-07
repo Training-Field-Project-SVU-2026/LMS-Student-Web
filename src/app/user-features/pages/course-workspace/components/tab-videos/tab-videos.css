@@ -21,9 +21,18 @@
   max-height: calc(100vh - 120px);
   overflow-y: auto;
 
-  &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: var(--outline); border-radius: 4px; }
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--outline);
+    border-radius: 4px;
+  }
 }
 
 .list-header {
@@ -62,9 +71,13 @@
   border-bottom: 1px solid var(--divider);
   transition: background 0.15s ease;
 
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 
-  &:hover { background: var(--background); }
+  &:hover {
+    background: var(--background);
+  }
 
   &.active {
     background: color-mix(in srgb, var(--primary) 8%, transparent);
@@ -86,15 +99,28 @@
 
   &.youtube {
     background: color-mix(in srgb, #FF0000 12%, transparent);
-    svg { color: #FF0000; width: 18px; height: 18px; }
+
+    svg {
+      color: #FF0000;
+      width: 18px;
+      height: 18px;
+    }
   }
 
   &.upload {
     background: color-mix(in srgb, var(--primary) 12%, transparent);
-    svg { color: var(--primary); width: 16px; height: 16px; }
+
+    svg {
+      color: var(--primary);
+      width: 16px;
+      height: 16px;
+    }
   }
 
-  svg { width: 18px; height: 18px; }
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .active-dot {
@@ -147,6 +173,7 @@
     background: color-mix(in srgb, #FF0000 12%, transparent);
     color: #FF0000;
   }
+
   &.up {
     background: color-mix(in srgb, var(--primary) 12%, transparent);
     color: var(--primary);
@@ -226,7 +253,8 @@
   background: #000;
   position: relative;
 
-  iframe, video {
+  iframe,
+  video {
     width: 100%;
     height: 100%;
     display: block;
@@ -324,8 +352,13 @@
 }
 
 @keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .empty-state {
@@ -346,5 +379,110 @@
   p {
     font-size: 15px;
     font-weight: 500;
+  }
+}
+
+
+
+.video-error-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(30, 30, 30, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: inherit;
+
+  svg {
+    width: 44px;
+    height: 44px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+
+.video-error-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: color-mix(in srgb, var(--background) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: inherit;
+  text-align: center;
+  padding: 24px;
+}
+
+.video-error-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--error) 12%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--error) 35%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    color: var(--error);
+  }
+}
+
+.video-error-text {
+  .error-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0 0 6px;
+  }
+
+  .error-detail {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin: 0;
+    max-width: 320px;
+    line-height: 1.6;
+  }
+}
+
+.retry-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1.5px solid color-mix(in srgb, var(--primary) 50%, transparent);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+
+  svg {
+    width: 15px;
+    height: 15px;
+    color: var(--primary);
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary) 22%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 70%, transparent);
   }
 }
