@@ -56,10 +56,10 @@
             <img
               appImgFallback
               [src]="courseDetail.instructor_image"
-              [srcFallback]="'assets/images/default-avatar.png'"
-              [errorFallback]="'assets/images/default-avatar.png'"
+              [srcFallback]="'/images/user-default.jpg'"
+              [errorFallback]="'/images/user-default.jpg'"
               alt="Instructor"
-              class="w-24 h-24 rounded-2xl object-cover border-2 border-[var(--outline)] shadow-sm"
+              class="w-24 h-24 rounded-2xl object-cover border-2 border-[var(--outline)] shadow-sm flex-shrink-0 -mt-1"
             />
             <div class="flex-1">
               <h3 class="text-xl font-bold text-[var(--text-primary)]">
