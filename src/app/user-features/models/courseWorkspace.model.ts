@@ -1,5 +1,4 @@
-import { ICourseDetailRequest } from
-  '../../components/shared/interfaces/course.model';
+import { ICourseDetailRequest } from './course.model';
 
 export interface ICourseWorkspaceHeader extends ICourseDetailRequest {
   progress?: number;
@@ -24,7 +23,7 @@ export interface IMaterial {
   slug: string;
   Material_Name: string;
   file: string;
-   file_size: string;   
+   file_size: string;
   created_at: string;
 }
 

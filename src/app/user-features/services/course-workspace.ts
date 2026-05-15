@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ICourseWorkspaceHeader, IMaterialsResponse, IQuestion, IQuestionsResponse, IQuizCourse, IQuizCourseResponse, IQuizResult, IQuizResultsResponse, ISubmitQuizRequest, ISubmitQuizResponse, VideosResponse } from '../models/courseWorkspace.model';
 import { Observable } from 'rxjs';
-import { CourseService } from '../../shared/services/course';
+import { CourseService } from './user';
 import { User } from '../services/user';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
+import { ICourseDetailRequest } from '../models/course.model';
 import { signal } from '@angular/core';
 import { API_ENDPOINTS } from '../../core/api-endpoints';
 

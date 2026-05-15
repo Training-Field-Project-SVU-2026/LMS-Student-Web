@@ -8,55 +8,67 @@
 @if (!isLoading && packageData) {
   <div class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-2">
-      <h1 class="font-display mb-2 text-[#102A33]">{{ packageData.title }}</h1>
-      <p class="text-[var(--text-secondary)] mb-4">{{ packageData.description }}</p>
+      <h1 class="font-display mb-3 text-[#102A33] leading-tight">{{ packageData.title }}</h1>
+      <p class="text-[var(--text-secondary)] mb-6 text-base leading-relaxed">
+        {{ packageData.description }}
+      </p>
 
-      <div class="flex gap-3 mb-10">
-        <span class="bg-[#F1F8E9] text-[#558B2F] px-3 py-1 rounded-full text-small">
-          ⭐ {{ packageData.avg_rating }} Course Rating
-        </span>
+      <div class="flex gap-3 mb-12">
+      @if (packageData.avg_rating) {
+  <span class="bg-[#F1F8E9] text-[#558B2F] px-4 py-2 rounded-full text-xs font-semibold">
+    {{ packageData.avg_rating }} Course Rating
+  </span>
+}
       </div>
 
-      <h2 class="font-title mb-6 text-[#102A33]">Included Courses</h2>
+      <h2 class="font-title mb-6 text-[#102A33] text-2xl">Included Courses</h2>
 
-        <div class="space-y-4">
-            @for (course of packageData.courses; track course.slug) {
-            <div
-                class="flex items-center justify-between p-5 border border-[var(--divider)] rounded-xl bg-white shadow-sm hover:border-[#D1DDE1] transition-all">
-                <div class="flex items-center gap-5 flex-grow">
-                    <div class="w-24 h-16 md:w-28 md:h-20 bg-gray-900 rounded-lg overflow-hidden flex-shrink-0">
-                        <img appImgFallback [src]="course.image" [srcFallback]="'/images/default_image.jpeg'"
-                          [errorFallback]="'/images/error_image.png'" class="w-full h-full object-cover" alt="">
-                    </div>
+      <div class="space-y-4">
+        @for (course of packageData.courses; track course.slug) {
+          <div
+            class="flex items-center justify-between p-6 border border-[var(--divider)] rounded-2xl bg-white shadow-sm hover:shadow-md hover:border-[#0A5C75] transition-all duration-300"
+          >
+            <div class="flex items-center gap-6 flex-grow min-w-0">
+              <div class="w-28 h-20 bg-gray-900 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+                <img
+                  appImgFallback
+                  [src]="course.image"
+                  [srcFallback]="'/images/default_image.jpeg'"
+                  [errorFallback]="'/images/error_image.png'"
+                  class="w-full h-full object-cover"
+                  alt="{{ course.title }}"
+                />
+              </div>
 
-                    <div class="flex flex-col gap-1.5 flex-grow">
-                        <p class="font-bold text-xl text-[#102A33] leading-tight">{{ course.title }}</p>
-                        <div
-                            class="flex items-center gap-1 text-[11px] text-[var(--text-tertiary)] uppercase font-medium">
-                            <span>Beginner</span>
-                            <span>•</span>
-                            <span>12 Lessons</span>
-                        </div>
-                    </div>
+              <div class="flex flex-col gap-2 flex-grow min-w-0">
+                <h3 class="font-bold text-lg text-[#102A33] leading-tight line-clamp-2">
+                  {{ course.title }}
+                </h3>
+                <div
+                  class="flex items-center gap-2 text-xs text-[var(--text-tertiary)] font-medium"
+                >
+                  <span> Beginner</span>
+                  <span>•</span>
+                  <span> 12 Lessons</span>
                 </div>
+              </div>
+            </div>
 
-                <div class="flex items-center gap-5 ml-4 flex-shrink-0 text-right">
-                    <button routerLink="/workspace/{{ course.slug }}"
-                        class="bg-[#0A5C75] text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-[#084C61] transition-all duration-200">
-                        Start Learning
-                    </button>
-              
+            <div class="flex items-center gap-5 ml-6 flex-shrink-0">
+              <div class="flex flex-col items-end gap-1 text-right">
+                <div class="font-bold text-lg text-[#102A33]">
+                  {{ course.avg_rating | number: '1.1-1' }} <span class="text-yellow-500"></span>
                 </div>
-
-            <div class="flex items-center gap-5 ml-4 flex-shrink-0 text-right">
-              <div>
-                <p class="font-bold text-[17px] text-[#102A33]">
-                  {{ course.avg_rating | number: '1.1-1' }} ★
-                </p>
-                <p class="text-[var(--text-tertiary)] text-xs">
-                  {{ course.students_count }} students
+                <p class="text-xs text-[var(--text-tertiary)] font-medium">
+                  {{ course.students_count }} <span class="hidden sm:inline">students</span>
                 </p>
               </div>
+              <button
+                (click)="startLearning(course.slug)"
+                class="bg-[#0A5C75] hover:bg-[#084C61] text-white px-6 py-3 rounded-xl font-bold text-sm transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap"
+              >
+                Start Learning →
+              </button>
             </div>
           </div>
         }
@@ -64,59 +76,58 @@
     </div>
 
     <div
-      class="bg-white p-7 rounded-2xl border border-[var(--divider)] h-fit sticky top-8 shadow-md"
+      class="bg-white p-8 rounded-2xl border border-[var(--divider)] h-fit sticky top-8 shadow-md"
     >
-      <h3 class="font-semibold mb-6 text-[var(--text-primary)] text-xl">Package Overview</h3>
+      <h3 class="font-bold mb-8 text-[var(--text-primary)] text-2xl">Package Overview</h3>
 
-      <div class="flex items-center gap-3 mb-6 p-3 bg-gray-50 rounded-xl">
+      <div class="flex items-center gap-4 mb-8 p-4 bg-gradient-to-r from-blue-50 to-transparent rounded-xl border border-blue-100">
         <div
-          class="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center text-white"
+          class="w-12 h-12 bg-[#0A5C75] rounded-full flex items-center justify-center text-white text-lg font-bold flex-shrink-0"
         >
           U
         </div>
         <div>
           <p
-            class="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-widest leading-none mb-1"
+            class="text-xs text-[var(--text-tertiary)] uppercase font-bold tracking-widest leading-none mb-1.5"
           >
             Instructor
           </p>
-          <p class="font-bold text-[var(--text-primary)] text-lg">
+          <p class="font-bold text-[var(--text-primary)] text-base">
             {{ packageData.instructor_name }}
           </p>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 mb-6">
-        <div class="p-3 bg-[var(--background)] rounded-xl text-center">
-          <p class="text-small text-[var(--text-tertiary)] uppercase font-semibold">Courses</p>
-          <p class="font-bold text-[var(--text-primary)] text-2xl">
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="p-4 bg-[var(--background)] rounded-xl text-center border border-[var(--divider)]">
+          <p class="text-xs text-[var(--text-tertiary)] uppercase font-bold">Courses</p>
+          <p class="font-bold text-[var(--text-primary)] text-3xl mt-2">
             {{ packageData.courses_count }}
           </p>
         </div>
-        <div class="p-3 bg-[var(--background)] rounded-xl text-center">
-          <p class="text-small text-[var(--text-tertiary)] uppercase font-semibold">Rating</p>
-          <p class="font-bold text-[var(--text-primary)] text-2xl">
-            {{ packageData.avg_rating | number: '1.1-1' }}
-            <span class="text-yellow-500 text-lg">★</span>
-          </p>
+        <div class="p-4 bg-[var(--background)] rounded-xl text-center border border-[var(--divider)]">
+          <p class="text-xs text-[var(--text-tertiary)] uppercase font-bold">Rating</p>
+          <p class="font-bold text-[var(--text-primary)] text-3xl mt-2">
+  {{ (packageData.avg_rating ?? 0) | number: '1.1-1' }}
+</p>
         </div>
       </div>
 
-      <div class="mb-6">
+      <div class="mb-8 pb-8 border-b border-[var(--divider)]">
         <p
-          class="text-small text-[var(--text-tertiary)] font-bold uppercase tracking-widest leading-none mb-1.5"
+          class="text-xs text-[var(--text-tertiary)] font-bold uppercase tracking-widest leading-none mb-2"
         >
           Bundle Price
         </p>
-        <p class="font-title text-[var(--text-primary)] text-3xl font-bold">
-          {{ packageData.price }} EGP
+        <p class="font-title text-[var(--text-primary)] text-4xl font-bold">
+          {{ packageData.price }} <span class="text-lg">EGP</span>
         </p>
       </div>
 
       <button
         (click)="onBuyPackage()"
         [disabled]="isBuying()"
-        class="w-full font-bold py-3.5 rounded-lg transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        class="w-full font-bold py-4 px-4 rounded-xl transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-base shadow-md hover:shadow-lg"
         [ngClass]="{
           'bg-[var(--secondary)] text-[var(--on-secondary)]': isBought(),
           'bg-[#0A5C75] hover:bg-[#084C61] text-white': !isBought(),
@@ -136,10 +147,9 @@
         }
       </button>
 
-      <p class="text-small text-center mt-4 text-[var(--text-tertiary)]">
-        Secure checkout with SSL encryption
+      <p class="text-xs text-center mt-5 text-[var(--text-tertiary)] font-medium">
+         Secure checkout with SSL encryption
       </p>
     </div>
   </div>
-  
 }
