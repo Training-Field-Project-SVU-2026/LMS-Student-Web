@@ -156,7 +156,7 @@
         (click)="onCourseClick(course.slug)"
         class="block cursor-pointer transition-transform hover:scale-[1.02]"
       >
-        <app-card [courseData]="course"></app-card>
+        <app-card [course]="course"></app-card>
       </div>
     } @empty {
       @for (i of [1, 2, 3, 4]; track i) {
