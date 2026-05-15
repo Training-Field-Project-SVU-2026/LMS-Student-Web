@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Card } from '../../../../components/shared/card/card';
 import { CourseService } from '../../../../shared/services/course';
-import { ICourseCardData } from '../../../../components/shared/interfaces/course.model';
+import { ICourseCardData, IPackageCardData } from '../../../../components/shared/interfaces/course.model';
 import { ImgFallback } from '../../../../shared/directives/img-fallback';
 import { Skeleton } from "../../../../components/shared/skeleton/skeleton";
 
@@ -18,15 +18,15 @@ import { Skeleton } from "../../../../components/shared/skeleton/skeleton";
 })
 export class CourseSection implements OnInit {
   private courseService = inject(CourseService);
-  private destroyRef    = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
   // ── Packages ──
-  learningTracks:        ICourseCardData[] = [];
-  isLoadingMoreTracks    = false;
-  private tracksPage     = 1;
+  learningTracks: IPackageCardData[] = [];
+  isLoadingMoreTracks = false;
+  private tracksPage = 1;
   private tracksPageSize = 4;
-  tracksTotalPages       = 1;
+  tracksTotalPages = 1;
 
  get hasMoreTracks(): boolean {
   return this.tracksPage < this.tracksTotalPages;
