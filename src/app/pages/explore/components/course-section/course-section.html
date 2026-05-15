@@ -102,6 +102,8 @@
   </div>
 
   @if (hasMoreTracks) {
+    <app-skeleton type="courses-grid" [count]="6"></app-skeleton>
+
     <div class="flex justify-center mt-8">
       <button
         (click)="loadMoreTracks()"

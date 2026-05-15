@@ -7,11 +7,12 @@ import { Card } from '../../../../components/shared/card/card';
 import { CourseService } from '../../../../shared/services/course';
 import { ICourseCardData } from '../../../../components/shared/interfaces/course.model';
 import { ImgFallback } from '../../../../shared/directives/img-fallback';
+import { Skeleton } from "../../../../components/shared/skeleton/skeleton";
 
 @Component({
   selector: 'app-course-section',
   standalone: true,
-  imports: [Card, RouterLink, CommonModule,ImgFallback ],
+  imports: [Card, RouterLink, CommonModule, ImgFallback, Skeleton],
   templateUrl: './course-section.html',
   styleUrl: './course-section.css',
 })
