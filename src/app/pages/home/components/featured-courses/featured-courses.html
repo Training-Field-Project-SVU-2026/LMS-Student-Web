@@ -23,7 +23,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         @for (course of courses; track course.slug) {
           <div (click)="onCourseClick(course.slug)" class="cursor-pointer h-full">
-            <app-card [courseData]="course"></app-card>
+            <app-card [course]="course"></app-card>
           </div>
         } @empty {
           <div class="col-span-full text-center py-10 text-[var(--text-secondary)]">
