@@ -3,14 +3,14 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, of, switchMap } from 'rxjs';
-import { CourseService } from '../../shared/services/course';
+import { CourseService } from '../../user-features/services/user';
 import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
 import { User } from '../../user-features/services/user';
-import { ICourseDetailRequest } from '../../components/shared/interfaces/course.model';
+import { ICourseDetailRequest, CourseRatingResponse } from '../../user-features/models/course.model';
 import { ImgFallback } from '../../shared/directives/img-fallback';
 
-import { CourseRatingResponse } from '../../user-features/models/course.model';
+
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-course-details',
@@ -71,6 +71,11 @@ export class CourseDetails implements OnInit {
     }
 
     if (!this.courseDetail || this.isEnrolling()) return;
+
+    if (!this.courseDetail.is_active) {
+      this.alert.enrollError('This course is not currently available. Please try again later.');
+      return;
+    }
 
     this.isEnrolling.set(true);
 

@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { of, forkJoin, Observable, switchMap } from 'rxjs';
-import { CourseService } from '../../shared/services/course';
+import { CourseService } from '../../user-features/services/user';
 import { AuthService } from '../../auth/services/auth';
 import { AlertService } from '../../shared/services/alert';
-import { IPackageDetails,  IPackageCardData } from '../../components/shared/interfaces/course.model';
+import { IPackageDetails, IPackageCardData } from '../../user-features/models/course.model';
 import { ImgFallback } from '../../shared/directives/img-fallback';
 import { RouterLink } from '@angular/router';
 @Component({
@@ -32,22 +32,21 @@ export class PackageDetails implements OnInit {
   isBought  = signal(false);
 
 
-  ngOnInit() {
-    const slug = this.route.snapshot.paramMap.get('slug');
-    if (!slug) return;
+ngOnInit() {
+  const slug = this.route.snapshot.paramMap.get('slug');
+  if (!slug) return;
 
-
-    this.courseService.getPackages().pipe(
-      switchMap(packages => {
-        const matched = packages.find(p => p.slug === slug);
-        return this.courseService.getPackageDetails(slug, matched?.instructor_name);
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next:  (data) => { this.packageData = data; this.isLoading = false; this.checkIfBought(); },
-      error: ()     =>   this.isLoading = false,
-    });
-  }
+  this.courseService.getPackageDetails(slug).pipe(
+    takeUntilDestroyed(this.destroyRef)
+  ).subscribe({
+    next: (data) => {
+      this.packageData = data;
+      this.isLoading = false;
+      this.checkIfBought();
+    },
+    error: () => this.isLoading = false,
+  });
+}
 
 
  private checkIfBought() {
@@ -124,4 +123,14 @@ export class PackageDetails implements OnInit {
     });
   });
 }
+
+  startLearning(courseSlug: string) {
+    if (!this.auth.isLoggedIn()) {
+      this.alert.requireLogin('You need to login to access the course');
+      return;
+    }
+
+    // Navigate to course workspace
+    this.router.navigate(['/CourseWorkspace/', courseSlug]);
+  }
 }

@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { catchError, of } from 'rxjs';
 import { Card } from '../../../../components/shared/card/card';
-import { CourseService } from '../../../../shared/services/course';
-import { ICourseCardData } from '../../../../components/shared/interfaces/course.model';
+import { CourseService } from '../../../../user-features/services/user';
+import { ICourseCardData } from '../../../../user-features/models/course.model';
 import { Skeleton } from '../../../../components/shared/skeleton/skeleton';
 
 @Component({

@@ -4,28 +4,29 @@ import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Card } from '../../../../components/shared/card/card';
-import { CourseService } from '../../../../shared/services/course';
-import { ICourseCardData } from '../../../../components/shared/interfaces/course.model';
+import { CourseService } from '../../../../user-features/services/user';
+import { ICourseCardData, IPackageCardData } from '../../../../user-features/models/course.model';
 import { ImgFallback } from '../../../../shared/directives/img-fallback';
+import { Skeleton } from "../../../../components/shared/skeleton/skeleton";
 
 @Component({
   selector: 'app-course-section',
   standalone: true,
-  imports: [Card, RouterLink, CommonModule,ImgFallback ],
+  imports: [Card, RouterLink, CommonModule, ImgFallback, Skeleton],
   templateUrl: './course-section.html',
   styleUrl: './course-section.css',
 })
 export class CourseSection implements OnInit {
   private courseService = inject(CourseService);
-  private destroyRef    = inject(DestroyRef);
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
   // ── Packages ──
-  learningTracks:        ICourseCardData[] = [];
-  isLoadingMoreTracks    = false;
-  private tracksPage     = 1;
+  learningTracks: IPackageCardData[] = [];
+  isLoadingMoreTracks = false;
+  private tracksPage = 1;
   private tracksPageSize = 4;
-  tracksTotalPages       = 1;
+  tracksTotalPages = 1;
 
  get hasMoreTracks(): boolean {
   return this.tracksPage < this.tracksTotalPages;
@@ -39,7 +40,7 @@ export class CourseSection implements OnInit {
   coursesTotalPages       = 1;
 
 get hasMoreCourses(): boolean {
-  return this.coursesPage < this.coursesTotalPages; 
+  return this.coursesPage < this.coursesTotalPages;
 }
 
 
