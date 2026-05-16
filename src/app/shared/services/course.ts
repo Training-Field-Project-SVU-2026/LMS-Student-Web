@@ -13,7 +13,7 @@ import {
   IMyEnrollmentsResponse,
   IPackageDetails,
   IPackageDetailsResponse,
-} from '../../components/shared/interfaces/course.model';
+} from '../../user-features/models/course.model';
 
 @Injectable({ providedIn: 'root' })
 export class CourseService {

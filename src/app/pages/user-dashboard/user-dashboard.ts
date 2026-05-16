@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
-import { CourseService } from '../../shared/services/course';
+import { CourseService } from '../../user-features/services/user';
 import { AuthService } from '../../auth/services/auth';
-import { ICourseCardData } from '../../components/shared/interfaces/course.model';
+import { ICourseCardData, EnrolledCourse } from '../../user-features/models/course.model';
 import { Card } from '../../components/shared/card/card';
 import { User } from '../../user-features/services/user';
-import { EnrolledCourse } from '../../user-features/models/course.model';
+
 import { CourseCard } from "../../user-features/shared/components/course-card/course-card";
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ImgFallback } from '../../../shared/directives/img-fallback';
-import { ICourseCardData } from '../interfaces/course.model';
+import { ICourseCardData } from '../../../user-features/models/course.model';
 
 @Component({
   selector: 'app-card',

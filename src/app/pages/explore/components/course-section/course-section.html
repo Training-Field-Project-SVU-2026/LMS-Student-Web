@@ -83,7 +83,9 @@
               </svg>
             </div>
             <div class="min-w-0">
-              <p class="text-[10px] tracking-wide text-[var(--text-tertiary)] font-bold uppercase tracking-wider mb-0.5">Content</p>
+              <p
+                class="text-[10px] tracking-wide text-[var(--text-tertiary)] font-bold uppercase tracking-wider mb-0.5">
+                Content</p>
               <p class="text-base font-bold text-[var(--text-primary)] truncate">{{ track.courses_count }} Courses</p>
             </div>
           </div>
@@ -125,17 +127,7 @@
       </div>
     </div>
     } @empty {
-    <!-- Empty State -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for (n of [1, 2, 3, 4, 5, 6]; track n) {
-      <div class="course-skeleton">
-        <div class="skeleton skeleton-thumb"></div>
-        <div class="skeleton skeleton-title"></div>
-        <div class="skeleton skeleton-info"></div>
-        <div class="skeleton skeleton-footer"></div>
-      </div>
-      }
-    </div>
+    <app-skeleton [type]="'courses-grid'" [count]="3"></app-skeleton>
     }
   </div>
 
@@ -146,7 +138,7 @@
       @if (isLoadingMoreTracks) {
       <span class="flex items-center gap-2">
         <span class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
-        <app-skeleton class="flex items-center gap-2">Loading...</app-skeleton>
+        <span>Loading...</span>
       </span>
       } @else {
       View more tracks →
@@ -175,9 +167,7 @@
       <app-card [course]="course"></app-card>
     </div>
     } @empty {
-    @for (i of [1, 2, 3, 4]; track i) {
-    <div class="h-[320px] bg-[var(--surface)] animate-pulse rounded-2xl border border-[var(--outline)]"></div>
-    }
+    <app-skeleton [type]="'courses-grid'" [count]="8"></app-skeleton>
     }
   </div>
 

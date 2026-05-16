@@ -4,8 +4,8 @@ import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Card } from '../../../../components/shared/card/card';
-import { CourseService } from '../../../../shared/services/course';
-import { ICourseCardData, IPackageCardData } from '../../../../components/shared/interfaces/course.model';
+import { CourseService } from '../../../../user-features/services/user';
+import { ICourseCardData, IPackageCardData } from '../../../../user-features/models/course.model';
 import { ImgFallback } from '../../../../shared/directives/img-fallback';
 import { Skeleton } from "../../../../components/shared/skeleton/skeleton";
 
@@ -40,7 +40,7 @@ export class CourseSection implements OnInit {
   coursesTotalPages       = 1;
 
 get hasMoreCourses(): boolean {
-  return this.coursesPage < this.coursesTotalPages; 
+  return this.coursesPage < this.coursesTotalPages;
 }
 
 
