@@ -1,14 +1,14 @@
-<div class="bg-[var(--surface)] border-b border-[var(--outline)] sticky top-0 z-10">
-  <div class="flex px-6 gap-1">
+<div class="bg-[var(--background)] border-b border-[var(--outline)] sticky top-0 z-10">
+  <div class="flex px-6 gap-1 pt-2">
 
     <a routerLink="materials"
-       routerLinkActive="text-[var(--primary)] border-[var(--primary)]"
+       routerLinkActive="bg-[var(--surface)] text-[var(--primary)] border border-b-[var(--surface)] border-[var(--outline)]"
        [routerLinkActiveOptions]="{ exact: false }"
-       class="flex items-center gap-2 px-4 py-3 text-sm font-semibold
-              border-b-2 border-transparent text-[var(--text-tertiary)]
-              hover:text-[var(--text-primary)] hover:bg-[var(--background)]
-              rounded-t-lg transition-all duration-150">
-      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
+       class="flex items-center gap-3 px-8 py-4 text-base font-semibold
+              text-[var(--text-tertiary)] rounded-t-xl border border-transparent
+              hover:text-[var(--text-primary)] hover:bg-[var(--surface)]
+              transition-all duration-150">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
            stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round"
           d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586
@@ -18,13 +18,13 @@
     </a>
 
     <a routerLink="videos"
-       routerLinkActive="text-[var(--primary)] border-[var(--primary)]"
+       routerLinkActive="bg-[var(--surface)] text-[var(--primary)] border border-b-[var(--surface)] border-[var(--outline)]"
        [routerLinkActiveOptions]="{ exact: false }"
-       class="flex items-center gap-2 px-4 py-3 text-sm font-semibold
-              border-b-2 border-transparent text-[var(--text-tertiary)]
-              hover:text-[var(--text-primary)] hover:bg-[var(--background)]
-              rounded-t-lg transition-all duration-150">
-      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
+       class="flex items-center gap-3 px-8 py-4 text-base font-semibold
+              text-[var(--text-tertiary)] rounded-t-xl border border-transparent
+              hover:text-[var(--text-primary)] hover:bg-[var(--surface)]
+              transition-all duration-150">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
            stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round"
           d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894
@@ -34,13 +34,13 @@
     </a>
 
     <a routerLink="quiz"
-       routerLinkActive="text-[var(--primary)] border-[var(--primary)]"
+       routerLinkActive="bg-[var(--surface)] text-[var(--primary)] border border-b-[var(--surface)] border-[var(--outline)]"
        [routerLinkActiveOptions]="{ exact: false }"
-       class="flex items-center gap-2 px-4 py-3 text-sm font-semibold
-              border-b-2 border-transparent text-[var(--text-tertiary)]
-              hover:text-[var(--text-primary)] hover:bg-[var(--background)]
-              rounded-t-lg transition-all duration-150">
-      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
+       class="flex items-center gap-3 px-8 py-4 text-base font-semibold
+              text-[var(--text-tertiary)] rounded-t-xl border border-transparent
+              hover:text-[var(--text-primary)] hover:bg-[var(--surface)]
+              transition-all duration-150">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor"
            stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round"
           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
@@ -49,6 +49,5 @@
       </svg>
       Quiz
     </a>
-
   </div>
 </div>
